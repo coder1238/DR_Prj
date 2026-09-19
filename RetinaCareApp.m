@@ -367,38 +367,32 @@ classdef RetinaCareApp < matlab.apps.AppBase
                 'BorderType', 'line', 'HighlightColor', app.COLOR_BORDER_SOFT);
 
             navGrid = uigridlayout(app.SidebarPanel, [20, 1]);
-            % 4 section labels (22px) + 15 module buttons (34px) + 1 bottom version (24px)
-            navGrid.RowHeight = {
-                22, 34, 34, 34, 34, 34, ... % Primary Pipeline
-                22, 34, 34, 34, 34, ...     % Diagnostic Intelligence
-                22, 34, 34, 34, 34, ...     % Tele-Medicine & Care
-                22, 34, 34, ...             % Health Systems & Audit
-                24                          % Footer
-            };
+            rowHeights = repmat({34}, 1, 20);
+            rowHeights{1} = 22;  % Primary Pipeline Header
+            rowHeights{7} = 22;  % Diagnostic Intelligence Header
+            rowHeights{12} = 22; % Tele-Medicine & Care Header
+            rowHeights{17} = 22; % Health Systems & Audit Header
+            rowHeights{20} = 24; % Footer
+            navGrid.RowHeight = rowHeights;
             navGrid.Padding = [8 8 8 8];
             navGrid.RowSpacing = 2;
 
-            moduleList = {
-                % Primary Pipeline
-                '01. Clinical Login', ...
-                '02. Command Centre', ...
-                '03. Patient Registration', ...
-                '04. Capture Studio', ...
-                '05. Image Quality Lab', ...
-                % Diagnostic Intelligence
-                '06. AI Analysis Centre', ...
-                '07. Retinal Anatomy Map', ...
-                '08. DR Severity Studio', ...
-                '09. Explainability Lab', ...
-                % Tele-Medicine & Care
-                '10. Review Queue (87)', ...
-                '11. Review Workstation', ...
-                '12. Referral Command (14)', ...
-                '13. Longitudinal Record', ...
-                % Health Systems & Audit
-                '14. District Simulink', ...
-                '15. AI Model Registry'
-            };
+            moduleList = cell(1, 15);
+            moduleList{1}  = '01. Clinical Login';
+            moduleList{2}  = '02. Command Centre';
+            moduleList{3}  = '03. Patient Registration';
+            moduleList{4}  = '04. Capture Studio';
+            moduleList{5}  = '05. Image Quality Lab';
+            moduleList{6}  = '06. AI Analysis Centre';
+            moduleList{7}  = '07. Retinal Anatomy Map';
+            moduleList{8}  = '08. DR Severity Studio';
+            moduleList{9}  = '09. Explainability Lab';
+            moduleList{10} = '10. Review Queue (87)';
+            moduleList{11} = '11. Review Workstation';
+            moduleList{12} = '12. Referral Command (14)';
+            moduleList{13} = '13. Longitudinal Record';
+            moduleList{14} = '14. District Simulink';
+            moduleList{15} = '15. AI Model Registry';
 
             % Helper to create Section Headers
             function addHeader(txt)
