@@ -1497,9 +1497,21 @@ classdef RetinaCareApp < matlab.apps.AppBase
         end
 
         function onRunSimulink(app, lambda, cams, docs)
-            app.SimEngine.ArrivalRatePerHour = lambda;
-            app.SimEngine.NumCameras = cams;
-            app.SimEngine.NumReviewDoctors = docs;
+            if isprop(app.SimEngine, 'ArrivalRatePerHour')
+                app.SimEngine.ArrivalRatePerHour = lambda;
+            elseif isprop(app.SimEngine, 'LambdaArrival')
+                app.SimEngine.LambdaArrival = lambda;
+            end
+            
+            if isprop(app.SimEngine, 'NumCameras')
+                app.SimEngine.NumCameras = cams;
+            end
+            
+            if isprop(app.SimEngine, 'NumReviewDoctors')
+                app.SimEngine.NumReviewDoctors = docs;
+            elseif isprop(app.SimEngine, 'NumOphthalmologists')
+                app.SimEngine.NumOphthalmologists = docs;
+            end
             res = app.SimEngine.runSimulation();
 
             bar(app.AxesSimThroughput, 1:8, res.ThroughputHourly, 'FaceColor', app.COLOR_PURPLE_ROYAL, 'EdgeColor', 'none');

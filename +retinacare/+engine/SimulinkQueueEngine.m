@@ -18,7 +18,25 @@ classdef SimulinkQueueEngine < handle
         SimulationHours = 8;      % Standard clinic shift
     end
     
+    properties (Dependent)
+        ArrivalRatePerHour
+        NumReviewDoctors
+    end
+    
     methods
+        function set.ArrivalRatePerHour(obj, val)
+            obj.LambdaArrival = val;
+        end
+        function val = get.ArrivalRatePerHour(obj)
+            val = obj.LambdaArrival;
+        end
+        function set.NumReviewDoctors(obj, val)
+            obj.NumOphthalmologists = val;
+        end
+        function val = get.NumReviewDoctors(obj)
+            val = obj.NumOphthalmologists;
+        end
+        
         function obj = SimulinkQueueEngine(lambda, numCams, numDocs, bw)
             if nargin >= 1, obj.LambdaArrival = lambda; end
             if nargin >= 2, obj.NumCameras = numCams; end
