@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RetinaCare AI - Image Quality Assessment & Clinical Pre-Processing Lab</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            primary: {
+              DEFAULT: '#4c1d95',
+              dark: '#3b0764',
+              light: '#6d28d9',
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              200: '#ddd6fe',
+              600: '#7c3aed',
+              700: '#6d28d9',
+              800: '#5b21b6',
+              900: '#4c1d95',
+              950: '#2e1065',
+            },
+            surface: {
+              DEFAULT: '#FAF8FF',
+              card: '#FFFFFF',
+              border: '#DDD6FE',
+              dark: '#0B1120',
+              slate: '#1E293B'
+            },
+            clinical: {
+              emerald: '#059669',
+              emeraldBg: '#ECFDF5',
+              emeraldBorder: '#A7F3D0',
+              cyan: '#0284C7',
+              amber: '#D97706',
+              purple: '#581C87',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+    .material-symbols-outlined.fill {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+    /* Comparison Slider styling */
+    .comparison-container {
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+    }
+    .slider-handle {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: #A855F7;
+      cursor: ew-resize;
+      z-index: 30;
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.8), 0 0 3px #ffffff;
+    }
+    .slider-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 42px;
+      height: 42px;
+      background: #581C87;
+      border: 2px solid #C084FC;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5), 0 0 0 3px rgba(168, 85, 247, 0.3);
+      transition: transform 0.15s ease;
+    }
+    .slider-button:hover {
+      transform: translate(-50%, -50%) scale(1.08);
+    }
+    /* Custom subtle scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f0f7;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    /* Pulse glow */
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.9; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.02); }
+    }
+    .pulse-glow {
+      animation: pulseGlow 3s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-[#F8FAFC] text-slate-800 font-sans antialiased overflow-x-hidden min-h-screen flex flex-col">
+
+  <div class="flex flex-1 w-full min-h-screen">
+
+    <!-- ========================================================================= -->
+    <!-- LEFT NAVIGATION RAIL (260px, bg #FAF8FF, border-r #DDD6FE)                 -->
+    <!-- ========================================================================= -->
+    <aside class="w-[260px] shrink-0 bg-[#FAF8FF] border-r border-[#DDD6FE] flex flex-col justify-between select-none z-30 sticky top-0 h-screen overflow-y-auto">
+      <div>
+        <!-- Brand Header -->
+        <div class="p-5 border-b border-[#DDD6FE]/60">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#4c1d95] via-[#6d28d9] to-[#a855f7] flex items-center justify-center text-white shadow-md shadow-purple-900/20">
+              <span class="material-symbols-outlined text-[22px]">visibility</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="font-bold text-[15px] tracking-tight text-[#2e1065]">RETINACARE AI</span>
+                <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              </div>
+              <span class="inline-block text-[9px] font-bold tracking-wider uppercase px-1.5 py-0.5 bg-purple-100/90 text-[#581c87] rounded border border-purple-200">PHC CLINICAL SUITE</span>
+            </div>
+          </div>
+          <div class="mt-3 flex items-center gap-1.5 text-[11px] font-medium text-slate-500 bg-white/70 px-2.5 py-1 rounded-md border border-purple-100">
+            <span class="material-symbols-outlined text-[14px] text-purple-700">domain</span>
+            <span>PHC Rau • Indore #14</span>
+            <span class="ml-auto text-[10px] font-mono text-purple-600 font-semibold bg-purple-50 px-1 rounded">NODE</span>
+          </div>
+        </div>
+
+        <!-- Section Label -->
+        <div class="px-4 pt-4 pb-1">
+          <span class="text-[10px] font-bold tracking-wider text-slate-400 uppercase">Screening Operations</span>
+        </div>
+
+        <!-- Nav Items -->
+        <nav class="px-3 space-y-1">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-purple-50/80 hover:text-purple-900 rounded-lg text-xs font-medium transition-colors">
+            <span class="material-symbols-outlined text-[18px]">space_dashboard</span>
+            <span>Overview</span>
+          </a>
+
+          <!-- Active Screening with Step indicator -->
+          <div class="bg-purple-900 text-white rounded-xl p-2.5 shadow-md shadow-purple-950/20 border border-purple-800 relative overflow-hidden">
+            <div class="absolute -right-3 -top-3 w-16 h-16 bg-purple-600/30 rounded-full blur-xl pointer-events-none"></div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2 font-semibold text-xs text-white">
+                <span class="material-symbols-outlined text-[18px] text-purple-300">add_circle</span>
+                <span>New Screening</span>
+              </div>
+              <span class="bg-purple-700/80 text-purple-200 text-[10px] font-mono font-medium px-2 py-0.5 rounded-full border border-purple-500/40">Step 3</span>
+            </div>
+            <div class="mt-2 text-[11px] text-purple-200 font-medium flex items-center gap-1.5 bg-purple-950/60 px-2 py-1 rounded-md">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              <span class="truncate">Quality Lab Assessment</span>
+            </div>
+          </div>
+
+          <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-purple-50/80 hover:text-purple-900 rounded-lg text-xs font-medium transition-colors">
+            <span class="material-symbols-outlined text-[18px]">people</span>
+            <span>Patients</span>
+          </a>
+
+          <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-purple-50/80 hover:text-purple-900 rounded-lg text-xs font-medium transition-colors">
+            <span class="material-symbols-outlined text-[18px]">psychology</span>
+            <span>AI Analysis</span>
+            <span class="ml-auto text-[10px] font-mono text-purple-700 bg-purple-100 font-semibold px-1.5 py-0.2 rounded">v2.4</span>
+          </a>
+
+          <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-purple-50/80 hover:text-purple-900 rounded-lg text-xs font-medium transition-colors">
+            <span class="material-symbols-outlined text-[18px]">fact_check</span>
+            <span>Review Queue</span>
+            <span class="ml-auto bg-purple-100 text-purple-800 font-bold text-[11px] px-2 py-0.5 rounded-full">87</span>
+          </a>
+
+          <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-purple-50/80 hover:text-purple-900 rounded-lg text-xs font-medium transition-colors">
+            <span class="material-symbols-outlined text-[18px]">share_location</span>
+            <span>Referrals (ABDM)</span>
+            <span class="ml-auto bg-amber-100 text-amber-800 font-bold text-[11px] px-2 py-0.5 rounded-full">14</span>
+          </a>
+
+          <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-purple-50/80 hover:text-purple-900 rounded-lg text-xs font-medium transition-colors">
+            <span class="material-symbols-outlined text-[18px]">calendar_clock</span>
+            <span>Follow-ups</span>
+          </a>
+
+          <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-purple-50/80 hover:text-purple-900 rounded-lg text-xs font-medium transition-colors">
+            <span class="material-symbols-outlined text-[18px]">insights</span>
+            <span>Analytics</span>
+          </a>
+        </nav>
+
+        <!-- Technical & Tools Section -->
+        <div class="px-4 pt-4 pb-1">
+          <span class="text-[10px] font-bold tracking-wider text-slate-400 uppercase">Technical & Calibration</span>
+        </div>
+        <nav class="px-3 space-y-0.5">
+          <a href="#" class="flex items-center gap-3 px-3 py-1.5 text-slate-500 hover:bg-purple-50/80 hover:text-purple-900 rounded-lg text-xs transition-colors">
+            <span class="material-symbols-outlined text-[17px]">model_training</span>
+            <span>Simulation</span>
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-1.5 text-slate-500 hover:bg-purple-50/80 hover:text-purple-900 rounded-lg text-xs transition-colors">
+            <span class="material-symbols-outlined text-[17px]">hub</span>
+            <span>AI Models</span>
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-1.5 text-slate-500 hover:bg-purple-50/80 hover:text-purple-900 rounded-lg text-xs transition-colors">
+            <span class="material-symbols-outlined text-[17px]">verified</span>
+            <span>Validation</span>
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-1.5 text-slate-500 hover:bg-purple-50/80 hover:text-purple-900 rounded-lg text-xs transition-colors">
+            <span class="material-symbols-outlined text-[17px]">tune</span>
+            <span>Devices</span>
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-1.5 text-slate-500 hover:bg-purple-50/80 hover:text-purple-900 rounded-lg text-xs transition-colors">
+            <span class="material-symbols-outlined text-[17px]">description</span>
+            <span>Reports</span>
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-1.5 text-slate-500 hover:bg-purple-50/80 hover:text-purple-900 rounded-lg text-xs transition-colors">
+            <span class="material-symbols-outlined text-[17px]">settings</span>
+            <span>Settings</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Bottom Rail -->
+      <div class="p-3 border-t border-[#DDD6FE]/70 bg-purple-50/50 space-y-2">
+        <div class="flex items-center justify-between text-[11px] text-slate-500 px-1">
+          <span class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[15px] text-purple-700">help</span>
+            <span class="font-medium">Protocols & SOP</span>
+          </span>
+          <span class="text-[10px] font-mono text-emerald-700 font-bold bg-emerald-100 px-1.5 py-0.5 rounded">v3.2</span>
+        </div>
+
+        <div class="flex items-center justify-between bg-white border border-purple-200/80 rounded-lg p-2">
+          <div class="flex items-center gap-1.5 text-[11px]">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span class="text-slate-600 font-medium">System Status</span>
+          </div>
+          <span class="text-[11px] font-mono font-bold text-slate-700">99.8%</span>
+        </div>
+
+        <div class="flex items-center gap-2.5 p-2 bg-white rounded-xl border border-[#DDD6FE]/80 shadow-sm">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-700 to-indigo-800 text-white font-semibold text-xs flex items-center justify-center">
+            SY
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="text-xs font-bold text-slate-800 truncate">Sunita Yadav</div>
+            <div class="text-[10px] text-slate-500 truncate">Screening Operator • ANM-04</div>
+          </div>
+          <button title="Operator Settings" class="text-slate-400 hover:text-purple-700">
+            <span class="material-symbols-outlined text-[18px]">more_vert</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ========================================================================= -->
+    <!-- MAIN APPLICATION CONTENT AREA                                              -->
+    <!-- ========================================================================= -->
+    <div class="flex-1 flex flex-col min-w-0">
+
+      <!-- Global Top Bar (64px, bg-white, border-b #DDD6FE) -->
+      <header class="h-16 bg-white border-b border-[#DDD6FE] px-6 flex items-center justify-between sticky top-0 z-20 shadow-xs">
+        
+        <!-- Left: Patient Banner -->
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-900">
+            <span class="material-symbols-outlined text-[19px]">account_circle</span>
+          </div>
+          <div class="flex items-center flex-wrap gap-2 text-xs">
+            <span class="font-bold text-slate-900 text-sm">Suresh Chandra Verma</span>
+            <span class="font-mono text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded border border-slate-200">#RC-2026-9104</span>
+            <span class="text-slate-300">•</span>
+            <span class="inline-flex items-center gap-1 font-semibold text-purple-900 bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-200">
+              <span class="w-1.5 h-1.5 rounded-full bg-purple-700"></span>
+              OD (Right Eye)
+            </span>
+            <span class="text-slate-400 font-mono text-[11px]">2048×1536 Raw Sensor</span>
+            <span class="text-slate-300">•</span>
+            <span class="text-slate-500 text-[11px]">Remidio FOP NM-10</span>
+          </div>
+        </div>
+
+        <!-- Right: Network, Sync & Quality Badge -->
+        <div class="flex items-center gap-4">
+          <!-- Network Status -->
+          <div class="hidden md:flex items-center gap-2 text-xs bg-emerald-50 text-emerald-800 px-2.5 py-1 rounded-full border border-emerald-200">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+            <span class="font-medium">Online (1.8 Mbps)</span>
+            <span class="text-emerald-300">|</span>
+            <span class="text-[11px] text-emerald-700 font-mono">Synced 2m ago</span>
+          </div>
+
+          <!-- Offline Sync Badge -->
+          <div class="hidden sm:flex items-center gap-1.5 text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200">
+            <span class="material-symbols-outlined text-[16px] text-slate-500">cloud_done</span>
+            <span class="font-mono text-[11px] font-semibold">0 Pending Sync</span>
+          </div>
+
+          <!-- EFIQA Quick Status Pill -->
+          <div class="flex items-center gap-1.5 bg-purple-900 text-white px-3 py-1 rounded-full shadow-sm">
+            <span class="material-symbols-outlined text-[16px] text-emerald-400">check_circle</span>
+            <span class="text-xs font-bold font-mono tracking-wide">EFIQA: PASS</span>
+            <span class="text-[10px] bg-purple-800 text-purple-200 px-1.5 py-0.2 rounded font-mono">Gradable</span>
+          </div>
+
+          <div class="border-l border-slate-200 pl-3 flex items-center gap-2">
+            <button class="p-1.5 text-slate-500 hover:text-purple-700 hover:bg-purple-50 rounded-lg" title="Notifications">
+              <span class="material-symbols-outlined text-[20px]">notifications</span>
+            </button>
+            <button class="p-1.5 text-slate-500 hover:text-purple-700 hover:bg-purple-50 rounded-lg" title="Clinical Help">
+              <span class="material-symbols-outlined text-[20px]">help</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Workspace Scrollable Body -->
+      <main class="flex-1 p-6 max-w-[1600px] w-full mx-auto space-y-6">
+
+        <!-- ========================================================================= -->
+        <!-- 1. STEPPER & HEADER                                                       -->
+        <!-- ========================================================================= -->
+        <section class="bg-white rounded-2xl border border-[#DDD6FE]/80 p-5 shadow-xs">
+          <!-- Stepper Flow -->
+          <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100 overflow-x-auto">
+            
+            <!-- Step 1: Completed -->
+            <div class="flex items-center gap-2 text-slate-500 text-xs font-medium shrink-0">
+              <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
+                ✓
+              </div>
+              <span class="text-slate-600">01 Registration</span>
+              <span class="text-slate-300 ml-2">➔</span>
+            </div>
+
+            <!-- Step 2: Completed -->
+            <div class="flex items-center gap-2 text-slate-500 text-xs font-medium shrink-0 ml-2">
+              <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
+                ✓
+              </div>
+              <span class="text-slate-600">02 Capture Studio</span>
+              <span class="text-slate-300 ml-2">➔</span>
+            </div>
+
+            <!-- Step 3: Active (Quality Lab) -->
+            <div class="flex items-center gap-2.5 text-purple-950 font-bold text-xs shrink-0 ml-2 bg-purple-50 px-3 py-1.5 rounded-xl border border-purple-200">
+              <div class="w-6 h-6 rounded-full bg-[#581C87] text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                03
+              </div>
+              <span class="text-purple-950">Image Quality Lab</span>
+              <span class="inline-block w-2 h-2 rounded-full bg-purple-600 animate-ping"></span>
+              <span class="text-slate-300 ml-2">➔</span>
+            </div>
+
+            <!-- Step 4: Pending -->
+            <div class="flex items-center gap-2 text-slate-400 text-xs font-medium shrink-0 ml-2">
+              <div class="w-6 h-6 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-mono text-xs">
+                04
+              </div>
+              <span>AI Analysis Engine</span>
+              <span class="text-slate-300 ml-2">➔</span>
+            </div>
+
+            <!-- Step 5: Pending -->
+            <div class="flex items-center gap-2 text-slate-400 text-xs font-medium shrink-0 ml-2">
+              <div class="w-6 h-6 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-mono text-xs">
+                05
+              </div>
+              <span>Clinical MD Review</span>
+            </div>
+
+          </div>
+
+          <!-- Title & Subtitle -->
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2.5">
+                <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">
+                  Image Quality Assessment & Clinical Pre-Processing Lab
+                </h1>
+                <span class="bg-emerald-100 text-emerald-800 text-[11px] font-semibold px-2.5 py-0.5 rounded-full border border-emerald-300 flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                  Ready for AI Inference
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">
+                Automated gradability filtering, artifact suppression, and multi-stage illumination normalization based on European-validated EFIQA standards.
+              </p>
+            </div>
+
+            <!-- Quick Calibration Tags -->
+            <div class="flex items-center gap-2 flex-wrap">
+              <div class="flex items-center gap-1.5 text-[11px] font-mono bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md border border-slate-200">
+                <span class="text-slate-400">Sensor:</span>
+                <span class="font-semibold text-purple-900">CMOS 1/2.3" RAW</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-[11px] font-mono bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md border border-slate-200">
+                <span class="text-slate-400">FOV:</span>
+                <span class="font-semibold text-slate-800">45° Macula-Centered</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-[11px] font-mono bg-purple-100/70 text-purple-900 px-2.5 py-1 rounded-md border border-purple-200">
+                <span class="material-symbols-outlined text-[14px]">memory</span>
+                <span>Edge GPU Node Ind-04</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- 2. TOP QUALITY METRICS & GRADABILITY RING                                 -->
+        <!-- ========================================================================= -->
+        <section class="grid grid-cols-1 xl:grid-cols-12 gap-5">
+          
+          <!-- Circular Gradability Ring Card (4 Cols) -->
+          <div class="xl:col-span-4 bg-white rounded-2xl border border-[#DDD6FE]/80 p-5 shadow-xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Overall Gradability</span>
+                <span class="text-[10px] font-mono bg-purple-100 text-purple-800 font-semibold px-2 py-0.5 rounded-full border border-purple-200">
+                  ISO 10940 Verified
+                </span>
+              </div>
+
+              <!-- Meter Visualization -->
+              <div class="flex items-center justify-center my-3">
+                <div class="relative w-44 h-44 flex items-center justify-center">
+                  <!-- SVG Circular Progress -->
+                  <svg class="w-full h-full -rotate-90" viewBox="0 0 160 160">
+                    <!-- Background circle -->
+                    <circle cx="80" cy="80" r="68" stroke="#F1F5F9" stroke-width="12" fill="transparent" />
+                    <!-- Dual-color accent circle with stroke-dasharray (91% of 2*pi*68 = 427.2 -> 388.75) -->
+                    <circle 
+                      cx="80" 
+                      cy="80" 
+                      r="68" 
+                      stroke="url(#purpleEmeraldGradient)" 
+                      stroke-width="12" 
+                      stroke-linecap="round" 
+                      stroke-dasharray="427.2" 
+                      stroke-dashoffset="38.4" 
+                      fill="transparent" 
+                    />
+                    <defs>
+                      <linearGradient id="purpleEmeraldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#581C87" />
+                        <stop offset="60%" stop-color="#7C3AED" />
+                        <stop offset="100%" stop-color="#10B981" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  
+                  <!-- Center score text -->
+                  <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                    <span class="text-[10px] uppercase font-bold tracking-widest text-slate-400">Gradability</span>
+                    <span class="text-4xl font-extrabold text-slate-900 tracking-tight">91<span class="text-2xl text-purple-700">%</span></span>
+                    <span class="mt-0.5 inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                      CLINICALLY GRADABLE
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- EFIQA Badge Box -->
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 text-xs">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-slate-800 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[17px] text-purple-700">verified_user</span>
+                  EFIQA v2.1 Classifier
+                </span>
+                <span class="font-mono text-[11px] font-bold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded border border-emerald-200">
+                  PASS
+                </span>
+              </div>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-slate-600">
+                <span>Model Confidence:</span>
+                <span class="font-mono font-bold text-slate-900">96.8% (p &lt; 0.001)</span>
+              </div>
+              <div class="mt-1 flex items-center justify-between text-[11px] text-slate-500">
+                <span>Rejection Threshold:</span>
+                <span class="font-mono text-slate-600">Min 70.0% Required</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Granular Metric Progress Bars (8 Cols) -->
+          <div class="xl:col-span-8 bg-white rounded-2xl border border-[#DDD6FE]/80 p-5 shadow-xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div>
+                  <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Granular Quality Telemetry</h3>
+                  <p class="text-[11px] text-slate-400">Micro-architectural optical grading across six clinical vectors</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] text-slate-500 font-medium">All 6 Passed Quality Lock</span>
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                </div>
+              </div>
+
+              <!-- 6 Metric Bars in a 2-column or structured grid -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 pt-1">
+                
+                <!-- Metric 1: Focus Sharpness -->
+                <div class="space-y-1.5 bg-slate-50/70 p-3 rounded-xl border border-slate-100">
+                  <div class="flex justify-between items-center text-xs">
+                    <span class="font-semibold text-slate-800 flex items-center gap-1.5">
+                      <span class="material-symbols-outlined text-[15px] text-purple-700">filter_center_focus</span>
+                      Focus Sharpness
+                    </span>
+                    <span class="font-mono font-bold text-purple-900">94% <span class="text-[10px] font-normal text-slate-500">(Pass)</span></span>
+                  </div>
+                  <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full" style="width: 94%"></div>
+                  </div>
+                  <div class="flex justify-between text-[10px] text-slate-500 font-mono">
+                    <span>High acuity edge definition</span>
+                    <span>Laplacian: 184.2</span>
+                  </div>
+                </div>
+
+                <!-- Metric 2: Illumination Uniformity -->
+                <div class="space-y-1.5 bg-slate-50/70 p-3 rounded-xl border border-slate-100">
+                  <div class="flex justify-between items-center text-xs">
+                    <span class="font-semibold text-slate-800 flex items-center gap-1.5">
+                      <span class="material-symbols-outlined text-[15px] text-purple-700">wb_sunny</span>
+                      Illumination Uniformity
+                    </span>
+                    <span class="font-mono font-bold text-purple-900">89% <span class="text-[10px] font-normal text-slate-500">(Pass)</span></span>
+                  </div>
+                  <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full" style="width: 89%"></div>
+                  </div>
+                  <div class="flex justify-between text-[10px] text-slate-500 font-mono">
+                    <span>Peripheral gradient corrected</span>
+                    <span>Gradient Δ: 4.1%</span>
+                  </div>
+                </div>
+
+                <!-- Metric 3: Field of View -->
+                <div class="space-y-1.5 bg-slate-50/70 p-3 rounded-xl border border-slate-100">
+                  <div class="flex justify-between items-center text-xs">
+                    <span class="font-semibold text-slate-800 flex items-center gap-1.5">
+                      <span class="material-symbols-outlined text-[15px] text-purple-700">crop_free</span>
+                      Field of View (FOV)
+                    </span>
+                    <span class="font-mono font-bold text-purple-900">96% <span class="text-[10px] font-normal text-slate-500">(Pass)</span></span>
+                  </div>
+                  <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-purple-600 to-emerald-600 rounded-full" style="width: 96%"></div>
+                  </div>
+                  <div class="flex justify-between text-[10px] text-slate-500 font-mono">
+                    <span>Full 45° macular zone visible</span>
+                    <span>Aperture: 4.2mm</span>
+                  </div>
+                </div>
+
+                <!-- Metric 4: Contrast Ratio -->
+                <div class="space-y-1.5 bg-slate-50/70 p-3 rounded-xl border border-slate-100">
+                  <div class="flex justify-between items-center text-xs">
+                    <span class="font-semibold text-slate-800 flex items-center gap-1.5">
+                      <span class="material-symbols-outlined text-[15px] text-purple-700">tonality</span>
+                      Contrast Ratio
+                    </span>
+                    <span class="font-mono font-bold text-purple-900">88% <span class="text-[10px] font-normal text-slate-500">(Pass)</span></span>
+                  </div>
+                  <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full" style="width: 88%"></div>
+                  </div>
+                  <div class="flex justify-between text-[10px] text-slate-500 font-mono">
+                    <span>Weber contrast: 0.72</span>
+                    <span>Dynamic Range: 68dB</span>
+                  </div>
+                </div>
+
+                <!-- Metric 5: Noise / Artifact Level -->
+                <div class="space-y-1.5 bg-slate-50/70 p-3 rounded-xl border border-slate-100">
+                  <div class="flex justify-between items-center text-xs">
+                    <span class="font-semibold text-slate-800 flex items-center gap-1.5">
+                      <span class="material-symbols-outlined text-[15px] text-purple-700">noise_control_off</span>
+                      Artifact & Noise Suppression
+                    </span>
+                    <span class="font-mono font-bold text-emerald-700">Low <span class="text-[10px] font-normal text-slate-500">(92% clean)</span></span>
+                  </div>
+                  <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-purple-600 to-emerald-600 rounded-full" style="width: 92%"></div>
+                  </div>
+                  <div class="flex justify-between text-[10px] text-slate-500 font-mono">
+                    <span>SNR ratio: 34.2 dB</span>
+                    <span>Corneal flare: 0%</span>
+                  </div>
+                </div>
+
+                <!-- Metric 6: Retinal Anatomical Visibility -->
+                <div class="space-y-1.5 bg-slate-50/70 p-3 rounded-xl border border-slate-100">
+                  <div class="flex justify-between items-center text-xs">
+                    <span class="font-semibold text-slate-800 flex items-center gap-1.5">
+                      <span class="material-symbols-outlined text-[15px] text-purple-700">center_focus_strong</span>
+                      Retinal Landmark Visibility
+                    </span>
+                    <span class="font-mono font-bold text-purple-900">95% <span class="text-[10px] font-normal text-slate-500">(Optimal)</span></span>
+                  </div>
+                  <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-purple-600 to-emerald-600 rounded-full" style="width: 95%"></div>
+                  </div>
+                  <div class="flex justify-between text-[10px] text-slate-500 font-mono">
+                    <span>Optic Disc + Fovea unobstructed</span>
+                    <span>Centering: Zone 1</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Footer summary pill in card -->
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span class="flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px] text-emerald-600">check</span>
+                <span>Optical quality threshold exceeds minimum for 5-class ICDR diabetic retinopathy staging.</span>
+              </span>
+              <span class="font-mono text-[11px] text-purple-900 font-medium bg-purple-50 px-2 py-0.5 rounded">
+                Telemetry Stamp: #QC-8419
+              </span>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- 3. CENTRAL INTERACTIVE BEFORE / AFTER COMPARISON CANVAS                   -->
+        <!-- ========================================================================= -->
+        <section class="bg-[#0B1120] rounded-2xl border border-slate-800 shadow-xl overflow-hidden">
+          
+          <!-- Canvas Top Control Toolbar -->
+          <div class="bg-[#111827] px-5 py-3 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
+            
+            <!-- Left Info -->
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-xs font-bold text-white uppercase tracking-wider">Dual-Viewport Optical Comparator</span>
+              </div>
+              <span class="text-slate-600 text-xs">|</span>
+              <span class="text-xs text-slate-400 font-mono">Interactive Split View: 50/50</span>
+            </div>
+
+            <!-- Center/Right: Image Inspection Tools -->
+            <div class="flex items-center gap-1.5 bg-[#1F2937] p-1 rounded-xl border border-slate-700/80">
+              <button class="px-2.5 py-1 text-xs font-medium text-purple-200 bg-purple-950/80 rounded-lg border border-purple-600/40 flex items-center gap-1 hover:bg-purple-900">
+                <span class="material-symbols-outlined text-[15px]">zoom_in</span>
+                <span>100% Zoom</span>
+              </button>
+
+              <button class="px-2.5 py-1 text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg flex items-center gap-1">
+                <span class="material-symbols-outlined text-[15px]">pan_tool</span>
+                <span>Pan</span>
+              </button>
+
+              <button id="invertBtn" onclick="toggleInvert()" class="px-2.5 py-1 text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg flex items-center gap-1 transition-colors">
+                <span class="material-symbols-outlined text-[15px]">invert_colors</span>
+                <span>Invert</span>
+              </button>
+
+              <button id="greenChannelBtn" onclick="toggleGreenChannel()" class="px-2.5 py-1 text-xs font-medium text-emerald-400 hover:bg-emerald-950/60 rounded-lg flex items-center gap-1 transition-colors border border-emerald-800/40">
+                <span class="material-symbols-outlined text-[15px]">lens</span>
+                <span>Red-Free (540nm)</span>
+              </button>
+
+              <div class="w-px h-5 bg-slate-700 my-auto mx-1"></div>
+
+              <button class="px-2.5 py-1 text-xs font-semibold text-white bg-purple-700 hover:bg-purple-600 rounded-lg flex items-center gap-1">
+                <span class="material-symbols-outlined text-[15px]">compare</span>
+                <span>Split Slider</span>
+              </button>
+
+              <button class="px-2 py-1 text-xs text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg" title="Fullscreen View">
+                <span class="material-symbols-outlined text-[16px]">fullscreen</span>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Comparison Viewport Area -->
+          <div class="relative w-full h-[520px] bg-[#070B14] overflow-hidden comparison-container select-none cursor-ew-resize" id="comparisonContainer">
+            
+            <!-- Grid Calibration Overlay -->
+            <div class="absolute inset-0 opacity-15 pointer-events-none" style="background-image: radial-gradient(#6366f1 1px, transparent 1px); background-size: 28px 28px;"></div>
+
+            <!-- RIGHT / BACKGROUND LAYER: ENHANCED FUNDUS (Normalized & Denoised) -->
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <!-- High-Fidelity Enhanced Fundus SVG Graphic -->
+              <div class="relative w-[500px] h-[500px] rounded-full overflow-hidden shadow-2xl border-4 border-purple-500/20 bg-black flex items-center justify-center transition-all duration-300" id="enhancedFundusWrapper">
+                
+                <svg viewBox="0 0 500 500" class="w-full h-full">
+                  <defs>
+                    <!-- Enhanced Radial Lighting -->
+                    <radialGradient id="enhancedRetinaGlow" cx="48%" cy="50%" r="52%">
+                      <stop offset="0%" stop-color="#CA3A12" />
+                      <stop offset="40%" stop-color="#A5220B" />
+                      <stop offset="70%" stop-color="#671007" />
+                      <stop offset="95%" stop-color="#2D0603" />
+                      <stop offset="100%" stop-color="#140201" />
+                    </radialGradient>
+
+                    <!-- Optic Disc Gradient (Enhanced Brightness & Border Contrast) -->
+                    <radialGradient id="enhancedOpticDisc" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stop-color="#FFF4D0" />
+                      <stop offset="45%" stop-color="#FED7AA" />
+                      <stop offset="75%" stop-color="#F97316" />
+                      <stop offset="100%" stop-color="#C2410C" />
+                    </radialGradient>
+
+                    <!-- Foveal Depression Gradient -->
+                    <radialGradient id="foveaShade" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stop-color="#230402" stop-opacity="0.9" />
+                      <stop offset="60%" stop-color="#4B0B05" stop-opacity="0.6" />
+                      <stop offset="100%" stop-color="#7B140A" stop-opacity="0" />
+                    </radialGradient>
+
+                    <!-- Glow filter for crisp vessels -->
+                    <filter id="crispVesselGlow" x="-10%" y="-10%" width="120%" height="120%">
+                      <feDropShadow dx="0" dy="0" stdDeviation="0.8" flood-color="#FFE4E6" flood-opacity="0.4"/>
+                    </filter>
+                  </defs>
+
+                  <!-- Main Retina Base -->
+                  <circle cx="250" cy="250" r="248" fill="url(#enhancedRetinaGlow)" />
+
+                  <!-- Retinal Background Choroidal Pattern (Subtle micro-texture) -->
+                  <circle cx="250" cy="250" r="245" fill="none" stroke="#EA580C" stroke-width="0.5" stroke-opacity="0.15" stroke-dasharray="2 4" />
+
+                  <!-- Optic Disc (Nasal side: ~180, 250) with sharp defined margin -->
+                  <circle cx="175" cy="250" r="36" fill="url(#enhancedOpticDisc)" stroke="#FB923C" stroke-width="1.5" />
+                  <!-- Physiological Cup (Optic Cup) -->
+                  <circle cx="173" cy="250" r="16" fill="#FEF3C7" opacity="0.95" />
+                  <circle cx="171" cy="250" r="7" fill="#FFFFFF" opacity="0.8" />
+
+                  <!-- Fovea Centralis (Temporal: ~320, 255) Macular zone -->
+                  <circle cx="320" cy="255" r="54" fill="url(#foveaShade)" />
+                  <circle cx="320" cy="255" r="7" fill="#140201" opacity="0.85" />
+                  <circle cx="320" cy="255" r="1.5" fill="#FFFFFF" opacity="0.9" /> <!-- Foveola reflex -->
+
+                  <!-- Crisp Enhanced Retinal Arteries & Veins (High Definition) -->
+                  <g filter="url(#crispVesselGlow)" stroke-linecap="round">
+                    <!-- Superior Temporal Arcade -->
+                    <path d="M 175 220 Q 200 130 280 115 T 380 130 T 440 180" fill="none" stroke="#7F1D1D" stroke-width="6" opacity="0.9" />
+                    <path d="M 175 220 Q 200 130 280 115 T 380 130 T 440 180" fill="none" stroke="#B91C1C" stroke-width="3.5" />
+                    <path d="M 175 220 Q 200 130 280 115 T 380 130 T 440 180" fill="none" stroke="#FCA5A5" stroke-width="0.8" opacity="0.8" /> <!-- Arterial reflex stripe -->
+
+                    <!-- Inferior Temporal Arcade -->
+                    <path d="M 175 280 Q 210 370 290 380 T 390 350 T 435 300" fill="none" stroke="#7F1D1D" stroke-width="6.5" opacity="0.9" />
+                    <path d="M 175 280 Q 210 370 290 380 T 390 350 T 435 300" fill="none" stroke="#B91C1C" stroke-width="3.8" />
+                    <path d="M 175 280 Q 210 370 290 380 T 390 350 T 435 300" fill="none" stroke="#FCA5A5" stroke-width="0.9" opacity="0.8" />
+
+                    <!-- Superior Nasal Branch -->
+                    <path d="M 160 225 Q 120 150 75 140" fill="none" stroke="#991B1B" stroke-width="4" />
+                    <path d="M 160 225 Q 120 150 75 140" fill="none" stroke="#EF4444" stroke-width="1.8" />
+
+                    <!-- Inferior Nasal Branch -->
+                    <path d="M 160 275 Q 115 340 70 355" fill="none" stroke="#991B1B" stroke-width="4.2" />
+                    <path d="M 160 275 Q 115 340 70 355" fill="none" stroke="#EF4444" stroke-width="2" />
+
+                    <!-- Macular Microvascular Capillary Network (Enhanced high-resolution branches) -->
+                    <path d="M 230 190 Q 270 205 300 230" fill="none" stroke="#B91C1C" stroke-width="1.6" />
+                    <path d="M 240 310 Q 275 295 300 275" fill="none" stroke="#B91C1C" stroke-width="1.7" />
+                    <path d="M 330 170 Q 345 210 340 235" fill="none" stroke="#B91C1C" stroke-width="1.3" />
+                    <path d="M 335 330 Q 350 290 340 270" fill="none" stroke="#B91C1C" stroke-width="1.3" />
+
+                    <!-- Fine tertiary arterioles -->
+                    <path d="M 320 120 Q 340 90 370 75" fill="none" stroke="#EF4444" stroke-width="1.2" />
+                    <path d="M 340 375 Q 370 410 400 420" fill="none" stroke="#EF4444" stroke-width="1.2" />
+                    <path d="M 200 135 Q 215 95 240 70" fill="none" stroke="#EF4444" stroke-width="1.2" />
+
+                    <!-- Clearly Visible Microaneurysms (Clinical targets in diabetic retinopathy) -->
+                    <circle cx="360" cy="220" r="2.8" fill="#7F1D1D" stroke="#EF4444" stroke-width="0.8" />
+                    <circle cx="372" cy="245" r="2.2" fill="#7F1D1D" stroke="#EF4444" stroke-width="0.8" />
+                    <circle cx="280" cy="320" r="2.5" fill="#7F1D1D" stroke="#EF4444" stroke-width="0.8" />
+                    <!-- Dot-Blot Haemorrhage visible with sharp borders -->
+                    <ellipse cx="385" cy="265" rx="5" ry="3.5" fill="#5F0B0B" stroke="#991B1B" stroke-width="0.8" />
+                    <!-- Hard exudate cluster with crisp edges -->
+                    <circle cx="395" cy="215" r="2" fill="#FEF08A" />
+                    <circle cx="398" cy="217" r="1.5" fill="#FEF08A" />
+                    <circle cx="393" cy="219" r="1.7" fill="#FEF9C3" />
+                  </g>
+
+                  <!-- Aperture boundary ring -->
+                  <circle cx="250" cy="250" r="248" fill="none" stroke="#4B5563" stroke-width="2" opacity="0.4" />
+                </svg>
+
+                <!-- High-contrast indicator badge inside image -->
+                <div class="absolute bottom-4 right-6 bg-purple-950/90 border border-purple-500/40 text-purple-200 text-[10px] font-mono px-2 py-0.5 rounded backdrop-blur">
+                  PSNR: 38.2dB • SSIM: 0.964
+                </div>
+              </div>
+            </div>
+
+            <!-- LEFT CLIP LAYER: RAW FUNDUS (UNPROCESSED) -->
+            <!-- Clipped dynamically via slider position (default 50%) -->
+            <div class="absolute inset-0 overflow-hidden pointer-events-none" id="rawClipContainer" style="width: 50%;">
+              <div class="absolute inset-0 flex items-center justify-center" style="width: 100vw; max-width: 1550px;">
+                
+                <!-- Unprocessed / Raw Fundus: Mild corneal haze, uneven peripheral lighting, lower contrast -->
+                <div class="relative w-[500px] h-[500px] rounded-full overflow-hidden shadow-2xl border-4 border-slate-700/40 bg-black flex items-center justify-center filter blur-[0.4px] brightness-90 transition-all duration-300" id="rawFundusWrapper">
+                  
+                  <svg viewBox="0 0 500 500" class="w-full h-full">
+                    <defs>
+                      <!-- Raw Uneven Lighting with Peripheral Drop-off -->
+                      <radialGradient id="rawRetinaGlow" cx="44%" cy="48%" r="48%">
+                        <stop offset="0%" stop-color="#B83815" />
+                        <stop offset="35%" stop-color="#8F200A" />
+                        <stop offset="65%" stop-color="#550E07" />
+                        <stop offset="85%" stop-color="#230402" />
+                        <stop offset="100%" stop-color="#090100" />
+                      </radialGradient>
+
+                      <!-- Corneal Reflection Artifact (Cloudy White-Blue Haze in Raw) -->
+                      <radialGradient id="cornealHaze" cx="30%" cy="30%" r="50%">
+                        <stop offset="0%" stop-color="#E2E8F0" stop-opacity="0.32" />
+                        <stop offset="50%" stop-color="#94A3B8" stop-opacity="0.15" />
+                        <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+                      </radialGradient>
+
+                      <radialGradient id="rawOpticDisc" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="#FDE68A" />
+                        <stop offset="70%" stop-color="#D97706" />
+                        <stop offset="100%" stop-color="#92400E" />
+                      </radialGradient>
+                    </defs>
+
+                    <!-- Main Raw Retina Circle -->
+                    <circle cx="250" cy="250" r="248" fill="url(#rawRetinaGlow)" />
+
+                    <!-- Corneal Flare / Edge Glare Artifact in Raw -->
+                    <circle cx="180" cy="180" r="140" fill="url(#cornealHaze)" />
+                    <ellipse cx="380" cy="120" rx="90" ry="60" fill="#CBD5E1" opacity="0.08" />
+
+                    <!-- Raw Optic Disc (Softer blurrier edge) -->
+                    <circle cx="175" cy="250" r="36" fill="url(#rawOpticDisc)" opacity="0.88" />
+                    <circle cx="173" cy="250" r="15" fill="#FEF3C7" opacity="0.75" />
+
+                    <!-- Raw Fovea (Subdued contrast) -->
+                    <circle cx="320" cy="255" r="50" fill="#1C0302" opacity="0.6" />
+                    <circle cx="320" cy="255" r="6" fill="#0A0101" opacity="0.7" />
+
+                    <!-- Softer, Raw Vessels (Without CLAHE or illumination equalization) -->
+                    <g stroke-linecap="round" opacity="0.78">
+                      <!-- Superior Temporal -->
+                      <path d="M 175 220 Q 200 130 280 115 T 380 130 T 440 180" fill="none" stroke="#661414" stroke-width="5" />
+                      <path d="M 175 220 Q 200 130 280 115 T 380 130 T 440 180" fill="none" stroke="#8C1C1C" stroke-width="2.5" />
+
+                      <!-- Inferior Temporal -->
+                      <path d="M 175 280 Q 210 370 290 380 T 390 350 T 435 300" fill="none" stroke="#661414" stroke-width="5.5" />
+                      <path d="M 175 280 Q 210 370 290 380 T 390 350 T 435 300" fill="none" stroke="#8C1C1C" stroke-width="2.8" />
+
+                      <!-- Nasal Branches -->
+                      <path d="M 160 225 Q 120 150 75 140" fill="none" stroke="#7A1515" stroke-width="3.2" />
+                      <path d="M 160 275 Q 115 340 70 355" fill="none" stroke="#7A1515" stroke-width="3.5" />
+
+                      <!-- Microaneurysms barely distinct in raw (washed out) -->
+                      <circle cx="360" cy="220" r="2.2" fill="#5F0B0B" opacity="0.6" />
+                      <circle cx="372" cy="245" r="1.8" fill="#5F0B0B" opacity="0.5" />
+                      <ellipse cx="385" cy="265" rx="4" ry="2.8" fill="#450707" opacity="0.5" />
+                      <circle cx="395" cy="215" r="1.8" fill="#E2E8F0" opacity="0.4" />
+                    </g>
+
+                    <circle cx="250" cy="250" r="248" fill="none" stroke="#374151" stroke-width="2" opacity="0.5" />
+                  </svg>
+
+                  <!-- Raw sensor badge -->
+                  <div class="absolute bottom-4 left-6 bg-slate-900/90 border border-slate-700 text-slate-400 text-[10px] font-mono px-2 py-0.5 rounded backdrop-blur">
+                    RAW SENSOR • UNFILTERED
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- INTERACTIVE SLIDER DIVIDER LINE & HANDLE -->
+            <div class="slider-handle" id="sliderHandle" style="left: 50%;">
+              <div class="slider-button">
+                <span class="material-symbols-outlined text-[18px]">drag_indicator</span>
+              </div>
+              <!-- Floating Pill Indicator Above Handle -->
+              <div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-purple-900 text-white font-mono text-[10px] font-bold px-2 py-0.5 rounded shadow border border-purple-400/50 whitespace-nowrap">
+                ◂ COMPARE ▸
+              </div>
+            </div>
+
+            <!-- LEFT OVERLAY HUD BADGE (Raw Info) -->
+            <div class="absolute top-5 left-6 bg-slate-950/85 backdrop-blur-md p-3.5 rounded-xl border border-slate-700/80 shadow-lg text-white max-w-xs pointer-events-none z-10">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                <span class="text-xs font-bold text-slate-100 tracking-tight">Original Raw Fundus (Unprocessed)</span>
+              </div>
+              <ul class="mt-2 space-y-1 text-[11px] text-slate-300">
+                <li class="flex items-center gap-1.5 text-slate-400">
+                  <span class="w-1 h-1 rounded-full bg-slate-400"></span>
+                  <span>Slightly uneven peripheral illumination</span>
+                </li>
+                <li class="flex items-center gap-1.5 text-slate-400">
+                  <span class="w-1 h-1 rounded-full bg-slate-400"></span>
+                  <span>Mild corneal reflex & softer vessel borders</span>
+                </li>
+              </ul>
+              <div class="mt-2.5 pt-2 border-t border-slate-800 flex items-center justify-between text-[10px] font-mono text-slate-400">
+                <span>12-bit Sensor RAW</span>
+                <span>Exp: 1/60s • Flash: 3</span>
+              </div>
+            </div>
+
+            <!-- RIGHT OVERLAY HUD BADGE (Enhanced Info) -->
+            <div class="absolute top-5 right-6 bg-purple-950/85 backdrop-blur-md p-3.5 rounded-xl border border-purple-500/50 shadow-lg text-white max-w-xs pointer-events-none z-10">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                <span class="text-xs font-bold text-white tracking-tight">Enhanced Fundus (Normalized & Denoised)</span>
+              </div>
+              <ul class="mt-2 space-y-1 text-[11px] text-purple-200">
+                <li class="flex items-center gap-1.5">
+                  <span class="w-1 h-1 rounded-full bg-emerald-400"></span>
+                  <span>Perfect balanced illumination & microvascular clarity</span>
+                </li>
+                <li class="flex items-center gap-1.5">
+                  <span class="w-1 h-1 rounded-full bg-emerald-400"></span>
+                  <span>Zero structural hallucination • Contrast boosted</span>
+                </li>
+              </ul>
+              <div class="mt-2.5 pt-2 border-t border-purple-900 flex items-center justify-between text-[10px] font-mono text-purple-300">
+                <span>Homomorphic CLAHE</span>
+                <span class="text-emerald-400 font-bold">Structural Lock ✓</span>
+              </div>
+            </div>
+
+            <!-- Bottom Center Drag Guide Pill -->
+            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/75 backdrop-blur text-slate-300 text-[11px] font-mono px-3.5 py-1 rounded-full border border-slate-800 pointer-events-none flex items-center gap-2">
+              <span class="material-symbols-outlined text-[14px] text-purple-400">swap_horiz</span>
+              <span>Drag slider left/right to inspect pre-processing fidelity</span>
+            </div>
+
+          </div>
+
+          <!-- Quick View Channel Toggles Bar -->
+          <div class="bg-[#0D1424] px-6 py-2.5 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+            <div class="flex items-center gap-3">
+              <span class="font-mono text-[11px] text-slate-500">OPTICAL PIPELINE STATE:</span>
+              <span class="text-emerald-400 font-medium flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">shield_with_heart</span>
+                Photometric Normalization Locked
+              </span>
+            </div>
+            <div class="flex items-center gap-4 text-[11px] font-mono">
+              <span class="text-slate-400">Mean Pixel Intensity: <strong class="text-white">128.4 / 255</strong></span>
+              <span class="text-slate-400">Entropy Gain: <strong class="text-emerald-400">+1.42 bits</strong></span>
+              <span class="text-slate-400">Latency: <strong class="text-purple-300">165 ms</strong></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- 4. SCIENTIFIC ENHANCEMENT PIPELINE (Horizontal Flow Diagram)              -->
+        <!-- ========================================================================= -->
+        <section class="bg-white rounded-2xl border border-[#DDD6FE]/80 p-5 shadow-xs">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  MULTI-STAGE OPTICAL PRE-PROCESSING PIPELINE
+                </h3>
+                <span class="bg-purple-100 text-purple-900 text-[10px] font-bold font-mono px-2 py-0.5 rounded border border-purple-200">
+                  Total: 165ms (Edge-Accelerated)
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-0.5">
+                Sequential deterministic filtering chain with mathematical guarantees against diagnostic hallucination.
+              </p>
+            </div>
+            
+            <div class="flex items-center gap-1.5 text-xs text-slate-600 bg-slate-50 px-3 py-1 rounded-lg border border-slate-200">
+              <span class="material-symbols-outlined text-[15px] text-purple-700">speed</span>
+              <span>Target Pipeline SLA: &lt; 250ms</span>
+            </div>
+          </div>
+
+          <!-- Pipeline Stages Flow -->
+          <div class="relative grid grid-cols-1 md:grid-cols-5 gap-3 pt-2">
+            
+            <!-- Stage 1 -->
+            <div class="bg-purple-50/70 border border-purple-200 rounded-xl p-3.5 relative flex flex-col justify-between hover:border-purple-400 transition-colors">
+              <div>
+                <div class="flex items-center justify-between text-xs mb-1.5">
+                  <span class="font-mono text-[10px] font-bold text-purple-700 bg-purple-100 px-1.5 py-0.5 rounded">01</span>
+                  <span class="font-mono text-[11px] font-bold text-slate-700">42 ms</span>
+                </div>
+                <h4 class="text-xs font-bold text-slate-900">CUNSB-RFIE</h4>
+                <p class="text-[11px] text-slate-600 mt-1">Retinal Illumination Equalization & background field leveling.</p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-purple-200/60 flex items-center justify-between text-[10px] font-mono text-purple-800">
+                <span>Kernel: 31×31</span>
+                <span class="text-emerald-700 font-bold">Pass ✓</span>
+              </div>
+            </div>
+
+            <!-- Stage 2 -->
+            <div class="bg-purple-50/70 border border-purple-200 rounded-xl p-3.5 relative flex flex-col justify-between hover:border-purple-400 transition-colors">
+              <div>
+                <div class="flex items-center justify-between text-xs mb-1.5">
+                  <span class="font-mono text-[10px] font-bold text-purple-700 bg-purple-100 px-1.5 py-0.5 rounded">02</span>
+                  <span class="font-mono text-[11px] font-bold text-slate-700">88 ms</span>
+                </div>
+                <h4 class="text-xs font-bold text-slate-900">MAXIM Denoising</h4>
+                <p class="text-[11px] text-slate-600 mt-1">Multi-Axis MLP noise reduction preserving fine vessel junctions.</p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-purple-200/60 flex items-center justify-between text-[10px] font-mono text-purple-800">
+                <span>SNR: +8.4dB</span>
+                <span class="text-emerald-700 font-bold">Pass ✓</span>
+              </div>
+            </div>
+
+            <!-- Stage 3 -->
+            <div class="bg-purple-50/70 border border-purple-200 rounded-xl p-3.5 relative flex flex-col justify-between hover:border-purple-400 transition-colors">
+              <div>
+                <div class="flex items-center justify-between text-xs mb-1.5">
+                  <span class="font-mono text-[10px] font-bold text-purple-700 bg-purple-100 px-1.5 py-0.5 rounded">03</span>
+                  <span class="font-mono text-[11px] font-bold text-slate-700">14 ms</span>
+                </div>
+                <h4 class="text-xs font-bold text-slate-900">CLAHE Enhancement</h4>
+                <p class="text-[11px] text-slate-600 mt-1">Contrast-Limited Adaptive Histogram Equalization for microaneurysms.</p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-purple-200/60 flex items-center justify-between text-[10px] font-mono text-purple-800">
+                <span>Clip Limit: 2.0</span>
+                <span class="text-emerald-700 font-bold">Pass ✓</span>
+              </div>
+            </div>
+
+            <!-- Stage 4 -->
+            <div class="bg-purple-50/70 border border-purple-200 rounded-xl p-3.5 relative flex flex-col justify-between hover:border-purple-400 transition-colors">
+              <div>
+                <div class="flex items-center justify-between text-xs mb-1.5">
+                  <span class="font-mono text-[10px] font-bold text-purple-700 bg-purple-100 px-1.5 py-0.5 rounded">04</span>
+                  <span class="font-mono text-[11px] font-bold text-slate-700">21 ms</span>
+                </div>
+                <h4 class="text-xs font-bold text-slate-900">Homomorphic Filtering</h4>
+                <p class="text-[11px] text-slate-600 mt-1">Separation of reflectance & illuminance components.</p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-purple-200/60 flex items-center justify-between text-[10px] font-mono text-purple-800">
+                <span>γH: 1.5, γL: 0.5</span>
+                <span class="text-emerald-700 font-bold">Pass ✓</span>
+              </div>
+            </div>
+
+            <!-- Stage 5: Structural Fidelity Lock -->
+            <div class="bg-emerald-50/80 border border-emerald-300 rounded-xl p-3.5 relative flex flex-col justify-between shadow-xs">
+              <div>
+                <div class="flex items-center justify-between text-xs mb-1.5">
+                  <span class="font-mono text-[10px] font-bold text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded">05</span>
+                  <span class="font-mono text-[11px] font-bold text-emerald-900">Verified</span>
+                </div>
+                <h4 class="text-xs font-bold text-emerald-950 flex items-center gap-1">
+                  <span>Fidelity Lock</span>
+                  <span class="material-symbols-outlined text-[15px] text-emerald-600">lock</span>
+                </h4>
+                <p class="text-[11px] text-emerald-800 mt-1">SSIM: 0.964 • PSNR: 38.2 dB. Guarantees zero synthetic artifacts.</p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-emerald-200 flex items-center justify-between text-[10px] font-mono text-emerald-900 font-bold">
+                <span>Fidelity Index</span>
+                <span>99.4% Match</span>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- 5. CLINICAL RECOMMENDATION & ACTION DOCK                                  -->
+        <!-- ========================================================================= -->
+        <section class="bg-white rounded-2xl border border-[#DDD6FE]/80 p-5 shadow-sm space-y-4">
+          
+          <!-- Recommendation Status Alert Box -->
+          <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-sm">
+                <span class="material-symbols-outlined text-[24px]">verified</span>
+              </div>
+              <div>
+                <h4 class="text-sm font-bold text-emerald-950 flex items-center gap-2">
+                  Image is suitable for AI multi-model diagnostic analysis
+                  <span class="text-[11px] font-mono font-semibold bg-emerald-200 text-emerald-900 px-2 py-0.2 rounded-full">GRADE A</span>
+                </h4>
+                <p class="text-xs text-emerald-800 mt-0.5">
+                  Optical quality exceeds minimum standards set by National Health Mission (NHM) and tele-screening quality protocols. Both Optic Disc and Macula clear.
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 self-end md:self-center shrink-0">
+              <span class="text-[11px] font-mono text-emerald-700 bg-white px-2.5 py-1 rounded-md border border-emerald-300">
+                DICOM Series: #DR-8891-OU
+              </span>
+            </div>
+          </div>
+
+          <!-- Action Buttons Dock -->
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+            
+            <!-- Left secondary option -->
+            <button class="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-300 hover:border-slate-400 text-slate-700 hover:bg-slate-50 font-semibold text-xs transition-colors flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-[17px] text-slate-500">replay</span>
+              <span>Retake Scan (Capture Again)</span>
+            </button>
+
+            <!-- Center ghost link -->
+            <button class="text-xs font-semibold text-slate-500 hover:text-slate-800 underline underline-offset-4 transition-colors">
+              Proceed with Raw Image (Bypass Enhancement)
+            </button>
+
+            <!-- Right Primary Action -->
+            <button class="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#581C87] hover:bg-[#4c1d95] text-white font-bold text-sm shadow-md shadow-purple-950/20 hover:shadow-lg transition-all flex items-center justify-center gap-2.5">
+              <span>Accept Enhancement & Proceed to AI Engine</span>
+              <span class="material-symbols-outlined text-[19px]">arrow_forward</span>
+            </button>
+
+          </div>
+
+        </section>
+
+      </main>
+
+      <!-- Global Minimal Footer -->
+      <footer class="mt-auto py-3 px-6 border-t border-slate-200/70 bg-white text-slate-400 text-[11px] flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-3">
+          <span>RetinaCare AI Clinical CDS Suite v2.8.4</span>
+          <span>•</span>
+          <span>Indore District PHC Tele-Ophthalmology Network</span>
+          <span>•</span>
+          <span class="text-purple-700 font-medium">Ayushman Bharat Digital Mission (ABDM) Level 2 Integrated</span>
+        </div>
+        <div class="font-mono text-[10px] text-slate-400">
+          Hardware Accel: WebGPU Core ML • Latency: 165ms • DICOM Store Sync: OK
+        </div>
+      </footer>
+
+    </div>
+
+  </div>
+
+  <!-- Interactive JavaScript for Split-View Slider and Filters -->
+  <script>
+    const container = document.getElementById('comparisonContainer');
+    const slider = document.getElementById('sliderHandle');
+    const rawClip = document.getElementById('rawClipContainer');
+    let isDragging = false;
+
+    function setSliderPosition(xPos) {
+      const rect = container.getBoundingClientRect();
+      let offsetX = xPos - rect.left;
+      if (offsetX < 0) offsetX = 0;
+      if (offsetX > rect.width) offsetX = rect.width;
+      
+      const percentage = (offsetX / rect.width) * 100;
+      slider.style.left = percentage + '%';
+      rawClip.style.width = percentage + '%';
+    }
+
+    container.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      setSliderPosition(e.clientX);
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      setSliderPosition(e.clientX);
+    });
+
+    // Touch support for mobile/tablets
+    container.addEventListener('touchstart', (e) => {
+      isDragging = true;
+      if (e.touches.length > 0) {
+        setSliderPosition(e.touches[0].clientX);
+      }
+    });
+
+    window.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!isDragging || e.touches.length === 0) return;
+      setSliderPosition(e.touches[0].clientX);
+    });
+
+    // Invert Filter Toggle
+    let isInverted = false;
+    function toggleInvert() {
+      isInverted = !isInverted;
+      const enhanced = document.getElementById('enhancedFundusWrapper');
+      const raw = document.getElementById('rawFundusWrapper');
+      const btn = document.getElementById('invertBtn');
+      
+      if (isInverted) {
+        enhanced.style.filter = 'invert(1) hue-rotate(180deg)';
+        raw.style.filter = 'invert(1) hue-rotate(180deg) blur(0.4px) brightness(90%)';
+        btn.classList.add('bg-purple-900', 'text-white');
+      } else {
+        enhanced.style.filter = 'none';
+        raw.style.filter = 'blur(0.4px) brightness(90%)';
+        btn.classList.remove('bg-purple-900', 'text-white');
+      }
+    }
+
+    // Red-Free Green Channel (540nm) Toggle for optimal microvascular contrast
+    let isGreenChannel = false;
+    function toggleGreenChannel() {
+      isGreenChannel = !isGreenChannel;
+      const enhanced = document.getElementById('enhancedFundusWrapper');
+      const raw = document.getElementById('rawFundusWrapper');
+      const btn = document.getElementById('greenChannelBtn');
+
+      if (isGreenChannel) {
+        // Clinical Red-Free Filter (drops red, isolates green channel for stark vessel contrast)
+        enhanced.style.filter = 'sepia(100%) hue-rotate(85deg) saturate(350%) contrast(140%)';
+        raw.style.filter = 'sepia(100%) hue-rotate(85deg) saturate(250%) contrast(110%) blur(0.4px)';
+        btn.classList.add('bg-emerald-600', 'text-white');
+      } else {
+        if (isInverted) {
+          toggleInvert();
+        } else {
+          enhanced.style.filter = 'none';
+          raw.style.filter = 'blur(0.4px) brightness(90%)';
+        }
+        btn.classList.remove('bg-emerald-600', 'text-white');
+      }
+    }
+  </script>
+
+</body>
+</html>

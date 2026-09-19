@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RetinaCare AI - Patient Registration &amp; Clinical Intake Workspace</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Public+Sans:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary-fixed": "#85f8c4",
+            "inverse-surface": "#2f3035",
+            "on-secondary-fixed-variant": "#5a00c6",
+            "on-secondary-container": "#fffbff",
+            "surface-variant": "#e3e1e8",
+            "secondary-fixed-dim": "#d2bbff",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-highest": "#e3e1e8",
+            "secondary": "#712ae2",
+            "secondary-fixed": "#eaddff",
+            "on-tertiary-fixed-variant": "#005137",
+            "surface-container-high": "#e9e7ee",
+            "on-tertiary": "#ffffff",
+            "tertiary-container": "#00462f",
+            "on-primary-fixed-variant": "#572ba0",
+            "inverse-primary": "#d3bbff",
+            "on-tertiary-container": "#44bb8b",
+            "error-container": "#ffdad6",
+            "secondary-container": "#8a4cfc",
+            "tertiary": "#002e1d",
+            "on-surface-variant": "#4a4452",
+            "on-error-container": "#93000a",
+            "on-tertiary-fixed": "#002114",
+            "on-secondary-fixed": "#25005a",
+            "inverse-on-surface": "#f2f0f7",
+            "on-error": "#ffffff",
+            "error": "#ba1a1a",
+            "primary-fixed": "#ebdcff",
+            "primary-container": "#4c1d95",
+            "background": "#faf8ff",
+            "outline-variant": "#ccc3d4",
+            "on-secondary": "#ffffff",
+            "outline": "#7b7483",
+            "on-surface": "#1a1b20",
+            "on-primary-container": "#b994ff",
+            "surface-dim": "#dbd9e0",
+            "surface-bright": "#faf8ff",
+            "on-primary": "#ffffff",
+            "surface-container": "#efedf4",
+            "on-primary-fixed": "#260059",
+            "tertiary-fixed-dim": "#68dba9",
+            "surface-tint": "#6f46b9",
+            "surface": "#faf8ff",
+            "surface-container-low": "#f4f3fa",
+            "primary-fixed-dim": "#d3bbff",
+            "on-background": "#1a1b20",
+            "primary": "#340075"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "margin": "1.5rem",
+            "space-sm": "0.5rem",
+            "space-lg": "1.5rem",
+            "gutter": "1rem",
+            "space-xl": "2rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "label-lg": ["Public Sans"],
+            "label-sm": ["Public Sans"],
+            "body-md": ["Inter"],
+            "body-lg": ["Inter"],
+            "headline-md": ["Inter"],
+            "label-md": ["Public Sans"],
+            "headline-lg": ["Inter"],
+            "body-sm": ["Inter"],
+            "headline-sm": ["Inter"]
+          },
+          "fontSize": {
+            "label-lg": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "label-md": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "headline-lg": ["30px", { "lineHeight": "38px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .fundus-pattern {
+      background: radial-gradient(circle at 45% 45%, #b45309 0%, #7c2d12 45%, #451a03 85%);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased selection:bg-primary-fixed selection:text-primary">
+<!-- TOP SHELL CONTAINER -->
+<div class="flex h-screen overflow-hidden">
+<!-- LEFT NAVIGATION RAIL (Per Shared Component SideNavBar Blueprint) -->
+<aside class="w-[260px] shrink-0 bg-surface border-r border-outline-variant flex flex-col justify-between h-screen z-30 select-none">
+<div class="flex flex-col h-full overflow-y-auto">
+<!-- Brand / Node Header -->
+<div class="p-4 pb-3 border-b border-outline-variant bg-surface-container-lowest">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-xl bg-primary-container text-on-secondary-container flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility" data-weight="fill" style="font-variation-settings: 'FILL' 1;">visibility</span>
+</div>
+<div>
+<div class="font-headline-sm text-headline-sm font-semibold tracking-tight text-primary flex items-center gap-1.5">
+                RETINACARE AI
+                <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">PHC CLINICAL SUITE</div>
+</div>
+</div>
+<div class="mt-3 px-2.5 py-1.5 rounded-lg bg-surface-container-low border border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[15px]" data-icon="share_location">share_location</span>
+<span class="font-label-md text-label-md text-on-surface">PHC Rau • Indore #14</span>
+</div>
+<span class="font-label-sm text-label-sm bg-primary-fixed text-primary px-1.5 py-0.5 rounded font-bold">NODE</span>
+</div>
+</div>
+<!-- Section: Screening Operations -->
+<div class="p-3 space-y-1">
+<div class="px-2 pt-2 pb-1 font-label-sm text-label-sm text-on-surface-variant font-bold tracking-wider uppercase">Screening Operations</div>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="clinical_notes">clinical_notes</span>
+<span>Overview</span>
+</a>
+<!-- Active Screening Tab (Semantic state for Patient Registration / Intake) -->
+<a class="flex items-center justify-between px-3 py-2 bg-surface-container-high text-primary rounded-lg font-label-md text-label-md border-l-4 border-primary" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[18px] text-primary" data-icon="add_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span class="font-bold">New Screening</span>
+</div>
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[18px]" data-icon="person">person</span>
+<span>Patients</span>
+</div>
+</a>
+<a class="flex items-center justify-between px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[18px]" data-icon="microbiology">microbiology</span>
+<span>AI Analysis</span>
+</div>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-bold">v2.4</span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[18px]" data-icon="pending_actions">pending_actions</span>
+<span>Review Queue</span>
+</div>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold">87</span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[18px]" data-icon="share_location">share_location</span>
+<span>Referrals</span>
+</div>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded-full bg-primary-fixed text-primary font-bold">14</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="calendar_month">calendar_month</span>
+<span>Follow-ups</span>
+</a>
+</div>
+<!-- Section: Analytics & Calibration -->
+<div class="p-3 space-y-1 border-t border-outline-variant">
+<div class="px-2 pt-2 pb-1 font-label-sm text-label-sm text-on-surface-variant font-bold tracking-wider uppercase">Analytics &amp; Calibration</div>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="insights">insights</span>
+<span>Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="science">science</span>
+<span>AI Models</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="verified_user">verified_user</span>
+<span>Validation</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="camera">camera</span>
+<span>Devices</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="description">description</span>
+<span>Reports</span>
+</a>
+</div>
+<!-- Spacer -->
+<div class="mt-auto"></div>
+<!-- Bottom Rail Status & Profile -->
+<div class="p-3 border-t border-outline-variant bg-surface-container-low/50 space-y-2">
+<div class="flex items-center justify-between px-2 py-1">
+<div class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant">
+<span class="inline-block w-2 h-2 rounded-full bg-emerald-600"></span>
+<span>Online 99.8%</span>
+</div>
+<a class="text-on-surface-variant hover:text-primary flex items-center gap-1 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined text-[16px]" data-icon="policy">policy</span>
+<span>Protocols</span>
+</a>
+</div>
+<!-- User Card -->
+<div class="p-2.5 rounded-xl bg-surface-container-lowest border border-outline-variant flex items-center gap-3 shadow-sm">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold text-xs shrink-0 ring-2 ring-primary-fixed">
+              SY
+            </div>
+<div class="overflow-hidden">
+<div class="font-label-md text-label-md font-bold text-on-surface truncate">Sunita Yadav</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant truncate">Screening Operator • ANM-04</div>
+</div>
+<button aria-label="Account Settings" class="ml-auto text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined text-[18px]" data-icon="tune">tune</span>
+</button>
+</div>
+</div>
+</div>
+</aside>
+<!-- RIGHT MAIN CONTENT WORKSPACE -->
+<div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-background">
+<!-- GLOBAL TOP BAR (Height 64px, Sticky, per Blueprint) -->
+<header class="h-16 bg-surface-container-lowest border-b border-outline-variant px-6 flex items-center justify-between sticky top-0 z-20 shrink-0">
+<!-- Search Bar -->
+<div class="flex items-center gap-2 w-80 max-w-sm">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]" data-icon="search">search</span>
+<input class="w-full pl-9 pr-3 py-1.5 text-body-sm bg-surface-container-low border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-on-surface placeholder:text-on-surface-variant/70" placeholder="Search UHID, ABHA or Name... [⌘K]" type="text"/>
+</div>
+</div>
+<!-- Center & Trailing Status & Navigation Badges -->
+<div class="flex items-center gap-3">
+<!-- Facility selector -->
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-low border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary text-[16px]" data-icon="local_hospital">local_hospital</span>
+<span>PHC Rau (Indore District)</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_drop_down">arrow_drop_down</span>
+</button>
+<!-- Network status pill -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+<span>Online (1.8 Mbps)</span>
+<span class="text-emerald-400">•</span>
+<span class="text-emerald-700">Synced 2m ago</span>
+</div>
+<!-- Offline queue badge -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high border border-outline-variant text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="cloud_done">cloud_done</span>
+<span>0 Pending Sync</span>
+</div>
+<div class="h-5 w-px bg-outline-variant mx-1"></div>
+<!-- Quick action icons -->
+<button class="relative p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-lg transition-colors" title="Notifications">
+<span class="material-symbols-outlined text-[20px]" data-icon="notifications">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error ring-2 ring-surface-container-lowest"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-lg transition-colors" title="Help &amp; Guides">
+<span class="material-symbols-outlined text-[20px]" data-icon="help">help</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-lg transition-colors" title="Settings">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<!-- CLINICAL INTAKE WORKSPACE SCROLL AREA -->
+<main class="flex-1 overflow-y-auto px-6 py-5">
+<!-- TOP CLINICAL JOURNEY HEADER & STEPPER -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 shadow-sm mb-5">
+<!-- Stepper Trail -->
+<div class="flex items-center justify-between max-w-4xl mx-auto py-2 px-4 relative">
+<!-- Step 01 (Active) -->
+<div class="flex flex-col items-center gap-1.5 relative z-10">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold text-xs ring-4 ring-primary-fixed shadow-sm">
+                01
+              </div>
+<span class="font-label-md text-label-md font-bold text-primary">Registration</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold bg-secondary-fixed/50 px-1.5 rounded">In Progress</span>
+</div>
+<div class="flex-1 h-0.5 bg-outline-variant mx-2"></div>
+<!-- Step 02 -->
+<div class="flex flex-col items-center gap-1.5 relative z-10">
+<div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant border border-outline-variant flex items-center justify-center font-bold text-xs">
+                02
+              </div>
+<span class="font-label-md text-label-md text-on-surface-variant">Capture</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Pending</span>
+</div>
+<div class="flex-1 h-0.5 bg-outline-variant mx-2"></div>
+<!-- Step 03 -->
+<div class="flex flex-col items-center gap-1.5 relative z-10">
+<div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant border border-outline-variant flex items-center justify-center font-bold text-xs">
+                03
+              </div>
+<span class="font-label-md text-label-md text-on-surface-variant">AI Analysis</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Pending</span>
+</div>
+<div class="flex-1 h-0.5 bg-outline-variant mx-2"></div>
+<!-- Step 04 -->
+<div class="flex flex-col items-center gap-1.5 relative z-10">
+<div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant border border-outline-variant flex items-center justify-center font-bold text-xs">
+                04
+              </div>
+<span class="font-label-md text-label-md text-on-surface-variant">MD Review</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Pending</span>
+</div>
+<div class="flex-1 h-0.5 bg-outline-variant mx-2"></div>
+<!-- Step 05 -->
+<div class="flex flex-col items-center gap-1.5 relative z-10">
+<div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant border border-outline-variant flex items-center justify-center font-bold text-xs">
+                05
+              </div>
+<span class="font-label-md text-label-md text-on-surface-variant">ABDM Referral</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Pending</span>
+</div>
+<div class="flex-1 h-0.5 bg-outline-variant mx-2"></div>
+<!-- Step 06 -->
+<div class="flex flex-col items-center gap-1.5 relative z-10">
+<div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant border border-outline-variant flex items-center justify-center font-bold text-xs">
+                06
+              </div>
+<span class="font-label-md text-label-md text-on-surface-variant">Follow-up</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Pending</span>
+</div>
+</div>
+<div class="h-px bg-outline-variant my-3"></div>
+<!-- Page Title & Header Actions -->
+<div class="flex flex-wrap items-center justify-between gap-4">
+<div>
+<div class="flex items-center gap-2.5">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Patient Registration &amp; Clinical Intake</h1>
+<span class="px-2.5 py-0.5 rounded-full bg-primary-fixed text-primary font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="verified">verified</span>
+                  ABDM L2 Linked
+                </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+                Intelligent Clinical Intake &amp; Longitudinal Linkage • Ayushman Bharat Digital Mission (ABDM) Integrated
+              </p>
+</div>
+<div class="flex items-center gap-2.5">
+<button class="px-3 py-2 bg-surface-container-low hover:bg-surface-container text-on-surface border border-outline-variant rounded-lg font-label-md text-label-md flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-[18px] text-primary" data-icon="drafts">drafts</span>
+<span>Load Offline Draft</span>
+</button>
+<button class="px-4 py-2 bg-primary hover:bg-primary-container text-on-primary rounded-lg font-label-md text-label-md flex items-center gap-2 shadow-sm transition-transform active:scale-[0.98]">
+<span class="material-symbols-outlined text-[18px]" data-icon="qr_code_scanner">qr_code_scanner</span>
+<span>Quick ABHA Scan</span>
+</button>
+</div>
+</div>
+</div>
+<!-- CLINICAL SAFETY BANNER (Mandatory Clinical Archetype) -->
+<div class="mb-5 px-4 py-2.5 bg-surface-container-low border-l-4 border-secondary rounded-r-lg border border-outline-variant/60 flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="info" data-weight="fill" style="font-variation-settings: 'FILL' 1;">info</span>
+<span class="font-label-md text-label-md text-on-surface font-medium">
+              AI-assisted screening assessment • Clinical validation required by Ophthalmologist
+            </span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface px-2 py-0.5 rounded border border-outline-variant">
+            Compliance: CDSCO &amp; ABDM M3
+          </span>
+</div>
+<!-- 70/30 WORKSPACE GRID -->
+<div class="grid grid-cols-1 lg:grid-cols-10 gap-5 items-start">
+<!-- LEFT 70% (Col Span 7): CLINICAL INTAKE FORM CARDS -->
+<div class="lg:col-span-7 space-y-5">
+<!-- A. Demographics & ABHA Identity Card -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-5 shadow-sm">
+<div class="flex items-center justify-between pb-3.5 border-b border-outline-variant">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-primary-fixed text-primary flex items-center justify-center font-bold">
+<span class="material-symbols-outlined text-[18px]" data-icon="badge">badge</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Patient Demographics &amp; ABHA Identity</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Identity Verification (ABDM Level-2 Verified)</p>
+</div>
+</div>
+<button class="px-3 py-1.5 bg-emerald-50 text-emerald-800 border border-emerald-300 rounded-lg font-label-md text-label-md flex items-center gap-1.5 hover:bg-emerald-100 transition-colors">
+<span class="material-symbols-outlined text-[16px] text-emerald-700" data-icon="qr_code">qr_code</span>
+<span>Pull via ABHA QR / OTP</span>
+<span class="material-symbols-outlined text-[16px] text-emerald-700" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</button>
+</div>
+<!-- Form Fields Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+<!-- Patient ID with mini barcode -->
+<div class="p-3 bg-surface-container-low rounded-lg border border-outline-variant/60">
+<span class="font-label-sm text-label-sm text-on-surface-variant block mb-1">System Patient ID</span>
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg font-bold text-primary">#RC-2026-9104</span>
+<!-- Barcode SVG Simulation -->
+<div class="flex items-center gap-0.5 h-6 bg-white px-1.5 py-0.5 rounded border border-outline-variant">
+<span class="w-0.5 h-full bg-on-surface"></span>
+<span class="w-1 h-full bg-on-surface"></span>
+<span class="w-0.5 h-full bg-on-surface"></span>
+<span class="w-1.5 h-full bg-on-surface"></span>
+<span class="w-0.5 h-full bg-on-surface"></span>
+<span class="w-1 h-full bg-on-surface"></span>
+</div>
+</div>
+</div>
+<!-- ABHA ID -->
+<div class="p-3 bg-surface-container-low rounded-lg border border-outline-variant/60">
+<span class="font-label-sm text-label-sm text-on-surface-variant block mb-1">ABHA Health ID</span>
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">91-4829-1034-8291</span>
+<span class="font-label-sm text-label-sm bg-primary-fixed text-primary px-1.5 py-0.5 rounded font-bold">Linked</span>
+</div>
+</div>
+<!-- Full Name -->
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-1">Full Legal Name</label>
+<input class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg text-body-md font-medium text-on-surface focus:ring-2 focus:ring-secondary focus:outline-none" type="text" value="Suresh Chandra Verma"/>
+</div>
+<!-- Age & Sex -->
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-1">Age &amp; Biological Sex</label>
+<div class="grid grid-cols-2 gap-2">
+<input class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg text-body-md font-medium text-on-surface focus:ring-2 focus:ring-secondary focus:outline-none" type="text" value="56 Years"/>
+<select class="w-full px-2 py-2 bg-surface border border-outline-variant rounded-lg text-body-md font-medium text-on-surface focus:ring-2 focus:ring-secondary focus:outline-none">
+<option selected="">Male</option>
+<option>Female</option>
+<option>Other</option>
+</select>
+</div>
+</div>
+<!-- Contact -->
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-1">Primary Mobile (ABHA OTP)</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px]" data-icon="phone">phone</span>
+<input class="w-full pl-8 pr-3 py-2 bg-surface border border-outline-variant rounded-lg text-body-md font-medium text-on-surface focus:ring-2 focus:ring-secondary focus:outline-none" type="text" value="+91 98260 44192"/>
+</div>
+</div>
+<!-- Primary Healthcare Worker -->
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-1">Primary Healthcare Worker</label>
+<input class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-body-md text-on-surface-variant focus:outline-none cursor-not-allowed" readonly="" type="text" value="Sunita Yadav (ANM-04)"/>
+</div>
+<!-- Address (Span 3) -->
+<div class="md:col-span-3">
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-1">Residential Address &amp; Rural Sub-Center</label>
+<input class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg text-body-md text-on-surface focus:ring-2 focus:ring-secondary focus:outline-none" type="text" value="Rau Kalan, PHC Rau, Indore Rural, Madhya Pradesh - 453331"/>
+</div>
+</div>
+</section>
+<!-- B. Diabetes Clinical Profile Card -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-5 shadow-sm">
+<div class="flex items-center justify-between pb-3.5 border-b border-outline-variant">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-900 flex items-center justify-center font-bold">
+<span class="material-symbols-outlined text-[18px]" data-icon="glucose" data-weight="fill" style="font-variation-settings: 'FILL' 1;">glucose</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Diabetes &amp; Metabolic Profile</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Systemic Glycemic Parameters &amp; Longitudinal History</p>
+</div>
+</div>
+<!-- Diabetes Type Selector Tabs -->
+<div class="flex items-center p-1 bg-surface-container rounded-lg border border-outline-variant">
+<button class="px-3 py-1 bg-primary text-on-primary rounded font-label-md text-label-md font-bold shadow-xs">Type 2 DM</button>
+<button class="px-3 py-1 text-on-surface-variant hover:text-on-surface font-label-md text-label-md">Type 1 DM</button>
+<button class="px-3 py-1 text-on-surface-variant hover:text-on-surface font-label-md text-label-md">Gestational DM</button>
+</div>
+</div>
+<div class="pt-4 space-y-4">
+<!-- Duration & HbA1c Highlight Bar -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Duration of Diabetes -->
+<div class="p-3 bg-surface-container-low rounded-lg border border-outline-variant">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Duration of Diabetes</span>
+<span class="font-label-md text-label-md font-bold text-primary bg-primary-fixed px-2 py-0.5 rounded">9 Years</span>
+</div>
+<!-- Slider Visual -->
+<div class="w-full bg-outline-variant/50 h-2 rounded-full overflow-hidden my-2">
+<div class="bg-primary h-full rounded-full" style="width: 45%;"></div>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant/70 text-[10px]">
+<span>New Onset (&lt;1y)</span>
+<span>5y</span>
+<span>10y+ (Elevated DR Risk)</span>
+<span>20y</span>
+</div>
+</div>
+<!-- Latest HbA1c -->
+<div class="p-3 bg-amber-50/80 rounded-lg border border-amber-200">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-sm text-label-sm text-amber-900 font-semibold">Latest Glycated Hemoglobin (HbA1c)</span>
+<span class="font-label-sm text-label-sm text-amber-700">Test Date: 12 Aug 2026</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-headline-md font-headline-md font-extrabold text-amber-950">8.8%</span>
+<div class="px-2 py-0.5 rounded bg-amber-200/70 border border-amber-300 font-label-sm text-label-sm text-amber-900 font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="warning">warning</span>
+                        Suboptimal Glycemic Control (&gt;8.0%)
+                      </div>
+</div>
+</div>
+</div>
+<!-- Fasting / PP Glucose -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="flex items-center justify-between p-3 rounded-lg border border-outline-variant bg-surface">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Fasting Blood Glucose</span>
+<span class="font-label-lg text-label-lg font-bold text-on-surface">164 mg/dL</span>
+</div>
+<span class="material-symbols-outlined text-amber-700" data-icon="trending_up">trending_up</span>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg border border-outline-variant bg-surface">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Post-Prandial (PP) Glucose</span>
+<span class="font-label-lg text-label-lg font-bold text-on-surface">218 mg/dL</span>
+</div>
+<span class="material-symbols-outlined text-amber-700" data-icon="trending_up">trending_up</span>
+</div>
+</div>
+<!-- Current Treatment Pills / Checkboxes -->
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-2 font-semibold">Current Diabetes Regimen &amp; Therapy</label>
+<div class="flex flex-wrap gap-2.5">
+<label class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-high rounded-lg border border-primary/40 text-primary font-label-md text-label-md cursor-pointer">
+<input checked="" class="rounded text-primary focus:ring-secondary h-4 w-4" type="checkbox"/>
+<span class="font-semibold">Metformin 1000mg</span>
+</label>
+<label class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-high rounded-lg border border-primary/40 text-primary font-label-md text-label-md cursor-pointer">
+<input checked="" class="rounded text-primary focus:ring-secondary h-4 w-4" type="checkbox"/>
+<span class="font-semibold">Glimepiride (Sulfonylurea)</span>
+</label>
+<label class="flex items-center gap-2 px-3 py-1.5 bg-surface rounded-lg border border-outline-variant text-on-surface-variant font-label-md text-label-md cursor-pointer hover:bg-surface-container-low">
+<input class="rounded text-primary focus:ring-secondary h-4 w-4" type="checkbox"/>
+<span>Insulin Therapy</span>
+</label>
+<label class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-high rounded-lg border border-primary/40 text-primary font-label-md text-label-md cursor-pointer">
+<input checked="" class="rounded text-primary focus:ring-secondary h-4 w-4" type="checkbox"/>
+<span class="font-semibold">Diet &amp; Lifestyle Control</span>
+</label>
+</div>
+</div>
+<!-- Comorbidity Tags -->
+<div class="pt-2 border-t border-outline-variant/60 flex flex-wrap items-center gap-3">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Associated Comorbidities:</span>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-red-50 text-red-800 border border-red-200 font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]" data-icon="check_box" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_box</span>
+                    Hypertensive (BP: 138/88 mmHg)
+                  </span>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface-container text-on-surface-variant border border-outline-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="check_box_outline_blank">check_box_outline_blank</span>
+                    Nephropathy / Albuminuria (Negative)
+                  </span>
+</div>
+</div>
+</section>
+<!-- C. Ophthalmic & Visual History Card -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-5 shadow-sm">
+<div class="flex items-center justify-between pb-3.5 border-b border-outline-variant">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-primary-fixed text-primary flex items-center justify-center font-bold">
+<span class="material-symbols-outlined text-[18px]" data-icon="visibility" data-weight="fill" style="font-variation-settings: 'FILL' 1;">visibility</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Ophthalmic Baseline &amp; Visual Complaints</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Functional Visual Acuity &amp; Prior Ocular Interventions</p>
+</div>
+</div>
+<div class="font-label-sm text-label-sm bg-surface-container px-2.5 py-1 rounded-md text-on-surface-variant border border-outline-variant">
+                  Snellen Chart Standard (6m)
+                </div>
+</div>
+<div class="pt-4 space-y-4">
+<!-- Visual Acuity Dual Eye Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<!-- Right Eye OD -->
+<div class="p-3.5 rounded-lg border-2 border-primary/30 bg-surface-container-low">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded bg-primary text-on-primary font-label-md text-label-md flex items-center justify-center font-bold">OD</span>
+<span class="font-label-md text-label-md font-bold text-on-surface">Right Eye (Oculus Dexter)</span>
+</div>
+<span class="font-label-sm text-label-sm text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded font-bold">Optimal</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-headline-md font-headline-md font-bold text-primary">6 / 9</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">(With Spectacle Correction)</span>
+</div>
+</div>
+<!-- Left Eye OS -->
+<div class="p-3.5 rounded-lg border-2 border-amber-300 bg-amber-50/40">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded bg-amber-700 text-on-primary font-label-md text-label-md flex items-center justify-center font-bold">OS</span>
+<span class="font-label-md text-label-md font-bold text-on-surface">Left Eye (Oculus Sinister)</span>
+</div>
+<span class="font-label-sm text-label-sm text-amber-900 bg-amber-100 px-2 py-0.5 rounded font-bold">Reduced</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-headline-md font-headline-md font-bold text-amber-950">6 / 12</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">(Improves to 6/9 with Pin-hole)</span>
+</div>
+</div>
+</div>
+<!-- Presenting Visual Complaints -->
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-2 font-semibold">Active Visual Symptoms / Patient Complaints</label>
+<div class="flex flex-wrap gap-2">
+<label class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-high rounded-md border border-primary/50 text-primary font-label-md text-label-md cursor-pointer">
+<input checked="" class="rounded text-primary focus:ring-secondary h-3.5 w-3.5" type="checkbox"/>
+<span class="font-semibold">Gradual Blurring</span>
+</label>
+<label class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-high rounded-md border border-primary/50 text-primary font-label-md text-label-md cursor-pointer">
+<input checked="" class="rounded text-primary focus:ring-secondary h-3.5 w-3.5" type="checkbox"/>
+<span class="font-semibold">Mild Floaters</span>
+</label>
+<label class="flex items-center gap-1.5 px-3 py-1.5 bg-surface rounded-md border border-outline-variant text-on-surface-variant font-label-md text-label-md cursor-pointer hover:bg-surface-container-low">
+<input class="rounded text-primary focus:ring-secondary h-3.5 w-3.5" type="checkbox"/>
+<span>Sudden Vision Drop</span>
+</label>
+<label class="flex items-center gap-1.5 px-3 py-1.5 bg-surface rounded-md border border-outline-variant text-on-surface-variant font-label-md text-label-md cursor-pointer hover:bg-surface-container-low">
+<input class="rounded text-primary focus:ring-secondary h-3.5 w-3.5" type="checkbox"/>
+<span>Metamorphopsia / Distortion</span>
+</label>
+<label class="flex items-center gap-1.5 px-3 py-1.5 bg-surface rounded-md border border-outline-variant text-on-surface-variant font-label-md text-label-md cursor-pointer hover:bg-surface-container-low">
+<input class="rounded text-primary focus:ring-secondary h-3.5 w-3.5" type="checkbox"/>
+<span>Night Blindness</span>
+</label>
+</div>
+</div>
+<!-- Previous DR Diagnosis & History -->
+<div class="p-3 bg-surface-container-low rounded-lg border border-outline-variant/80 space-y-2">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px] mt-0.5" data-icon="history_edu">history_edu</span>
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block font-semibold">Prior Retinopathy Diagnosis</span>
+<p class="font-body-sm text-body-sm text-on-surface font-medium">
+                        Yes — Diagnosed with <span class="font-bold text-primary">Mild Non-Proliferative Diabetic Retinopathy (NPDR)</span> 18 months ago.
+                      </p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-0.5">
+                        Last Dilated Fundus Exam: 18 months ago at M.Y. District Hospital, Indore (Tele-linked).
+                      </p>
+</div>
+</div>
+<div class="pt-2 border-t border-outline-variant/60">
+<span class="font-label-sm text-label-sm text-on-surface-variant block mb-1.5 font-semibold">Surgical &amp; Retinal Procedures:</span>
+<div class="flex flex-wrap gap-2">
+<span class="px-2.5 py-1 bg-surface-container-high text-primary border border-primary/30 rounded font-label-sm text-label-sm flex items-center gap-1 font-semibold">
+<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+                        Cataract IOL OS (March 2024)
+                      </span>
+<span class="px-2.5 py-1 bg-surface text-on-surface-variant border border-outline-variant rounded font-label-sm text-label-sm">
+                        No Panretinal Photocoagulation (PRP)
+                      </span>
+<span class="px-2.5 py-1 bg-surface text-on-surface-variant border border-outline-variant rounded font-label-sm text-label-sm">
+                        No Anti-VEGF Intravitreal Injections
+                      </span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- D. Informed Consent & ABDM Governance Card -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-5 shadow-sm">
+<div class="flex items-center gap-2.5 pb-3 border-b border-outline-variant">
+<div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-900 flex items-center justify-center font-bold">
+<span class="material-symbols-outlined text-[18px]" data-icon="policy">policy</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Informed Consent &amp; ABDM Data Governance</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Digital Personal Data Protection (DPDP) Act Compliant</p>
+</div>
+</div>
+<div class="pt-3 space-y-2.5">
+<!-- Audio consent indicator -->
+<div class="flex items-center gap-2.5 p-2.5 bg-emerald-50/70 border border-emerald-200 rounded-lg text-emerald-900">
+<span class="material-symbols-outlined text-emerald-700 text-[20px]" data-icon="mic" data-weight="fill" style="font-variation-settings: 'FILL' 1;">mic</span>
+<div class="font-label-md text-label-md">
+<span class="font-bold">Vernacular Hindi audio consent played and recorded.</span>
+<span class="text-emerald-700 font-normal"> (Audio Verification Hash: #REC-8104.mp3 • 48s)</span>
+</div>
+<button class="ml-auto text-emerald-800 hover:text-emerald-950 font-label-sm text-label-sm font-bold underline">Listen</button>
+</div>
+<!-- Checkbox scope -->
+<label class="flex items-start gap-2.5 p-2 rounded-lg hover:bg-surface-container-low cursor-pointer">
+<input checked="" class="mt-0.5 rounded text-primary focus:ring-secondary h-4 w-4" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">
+                    Patient explicitly consents to tele-ophthalmology screening, dual-AI model lesion extraction (Microaneurysms, Hemorrhages, Hard Exudates), and longitudinal data linkage for priority referral to the District Eye Hospital.
+                  </span>
+</label>
+<!-- Signature & Operator Stamp -->
+<div class="pt-2 border-t border-outline-variant flex flex-wrap items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="fingerprint">fingerprint</span>
+<span>ANM Operator Biometric Verified (Sunita Yadav #ANM-04)</span>
+</div>
+<div>
+                    Timestamp: <span class="font-semibold text-on-surface">19 Sep 2026, 12:20 PM IST</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- RIGHT 30% (Col Span 3): PATIENT SCREENING SNAPSHOT & RISK TRIAGE (Sticky) -->
+<div class="lg:col-span-3 space-y-4 lg:sticky lg:top-20">
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 shadow-sm">
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant">
+<div>
+<h3 class="font-label-lg text-label-lg font-bold text-on-surface">Patient Screening Snapshot</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Longitudinal Triage Record</span>
+</div>
+<span class="font-label-sm text-label-sm bg-primary-fixed text-primary px-2 py-0.5 rounded-full font-bold">
+                  Existing Patient
+                </span>
+</div>
+<!-- Longitudinal Baseline Card (Jan 2025 screening) -->
+<div class="mt-3.5 p-3 rounded-lg bg-surface-container-low border border-outline-variant space-y-3">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-bold">Baseline Fundus (Jan 2025)</span>
+<span class="font-label-sm text-label-sm text-red-700 bg-red-100 px-1.5 py-0.2 rounded font-bold">
+                    Overdue &gt;12 mo
+                  </span>
+</div>
+<!-- Retinal Canvas Preview Simulation -->
+<div class="relative w-full h-36 rounded-lg overflow-hidden fundus-pattern flex items-center justify-center border border-amber-900/40 shadow-inner">
+<!-- Retinal Optic Disc Simulation -->
+<div class="absolute right-8 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-amber-200/90 blur-[1px] shadow-[0_0_12px_rgba(251,191,36,0.8)]"></div>
+<!-- Macula Fovea -->
+<div class="absolute left-10 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-amber-950/60 blur-[2px]"></div>
+<!-- Annotated Microaneurysm Dots -->
+<div class="absolute left-14 top-10 w-2 h-2 rounded-full bg-red-500 animate-pulse ring-2 ring-red-300" title="MA #1 (OD)"></div>
+<div class="absolute left-16 top-14 w-1.5 h-1.5 rounded-full bg-red-400" title="MA #2 (OD)"></div>
+<div class="absolute right-16 bottom-8 w-2 h-2 rounded-full bg-red-500" title="MA #3 (OD)"></div>
+<!-- Overlay Badge -->
+<div class="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-black/70 text-white font-label-sm text-label-sm backdrop-blur-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-amber-400" data-icon="lens">lens</span>
+<span>OD 45° Posterior Pole</span>
+</div>
+<div class="absolute top-2 right-2 px-1.5 py-0.5 rounded bg-black/60 text-white font-label-sm text-label-sm">
+                    92% Gradable
+                  </div>
+</div>
+<!-- Prior Metrics List -->
+<div class="space-y-1.5 text-body-sm text-on-surface">
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Previous Grade:</span>
+<span class="font-bold text-amber-900">Level 1 - Mild NPDR</span>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Lesion Count:</span>
+<span class="font-semibold text-on-surface">OD: 4 MAs • OS: 2 MAs</span>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Screening Date:</span>
+<span class="text-on-surface">14 Jan 2025 (614d ago)</span>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Prior Facility:</span>
+<span class="text-on-surface">PHC Depalpur</span>
+</div>
+</div>
+</div>
+<!-- Risk Triage Engine Calculation Card -->
+<div class="mt-4 p-3.5 rounded-lg bg-red-50/80 border border-red-200 space-y-2">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-red-900 font-bold uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-red-700" data-icon="insights">insights</span>
+                    AI Risk Triage Engine
+                  </span>
+<span class="px-2 py-0.5 rounded bg-red-600 text-white font-label-sm text-label-sm font-extrabold tracking-wide animate-pulse">
+                    HIGH RISK
+                  </span>
+</div>
+<p class="font-body-sm text-body-sm text-red-950 font-medium leading-relaxed">
+                  HbA1c 8.8% + 9-year DM duration + prior Mild NPDR elevates progression hazard to macular edema or proliferative DR by <span class="font-bold text-red-700 underline">3.4×</span>.
+                </p>
+<div class="p-2 rounded bg-white/80 border border-red-200/80">
+<span class="font-label-sm text-label-sm text-red-900 font-bold block mb-0.5">Recommended Protocol:</span>
+<div class="flex items-center gap-1.5 font-label-md text-label-md text-red-950 font-semibold">
+<span class="material-symbols-outlined text-primary text-[16px]" data-icon="camera_alt">camera_alt</span>
+<span>2-Field Fundus Capture (Macula &amp; Disc OU)</span>
+</div>
+</div>
+</div>
+<!-- Action Triggers -->
+<div class="mt-4 space-y-2 pt-2 border-t border-outline-variant">
+<!-- Primary CTA -->
+<button class="w-full py-3 px-4 bg-primary hover:bg-primary-container text-on-primary rounded-xl font-label-lg text-label-lg font-bold flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all active:scale-[0.98]">
+<span class="material-symbols-outlined text-[20px]" data-icon="auto_awesome">auto_awesome</span>
+<span>Save Intake &amp; Begin Retinal Screening</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<!-- Secondary CTA & Print -->
+<div class="flex items-center gap-2">
+<button class="flex-1 py-2 px-3 bg-surface-container hover:bg-surface-container-high text-on-surface border border-outline-variant rounded-lg font-label-md text-label-md flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant" data-icon="save">save</span>
+<span>Save Draft (Offline)</span>
+</button>
+<button class="p-2 bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface border border-outline-variant rounded-lg transition-colors" title="Print Intake Summary">
+<span class="material-symbols-outlined text-[18px]" data-icon="print">print</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

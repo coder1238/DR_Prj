@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RetinaCare AI - Clinical Review Queue</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "inverse-surface": "#2f3035",
+            "surface-container-low": "#f4f3fa",
+            "on-secondary": "#ffffff",
+            "secondary-fixed": "#eaddff",
+            "surface-variant": "#e3e1e8",
+            "on-secondary-fixed": "#25005a",
+            "surface-container-high": "#e9e7ee",
+            "on-primary": "#ffffff",
+            "secondary-fixed-dim": "#d2bbff",
+            "on-tertiary-fixed": "#002114",
+            "on-primary-fixed-variant": "#572ba0",
+            "secondary-container": "#8a4cfc",
+            "on-surface": "#1a1b20",
+            "error-container": "#ffdad6",
+            "surface-bright": "#faf8ff",
+            "primary": "#340075",
+            "on-error": "#ffffff",
+            "on-error-container": "#93000a",
+            "on-tertiary": "#ffffff",
+            "on-background": "#1a1b20",
+            "error": "#ba1a1a",
+            "surface-dim": "#dbd9e0",
+            "on-secondary-fixed-variant": "#5a00c6",
+            "outline": "#7b7483",
+            "on-tertiary-fixed-variant": "#005137",
+            "on-primary-container": "#b994ff",
+            "tertiary-fixed-dim": "#68dba9",
+            "surface-tint": "#6f46b9",
+            "on-secondary-container": "#fffbff",
+            "background": "#faf8ff",
+            "inverse-primary": "#d3bbff",
+            "outline-variant": "#ccc3d4",
+            "primary-fixed": "#ebdcff",
+            "inverse-on-surface": "#f2f0f7",
+            "tertiary-container": "#00462f",
+            "tertiary": "#002e1d",
+            "on-primary-fixed": "#260059",
+            "secondary": "#712ae2",
+            "on-tertiary-container": "#44bb8b",
+            "surface-container": "#efedf4",
+            "surface": "#faf8ff",
+            "primary-fixed-dim": "#d3bbff",
+            "on-surface-variant": "#4a4452",
+            "surface-container-highest": "#e3e1e8",
+            "surface-container-lowest": "#ffffff",
+            "tertiary-fixed": "#85f8c4",
+            "primary-container": "#4c1d95"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-md": "1rem",
+            "margin": "1.5rem",
+            "space-xl": "2rem",
+            "gutter": "1rem",
+            "space-xs": "0.25rem",
+            "space-lg": "1.5rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "label-sm": ["Public Sans"],
+            "headline-sm": ["Inter"],
+            "label-md": ["Public Sans"],
+            "body-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "body-lg": ["Inter"],
+            "label-lg": ["Public Sans"],
+            "headline-md": ["Inter"],
+            "headline-lg": ["Inter"]
+          },
+          "fontSize": {
+            "label-sm": ["10px", { "lineHeight": "12px", "fontWeight": "600" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "label-md": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-lg": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "headline-lg": ["30px", { "lineHeight": "38px", "fontWeight": "600" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      vertical-align: middle;
+      display: inline-block;
+      line-height: 1;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #faf8ff;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #ccc3d4;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased min-h-screen flex selection:bg-secondary-fixed-dim selection:text-on-secondary-fixed">
+<!-- LEFT NAVIGATION RAIL (260px) -->
+<aside class="w-[260px] h-screen fixed left-0 top-0 bg-surface border-r border-outline-variant flex flex-col justify-between z-30 select-none">
+<div class="flex flex-col h-full overflow-hidden">
+<!-- Rail Header -->
+<div class="p-4 border-b border-outline-variant bg-surface-container-lowest">
+<div class="flex items-center gap-2.5 mb-1.5">
+<div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-on-primary shadow-sm ring-2 ring-secondary-fixed">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
+</div>
+<div>
+<span class="font-headline-sm text-headline-sm font-semibold tracking-tight text-primary block leading-none">RetinaCare AI</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium tracking-wide">PHC CLINICAL SUITE • INDORE #14</span>
+</div>
+</div>
+<div class="mt-2 text-[10px] font-label-sm flex items-center gap-1.5 text-on-surface-variant bg-surface-container-low px-2 py-1 rounded">
+<span class="w-2 h-2 rounded-full bg-tertiary-container animate-pulse"></span>
+<span>District Health Center #14</span>
+<span class="text-outline">|</span>
+<span class="font-semibold text-primary">Unit 02</span>
+</div>
+</div>
+<!-- Scrollable Navigation Items -->
+<div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-4">
+<!-- Section: Screening Operations -->
+<div>
+<span class="px-2 pb-1.5 text-[10px] font-label-sm font-bold text-outline tracking-wider uppercase block">Screening Operations</span>
+<nav class="space-y-0.5">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="dashboard">dashboard</span>
+<span>Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="add_circle">add_circle</span>
+<span>New Screening</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="clinical_notes">clinical_notes</span>
+<span>Patients</span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors duration-150" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[18px]" data-icon="smart_toy">smart_toy</span>
+<span>AI Analysis</span>
+</div>
+<span class="bg-surface-container-high text-primary font-label-sm text-label-sm px-1.5 py-0.5 rounded text-[9px]">v2.4</span>
+</a>
+<!-- Active Queue State -->
+<a class="flex items-center justify-between px-3 py-2.5 bg-surface-container-high text-primary font-bold rounded-lg font-label-md text-label-md border-l-4 border-primary shadow-xs" href="#">
+<div class="flex items-center gap-2.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="material-symbols-outlined text-[18px]" data-icon="visibility">visibility</span>
+<span>Review Queue</span>
+</div>
+<span class="bg-error text-on-error font-label-sm text-label-sm px-2 py-0.5 rounded-full text-[10px]">87</span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors duration-150" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[18px]" data-icon="share_location">share_location</span>
+<span>Referrals (ABDM)</span>
+</div>
+<span class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm px-1.5 py-0.2 rounded text-[10px]">14</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="event_repeat">event_repeat</span>
+<span>Follow-ups</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="analytics">analytics</span>
+<span>Analytics</span>
+</a>
+</nav>
+</div>
+<!-- Section: Clinical Standards & Tools -->
+<div>
+<span class="px-2 pb-1.5 text-[10px] font-label-sm font-bold text-outline tracking-wider uppercase block">Clinical Standards &amp; Tools</span>
+<nav class="space-y-0.5">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="tune">tune</span>
+<span>Simulation</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="microbiology">microbiology</span>
+<span>AI Models &amp; ROC</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="verified_user">verified_user</span>
+<span>Validation</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="devices">devices</span>
+<span>Devices</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="policy">policy</span>
+<span>Reports</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+</div>
+</div>
+<!-- Rail Footer -->
+<div class="p-3 border-t border-outline-variant bg-surface-container-lowest space-y-2.5">
+<div class="flex items-center justify-between px-1 text-[11px] font-label-sm text-on-surface-variant">
+<span class="flex items-center gap-1.5 text-tertiary-container font-semibold">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span>
+            99.8% Online
+          </span>
+<span class="bg-surface-container px-1.5 py-0.5 rounded text-[10px] text-outline">SOP v3.2</span>
+</div>
+<div class="p-2 rounded-lg bg-surface-container-low border border-outline-variant flex items-center gap-2.5">
+<img class="w-9 h-9 rounded-full object-cover border border-outline-variant flex-shrink-0" data-alt="Official portrait photograph of Dr. Ananya Sharma, a female Indian ophthalmology specialist in her mid-forties wearing formal clinical attire with white doctor coat, looking focused and approachable in a modern clinical setting with soft clean rim lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWIdCwPwe2Jeuxn5sE2nSySFkvp2tItmmBR-a6hTDPXOVoqFZjXd9qsFHW6Gp-uhzgU2M16Uw4fhFA21TDsBzPfptemhlXtFDMq2C4f0XEBwLDHfBTQV3VTztGjFDjvB4iOy0RvHi_UNKhfhB38oxIUoPJVjALO6LvRGTDVtmS9BcBoZvYWWRV8yLO5F83kO41-FoYr8AJqpINsfNswlpdxoDC92ZMjC_0pZ2jVVOZYNBSHylfy2Ea1CfRm7YizYdg1qfOheZEWpg"/>
+<div class="flex-1 min-w-0">
+<span class="block text-primary font-headline-sm text-[12px] leading-tight font-semibold truncate">Dr. Ananya Sharma</span>
+<span class="block text-[10px] font-label-sm text-on-surface-variant truncate">Chief Ophthalmologist</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[16px]" data-icon="verified">verified</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- MAIN WRAPPER -->
+<div class="flex-1 ml-[260px] flex flex-col min-w-0">
+<!-- TOP GLOBAL BAR (64px) -->
+<header class="h-16 sticky top-0 z-20 bg-surface-container-lowest border-b border-outline-variant px-6 flex items-center justify-between gap-4 select-none">
+<!-- Search Queue Input -->
+<div class="w-96 relative">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-outline text-[18px]" data-icon="search">search</span>
+<input class="w-full h-9 pl-9 pr-14 text-body-sm font-body-sm bg-surface-container-low border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-outline" placeholder="Filter queue by patient, UHID, PHC..." type="text"/>
+<span class="absolute right-2.5 top-2 text-[10px] font-label-sm bg-surface-container px-1.5 py-0.5 rounded text-outline border border-outline-variant">⌘K</span>
+</div>
+<!-- Center-Right Telemetry & Badges -->
+<div class="flex items-center gap-3">
+<!-- SLA Target Badge -->
+<div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-low border border-outline-variant">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-primary font-bold">⚡ Workflow Target: &lt;30s Review per Case</span>
+</div>
+<!-- Facility Scope Indicator -->
+<div class="hidden xl:flex items-center gap-1.5 px-3 py-1 rounded bg-surface-container border border-outline-variant text-[11px] font-label-md text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="share_location">share_location</span>
+<span>Indore District Tele-Ophthalmology Hub (5 PHCs Connected)</span>
+</div>
+<!-- Network Sync Status -->
+<div class="hidden lg:flex items-center gap-1.5 text-[11px] font-label-sm text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-tertiary-container"></span>
+<span>Online (1.8 Mbps)</span>
+<span class="text-outline">|</span>
+<span class="font-semibold text-primary">87 Cases Synced</span>
+</div>
+</div>
+<!-- Right Profile & Quick Actions -->
+<div class="flex items-center gap-2">
+<button class="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="notifications">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="help">help</span>
+</button>
+<button class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+</button>
+<div class="h-6 w-px bg-outline-variant mx-1"></div>
+<!-- Mini profile chip -->
+<div class="flex items-center gap-2 pl-1">
+<img class="w-8 h-8 rounded-full object-cover border border-outline-variant" data-alt="Headshot of Dr. Ananya Sharma smiling slightly in medical scrubs and clinical glasses with a soft neutral gray-blue background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7bRzwNkyEJSNCU8ZJH9kgf-ozkIzmoLW2bSbfsRg2PmPHowVuUZ6NyHZnacnXohhXxpGTKQyerhtFcWUQHZCG1TTF_WtXDnupdVujsaFtVoWm_OObxF8kVDcA2oyaV9_1WCdmnjLSlR3F4EFqBeEJLqHyIrZww7e4NtnfjnW3iSl3ffWIyhNEbynUgDQ77rjcNCBDimQweyaMeFeOZeGBfhQ_5umWAXSlXDZD0z3uMhvDyfA5b3AooF-SRT_yCpRrBJ5c6S3r6zA"/>
+<span class="text-label-md font-label-md text-on-surface font-semibold hidden md:inline">Dr. Ananya</span>
+</div>
+</div>
+</header>
+<!-- WORKSPACE CANVAS -->
+<main class="flex-1 p-6 overflow-y-auto space-y-6">
+<!-- MANDATORY CLINICAL SAFETY BANNER -->
+<div class="flex items-center justify-between px-4 py-2.5 bg-primary-container text-on-primary rounded-lg shadow-sm border border-secondary-container">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-[20px] text-tertiary-fixed" data-icon="verified_user">verified_user</span>
+<span class="text-label-sm font-label-sm font-semibold tracking-wide uppercase">
+            AI-assisted screening assessment • Clinical validation required by Ophthalmologist
+          </span>
+</div>
+<div class="text-[11px] font-label-sm opacity-90">
+          Statutory Compliance: Medical Device Rules (CDSCO) • ABDM Health Facility Registry ID: #IND-90214
+        </div>
+</div>
+<!-- WORKSPACE HEADER & 4 KPI TRIAGE METRICS TILES -->
+<div class="space-y-4">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary tracking-tight">Clinical Triage &amp; Tele-Ophthalmologist Review Queue</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Asynchronous clinical validation pool for rural PHC screenings • Indore Division</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-surface-container-high text-label-md font-label-md text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+              Auto-updating (15s)
+            </span>
+</div>
+</div>
+<!-- 4 KPI BENTO TILES -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Tile 1: Awaiting Review -->
+<div class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant shadow-xs flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Cases Awaiting Review</span>
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="clinical_notes">clinical_notes</span>
+</div>
+<div class="my-2">
+<span class="text-headline-lg font-headline-lg font-extrabold text-primary">87</span>
+<span class="text-body-sm text-outline ml-1 font-medium">pending sign-off</span>
+</div>
+<div class="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant pt-2 border-t border-surface-container">
+<span>14 Rural Centers Active</span>
+<span class="text-secondary font-semibold">100% Ingested</span>
+</div>
+</div>
+<!-- Tile 2: Urgent Priority -->
+<div class="bg-surface-container-lowest p-4 rounded-xl border-2 border-error shadow-xs flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="text-label-md font-label-md text-error uppercase tracking-wider font-bold">Urgent Priority Cases</span>
+<span class="w-2.5 h-2.5 rounded-full bg-error animate-pulse"></span>
+</div>
+<div class="my-2 flex items-baseline gap-2">
+<span class="text-headline-lg font-headline-lg font-extrabold text-error">12</span>
+<span class="text-[11px] font-label-sm bg-error-container text-on-error-container px-2 py-0.5 rounded font-bold">CRITICAL</span>
+</div>
+<div class="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant pt-2 border-t border-surface-container">
+<span class="text-error font-medium">Suspected PDR or Macular Threat</span>
+<span class="font-bold text-error">&lt;15m SLA</span>
+</div>
+</div>
+<!-- Tile 3: Discrepancy Audits -->
+<div class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant shadow-xs flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Discrepancy Audits</span>
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="compare_arrows">compare_arrows</span>
+</div>
+<div class="my-2 flex items-baseline gap-2">
+<span class="text-headline-lg font-headline-lg font-extrabold text-primary">3</span>
+<span class="text-[11px] font-label-sm bg-secondary-fixed text-on-secondary-fixed px-2 py-0.5 rounded font-semibold">Variance</span>
+</div>
+<div class="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant pt-2 border-t border-surface-container">
+<span>AI vs Tele-Clinician Variance</span>
+<span class="text-primary font-semibold">Specialist Review</span>
+</div>
+</div>
+<!-- Tile 4: Average Triage Time -->
+<div class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant shadow-xs flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Avg Triage Time Today</span>
+<span class="material-symbols-outlined text-tertiary-container text-[20px]" data-icon="timer">timer</span>
+</div>
+<div class="my-2 flex items-baseline gap-2">
+<span class="text-headline-lg font-headline-lg font-extrabold text-tertiary-container">18.4s</span>
+<span class="text-[11px] font-label-sm bg-surface-container-high text-tertiary-container px-2 py-0.5 rounded font-semibold">Exceeding SLA</span>
+</div>
+<div class="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant pt-2 border-t border-surface-container">
+<span>Target: &lt;30s workflow goal</span>
+<span class="text-tertiary-container font-semibold">+12% faster</span>
+</div>
+</div>
+</div>
+</div>
+<!-- PRIORITY FILTER BAR & ACTION STRIP -->
+<div class="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant shadow-xs flex flex-col lg:flex-row items-center justify-between gap-4">
+<!-- Segmented Filter Tabs -->
+<div class="flex flex-wrap items-center gap-1.5 w-full lg:w-auto">
+<button class="px-3 py-1.5 rounded-lg text-label-md font-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors">
+            All Cases (87)
+          </button>
+<!-- Urgent Priority Selected State -->
+<button class="px-3 py-1.5 rounded-lg text-label-md font-label-md font-bold bg-error-container text-on-error-container ring-2 ring-error flex items-center gap-1.5 shadow-xs">
+<span class="w-2 h-2 rounded-full bg-error animate-pulse"></span>
+<span>Urgent Priority (12)</span>
+</button>
+<button class="px-3 py-1.5 rounded-lg text-label-md font-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors">
+            🟡 Referable DR (48)
+          </button>
+<button class="px-3 py-1.5 rounded-lg text-label-md font-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors">
+            🟣 Low Confidence &lt;75% (8)
+          </button>
+<button class="px-3 py-1.5 rounded-lg text-label-md font-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors">
+            ⚡ AI/Doctor Disagreement (3)
+          </button>
+<button class="px-3 py-1.5 rounded-lg text-label-md font-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors">
+            ↺ Recapture Requests (6)
+          </button>
+<button class="hidden xl:inline-block px-3 py-1.5 rounded-lg text-label-md font-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors">
+            🟢 Today's New Captures (62)
+          </button>
+</div>
+<!-- Controls on Right -->
+<div class="flex items-center gap-3 w-full lg:w-auto justify-end">
+<div class="relative">
+<select class="h-9 text-label-md font-label-md bg-surface-container-low border border-outline-variant rounded-lg pl-3 pr-8 text-on-surface focus:ring-1 focus:ring-primary focus:outline-none">
+<option>Sort by: Urgency &amp; Wait Time</option>
+<option>Sort by: Newest Arrival</option>
+<option>Sort by: Confidence Score (Asc)</option>
+<option>Sort by: Patient UHID</option>
+</select>
+</div>
+<button class="h-9 px-4 rounded-lg bg-primary-container text-on-primary font-label-lg text-label-lg font-bold flex items-center gap-2 hover:bg-primary shadow-xs transition-all active:scale-[0.98]">
+<span class="material-symbols-outlined text-[18px]" data-icon="bolt">bolt</span>
+<span>Start Continuous Triage Mode (Next Case)</span>
+</button>
+</div>
+</div>
+<!-- THE CASE CARDS VERTICAL CLINICAL QUEUE -->
+<div class="space-y-3.5">
+<!-- CASE 1: TOP URGENT - CRITICAL PDR -->
+<div class="bg-surface-container-lowest border-2 border-error rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-1 bg-error"></div>
+<div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+<!-- Left Clinical Thumbnail & Markers -->
+<div class="flex items-center gap-4">
+<div class="relative w-24 h-24 rounded-full border-2 border-error overflow-hidden bg-black flex-shrink-0 shadow-inner group">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" data-alt="High resolution medical ophthalmic fundus photograph of a human eye showing clear signs of severe proliferative diabetic retinopathy with visible preretinal neovascularization at the optic disc, multiple blot hemorrhages, and fine vessel abnormalities on an anatomical retina." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAJQpRXiXAXSGzxZeDuIf_WSbBr7MQPB5EPuTTH3m92CTZ0y_nAymNH1UadcAm5AhbZcJIrD3M6JXBTP7sePfqlZ_ftE0dvzENrwTHKJolfqoEcfyGt-8270u6Dtd2OgBl9C7P-OJ5--_CQo38FOfVypOf5bUsCC_pOkp3BA5ytS75DWcPC5S790-vGC1Hl2_hyLJHK1ybqQa6hTrykJZO7__lRAFQVsWWpes6ZZ_5qnXOwZQ6nxOjE57RnyWaI_yYpsKhL7aaiss"/>
+<span class="absolute top-1 left-2 text-[9px] font-label-sm bg-black/70 text-white px-1 rounded backdrop-blur-xs">OD • 45°</span>
+<span class="absolute bottom-1 right-2 text-[9px] font-label-sm bg-error text-white px-1.5 py-0.2 rounded font-bold">+3.2mm Disc NV</span>
+<div class="absolute inset-0 ring-1 ring-inset ring-error/50 rounded-full pointer-events-none"></div>
+</div>
+<div class="space-y-1 min-w-[280px]">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm font-bold bg-error text-on-error flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
+                    URGENT REFERRAL REQUIRED • IMMEDIATE PRP CANDIDATE
+                  </span>
+</div>
+<div class="flex items-baseline gap-2">
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Ramesh Patel, 58M</h3>
+<span class="text-body-sm text-outline">ID: #RC-2026-9042</span>
+</div>
+<div class="text-[11px] font-label-md text-on-surface-variant flex flex-wrap items-center gap-x-3 gap-y-1">
+<span>ABHA: <span class="font-semibold text-on-surface">91-4829-1034-8291</span></span>
+<span class="text-outline">|</span>
+<span>PHC Betma (Rural)</span>
+<span class="text-outline">|</span>
+<span>ANM: Sunita ANM</span>
+<span class="text-outline">|</span>
+<span class="text-error font-bold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[13px]" data-icon="schedule">schedule</span>
+                    Wait: 4m ago
+                  </span>
+</div>
+</div>
+</div>
+<!-- Center AI Telemetry & Reasoning -->
+<div class="flex-1 lg:max-w-xl space-y-1.5 px-2">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-bold">
+                  LEVEL 4 - PROLIFERATIVE DR (PDR)
+                </span>
+<span class="text-[11px] font-label-sm text-on-surface-variant bg-surface-container-low px-2 py-0.5 rounded border border-outline-variant">
+                  AI Consensus: <strong class="text-primary">94.2% (15 Models)</strong>
+</span>
+<span class="text-[11px] font-label-sm text-tertiary-container font-bold bg-surface-container px-2 py-0.5 rounded">
+                  Gradability: 93% PASS (EFIQA)
+                </span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface bg-surface-container-low p-2 rounded-lg border border-outline-variant/60 leading-tight">
+<strong class="text-error">Trigger Clinical Reason:</strong> Preretinal neovascularization detected at disc margin (+3.2mm). High-risk proliferative changes with preretinal hemorrhage. High imminent vitreous bleed risk.
+              </p>
+</div>
+<!-- Right Case Actions -->
+<div class="flex flex-col sm:flex-row lg:flex-col items-end gap-2 flex-shrink-0 w-full lg:w-auto">
+<button class="w-full sm:w-auto lg:w-44 h-9 px-4 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 hover:bg-primary shadow-xs transition-all">
+<span>Validate &amp; Sign-off</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<div class="flex items-center gap-2 w-full">
+<button class="flex-1 h-8 px-2 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface-variant hover:text-primary hover:bg-surface-container font-label-sm text-label-sm">
+                  Preview Evidence
+                </button>
+<button class="flex-1 h-8 px-2 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface-variant hover:text-primary hover:bg-surface-container font-label-sm text-label-sm">
+                  Full Retinal Map
+                </button>
+</div>
+</div>
+</div>
+</div>
+<!-- CASE 2: ACTIVE PATIENT - SURESH CHANDRA VERMA -->
+<div class="bg-surface-container-lowest border-2 border-primary rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden ring-2 ring-primary/20">
+<div class="absolute top-0 left-0 right-0 h-1 bg-primary"></div>
+<div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<div class="relative w-24 h-24 rounded-full border-2 border-primary overflow-hidden bg-black flex-shrink-0 group">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" data-alt="High detail clinical retinal photography displaying moderate nonproliferative diabetic retinopathy with multiple circular microaneurysms and flame-shaped hemorrhages along the superior temporal vascular arcade." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjWNSjoQjqWDgJV79DslCeu40TgCIH75urHyiyqTtc8zsJqgc9vfhkQUs1F8ZRfev1VWtCXNe4UyYfm1aEZcmQG2gqzpPGzR3na5QW38VJEP3v_NtnKRYMv13f-fu5B29ieYuBA3rVUNdVIMhsqE_BF4eLywK-0AJx2LuiQjcUxRqZso_ntnk1FChN70WJriaDGdahwqC1nBw5lIWytZmFdssTdGiSlMPG2_j-3hrh8gkbLAk4mNrE5RuPVBk8QIvMdOtcvv8-OEE"/>
+<span class="absolute top-1 left-2 text-[9px] font-label-sm bg-black/70 text-white px-1 rounded">OS • 45°</span>
+<span class="absolute bottom-1 right-2 text-[9px] font-label-sm bg-primary text-white px-1.5 py-0.2 rounded font-bold">8 MA / 2 Flame</span>
+</div>
+<div class="space-y-1 min-w-[280px]">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm font-bold bg-secondary-fixed text-on-secondary-fixed flex items-center gap-1">
+                    🟡 REFERABLE (Level 2+) • ROUTINE SPECIALIST CONSULT
+                  </span>
+</div>
+<div class="flex items-baseline gap-2">
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Suresh Chandra Verma, 56M</h3>
+<span class="text-body-sm text-outline">ID: #RC-2026-9104</span>
+</div>
+<div class="text-[11px] font-label-md text-on-surface-variant flex flex-wrap items-center gap-x-3 gap-y-1">
+<span>ABHA: <span class="font-semibold text-on-surface">91-4829-1034-8291</span></span>
+<span class="text-outline">|</span>
+<span>PHC Rau (Rural)</span>
+<span class="text-outline">|</span>
+<span>Operator: Sunita Yadav</span>
+<span class="text-outline">|</span>
+<span class="text-on-surface font-medium flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[13px]" data-icon="schedule">schedule</span>
+                    Wait: 14m ago
+                  </span>
+</div>
+</div>
+</div>
+<div class="flex-1 lg:max-w-xl space-y-1.5 px-2">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-bold">
+                  LEVEL 2 - MODERATE NPDR
+                </span>
+<span class="text-[11px] font-label-sm text-on-surface-variant bg-surface-container-low px-2 py-0.5 rounded border border-outline-variant">
+                  AI Confidence: <strong class="text-primary">91.8%</strong>
+</span>
+<span class="text-[11px] font-label-sm text-tertiary-container font-bold bg-surface-container px-2 py-0.5 rounded">
+                  Gradability: 91% Pass
+                </span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface bg-surface-container-low p-2 rounded-lg border border-outline-variant/60 leading-tight">
+<strong class="text-primary">Clinical Reason:</strong> 8 microaneurysms, 2 flame hemorrhages; A/V tortuosity 1.28; non-macular involving. Recommended OCT correlation within 30 days.
+              </p>
+</div>
+<div class="flex flex-col sm:flex-row lg:flex-col items-end gap-2 flex-shrink-0 w-full lg:w-auto">
+<button class="w-full sm:w-auto lg:w-44 h-9 px-4 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 hover:bg-primary shadow-xs transition-all">
+<span>Validate &amp; Sign-off</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<button class="w-full sm:w-auto lg:w-44 h-8 px-3 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface-variant hover:text-primary hover:bg-surface-container font-label-sm text-label-sm">
+                Open Workstation
+              </button>
+</div>
+</div>
+</div>
+<!-- CASE 3: LOW CONFIDENCE / SPECIALIST OVERRIDE -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-1 bg-secondary"></div>
+<div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<div class="relative w-24 h-24 rounded-full border-2 border-secondary overflow-hidden bg-black flex-shrink-0 group">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 opacity-90" data-alt="Ophthalmic retinal scan showing mild nuclear cataract haze partially obscuring the optic nerve and posterior pole with subtle dot hemorrhages beneath the cloudy media." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-JWA4ySSq3XIZO-285f2MCt_a1ki_Pl73ZrB03SttjIti44u5KcmjFCBheM9bP3Ff-ahFzpb7SmTQ74dFI2gcClZE5sk1HoJu6keKs6ljsvEmITSi-Pe0JWBW8zi3R3w63IaAupHP2THmM3M9PCzIm3gCEKa1Wdnz4ZXkg9hVxuhZunJK6oWdsSoYDoj2QBEjZnsBOb68EMxYE7GBnQsGeth8ywDvEPh7YC4vqceYbnuRtVVG6_F-y-Y7WWEljwt7MwBhijF29zE"/>
+<span class="absolute top-1 left-2 text-[9px] font-label-sm bg-black/70 text-white px-1 rounded">OD • 45°</span>
+<span class="absolute bottom-1 right-2 text-[9px] font-label-sm bg-secondary-container text-white px-1.5 py-0.2 rounded font-bold">Media Haze</span>
+</div>
+<div class="space-y-1 min-w-[280px]">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm font-bold bg-surface-container-high text-primary flex items-center gap-1">
+                    🟣 NEEDS SPECIALIST OVERRIDE • BORDERLINE CONFIDENCE
+                  </span>
+</div>
+<div class="flex items-baseline gap-2">
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Sunita Bai, 52F</h3>
+<span class="text-body-sm text-outline">ID: #RC-2026-8911</span>
+</div>
+<div class="text-[11px] font-label-md text-on-surface-variant flex flex-wrap items-center gap-x-3 gap-y-1">
+<span>PHC Depalpur</span>
+<span class="text-outline">|</span>
+<span>ANM: Priya K.</span>
+<span class="text-outline">|</span>
+<span class="text-on-surface font-medium flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[13px]" data-icon="schedule">schedule</span>
+                    Wait: 28m ago
+                  </span>
+</div>
+</div>
+</div>
+<div class="flex-1 lg:max-w-xl space-y-1.5 px-2">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm font-bold">
+                  LEVEL 1 - MILD NPDR vs LEVEL 2 (BORDERLINE)
+                </span>
+<span class="text-[11px] font-label-sm text-error font-bold bg-error-container/40 px-2 py-0.5 rounded">
+                  Confidence: 64.2%
+                </span>
+<span class="text-[11px] font-label-sm text-outline bg-surface-container px-2 py-0.5 rounded">
+                  Gradability: 74%
+                </span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface bg-surface-container-low p-2 rounded-lg border border-outline-variant/60 leading-tight">
+<strong class="text-secondary">Trigger Reason:</strong> Model disagreement: ResNet grades Level 1, RETFound-MAE flags 2 isolated hemorrhages obscured by mild nuclear cataract. Human arbiter required.
+              </p>
+</div>
+<div class="flex flex-col sm:flex-row lg:flex-col items-end gap-2 flex-shrink-0 w-full lg:w-auto">
+<button class="w-full sm:w-auto lg:w-44 h-9 px-4 rounded-lg bg-surface-container-high text-primary hover:bg-surface-variant font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 border border-outline-variant shadow-xs transition-all">
+<span>Review Disagreement</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="open_in_new">open_in_new</span>
+</button>
+<button class="w-full sm:w-auto lg:w-44 h-8 px-3 rounded-lg border border-outline-variant bg-surface-container-lowest text-error hover:bg-error-container/30 font-label-sm text-label-sm font-semibold">
+                Request Recapture
+              </button>
+</div>
+</div>
+</div>
+<!-- CASE 4: AI/DOCTOR DISCREPANCY AUDIT -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-1 bg-outline"></div>
+<div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<div class="relative w-24 h-24 rounded-full border border-outline-variant overflow-hidden bg-black flex-shrink-0 group">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" data-alt="Clinical fundus photograph showing optic disc, macula, and prominent temporal arcade vessels with a tiny artifact dot near the upper border, representing camera artifact versus microaneurysm." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC65Cy2YNOIe_1dIknI4PXtex_LpGAH4raZaKftmNcbDplQuPLWF4SkfcGDYGTwan1D8VwapxoIGaSOmU-A8jDe4BTnOMVpf0CYIQyZ8H4Y82dTkPIqojVoZ9Il3i0IIC63JYh_zr4JRr5oJKmOS_4sR4jpq6LF4sIUGg54Dhaviz45oWoFoYtW_G19sHBAzwr8GxegZWrZwluLlFgaCBshhpIXBHuJz1QaArlYrNGcO6gMZvythf25WubKB2UlCL-WGAoM1WX3M20"/>
+<span class="absolute top-1 left-2 text-[9px] font-label-sm bg-black/70 text-white px-1 rounded">OD • 45°</span>
+<span class="absolute bottom-1 right-2 text-[9px] font-label-sm bg-inverse-surface text-white px-1.5 py-0.2 rounded font-bold">Artifact ?</span>
+</div>
+<div class="space-y-1 min-w-[280px]">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm font-bold bg-surface-container text-on-surface flex items-center gap-1">
+                    ⚡ DISCREPANCY AUDIT • AI VS HUMAN OPINION VARIANCE
+                  </span>
+</div>
+<div class="flex items-baseline gap-2">
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Mohan Lal, 64M</h3>
+<span class="text-body-sm text-outline">ID: #RC-2026-8845</span>
+</div>
+<div class="text-[11px] font-label-md text-on-surface-variant flex flex-wrap items-center gap-x-3 gap-y-1">
+<span>PHC Sanwer</span>
+<span class="text-outline">|</span>
+<span>Wait: 42m ago</span>
+</div>
+</div>
+</div>
+<div class="flex-1 lg:max-w-xl space-y-1.5 px-2">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">
+                  Level 0 (No DR) [AI: 82.0%]
+                </span>
+<span class="text-outline">vs</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-highest text-primary font-label-sm text-label-sm font-bold">
+                  Human Note: Suspected Microaneurysms
+                </span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface bg-surface-container-low p-2 rounded-lg border border-outline-variant/60 leading-tight">
+<strong class="text-outline">Trigger Reason:</strong> False positive suspected on dust camera artifact near arcade. Senior validator adjudication required.
+              </p>
+</div>
+<div class="flex flex-col sm:flex-row lg:flex-col items-end gap-2 flex-shrink-0 w-full lg:w-auto">
+<button class="w-full sm:w-auto lg:w-44 h-9 px-4 rounded-lg bg-inverse-surface text-inverse-on-surface font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 hover:bg-black transition-all">
+<span>Adjudicate Case</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="gavel">gavel</span>
+</button>
+</div>
+</div>
+</div>
+<!-- CASE 5: ROUTINE REFERABLE SEVERE NPDR -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-1 bg-secondary-container"></div>
+<div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<div class="relative w-24 h-24 rounded-full border border-outline-variant overflow-hidden bg-black flex-shrink-0 group">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" data-alt="High magnification clinical retinal fundus view illustrating severe nonproliferative diabetic retinopathy with venous beading, intraretinal microvascular abnormalities and extensive blot hemorrhages in all four quadrants." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnT0fwKTi-L8-R8gnBSmO8garkwo-xqlCTCdd0pMFuuki1zmm2Ea5WycIJ03AfO9oCr3N-cQy-bIU1ZKLpiIEPNwM8K_r8mPXFBqU09TfJGakGi4-RRD29sp5pGt3e-dunroRz9LBayFHAfGoH6JCUIlFDIZwXegqT8VGDTEpdCp54tZ3GvqStZSQD8PMA_w_-zRCcV5YGKppgm3BKZmggCWFroPZqv9sVieh8amEoUixIXGO4dRJ310XSMPKDJhx54H9XMg92oVY"/>
+<span class="absolute top-1 left-2 text-[9px] font-label-sm bg-black/70 text-white px-1 rounded">OS • 45°</span>
+<span class="absolute bottom-1 right-2 text-[9px] font-label-sm bg-secondary-container text-white px-1.5 py-0.2 rounded font-bold">4-2-1 Rule</span>
+</div>
+<div class="space-y-1 min-w-[280px]">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm font-bold bg-secondary-fixed text-on-secondary-fixed flex items-center gap-1">
+                    🟠 REFERABLE • SEVERE NPDR
+                  </span>
+</div>
+<div class="flex items-baseline gap-2">
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Kamala Devi, 61F</h3>
+<span class="text-body-sm text-outline">ID: #RC-2026-8790</span>
+</div>
+<div class="text-[11px] font-label-md text-on-surface-variant flex flex-wrap items-center gap-x-3 gap-y-1">
+<span>PHC Mhow</span>
+<span class="text-outline">|</span>
+<span>Wait: 55m ago</span>
+</div>
+</div>
+</div>
+<div class="flex-1 lg:max-w-xl space-y-1.5 px-2">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-bold">
+                  LEVEL 3 - SEVERE NPDR
+                </span>
+<span class="text-[11px] font-label-sm text-on-surface-variant bg-surface-container-low px-2 py-0.5 rounded border border-outline-variant">
+                  Status: <strong class="text-error">Referable</strong>
+</span>
+<span class="text-[11px] font-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">
+                  Confidence: 92.6%
+                </span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface bg-surface-container-low p-2 rounded-lg border border-outline-variant/60 leading-tight">
+<strong class="text-primary">Trigger Reason:</strong> Venous beading in 2 quadrants, extensive blot hemorrhages in all 4 quadrants (4-2-1 rule). Laser photocoagulation candidate.
+              </p>
+</div>
+<div class="flex flex-col sm:flex-row lg:flex-col items-end gap-2 flex-shrink-0 w-full lg:w-auto">
+<button class="w-full sm:w-auto lg:w-44 h-9 px-4 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 hover:bg-primary shadow-xs transition-all">
+<span>Validate &amp; Sign-off</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- BOTTOM QUEUE TELEMETRY BAR & CLINICAL SAFETY NOTICE -->
+<div class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
+<div class="space-y-1">
+<div class="flex items-center gap-2 text-label-md font-label-md text-on-surface">
+<span class="w-2 h-2 rounded-full bg-tertiary-container"></span>
+<span>Displaying 5 of 87 Cases • Auto-refreshing every 15s • HIPAA &amp; ABDM Level-2 Encrypted</span>
+</div>
+<p class="text-body-sm font-body-sm text-outline max-w-2xl">
+<strong class="text-on-surface-variant">Clinical Reminder:</strong> The &lt;30s review metric is an operational efficiency target, not a clinical constraint. Thorough review is mandatory.
+          </p>
+</div>
+<!-- Pagination Controls -->
+<div class="flex items-center gap-2 flex-shrink-0">
+<button class="h-8 px-3 rounded-lg border border-outline-variant bg-surface-container text-outline font-label-md text-label-md cursor-not-allowed">
+            Prev
+          </button>
+<span class="px-3 py-1 text-label-md font-label-md bg-surface-container-low rounded-lg text-primary font-bold">
+            Page 1 of 18
+          </span>
+<button class="h-8 px-3 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface hover:bg-surface-container font-label-md text-label-md transition-colors">
+            Next
+          </button>
+</div>
+</div>
+</main>
+</div>
+</body></html>

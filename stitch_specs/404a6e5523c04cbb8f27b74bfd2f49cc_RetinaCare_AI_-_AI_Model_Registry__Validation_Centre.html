@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RetinaCare AI - AI Model Registry &amp; Clinical Validation Centre</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Public+Sans:wght@500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary-container": "#fffbff",
+            "secondary-fixed": "#eaddff",
+            "on-tertiary-fixed": "#002114",
+            "secondary": "#712ae2",
+            "on-primary-container": "#b994ff",
+            "error-container": "#ffdad6",
+            "on-primary-fixed-variant": "#572ba0",
+            "on-secondary": "#ffffff",
+            "inverse-surface": "#2f3035",
+            "surface-container-low": "#f4f3fa",
+            "surface-container-highest": "#e3e1e8",
+            "surface": "#faf8ff",
+            "secondary-fixed-dim": "#d2bbff",
+            "surface-container-high": "#e9e7ee",
+            "on-error": "#ffffff",
+            "primary-container": "#4c1d95",
+            "on-tertiary-fixed-variant": "#005137",
+            "surface-dim": "#dbd9e0",
+            "primary-fixed": "#ebdcff",
+            "on-surface": "#1a1b20",
+            "outline-variant": "#ccc3d4",
+            "surface-tint": "#6f46b9",
+            "primary": "#340075",
+            "secondary-container": "#8a4cfc",
+            "on-secondary-fixed-variant": "#5a00c6",
+            "error": "#ba1a1a",
+            "inverse-on-surface": "#f2f0f7",
+            "background": "#faf8ff",
+            "surface-container-lowest": "#ffffff",
+            "on-surface-variant": "#4a4452",
+            "on-background": "#1a1b20",
+            "on-primary": "#ffffff",
+            "surface-bright": "#faf8ff",
+            "on-error-container": "#93000a",
+            "on-tertiary": "#ffffff",
+            "primary-fixed-dim": "#d3bbff",
+            "tertiary-fixed": "#85f8c4",
+            "on-secondary-fixed": "#25005a",
+            "tertiary-container": "#00462f",
+            "on-tertiary-container": "#44bb8b",
+            "surface-variant": "#e3e1e8",
+            "tertiary": "#002e1d",
+            "outline": "#7b7483",
+            "tertiary-fixed-dim": "#68dba9",
+            "surface-container": "#efedf4",
+            "on-primary-fixed": "#260059",
+            "inverse-primary": "#d3bbff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "gutter": "1rem",
+            "margin": "1.5rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-xl": "2rem",
+            "space-xs": "0.25rem"
+          },
+          "fontFamily": {
+            "label-md": ["Public Sans", "sans-serif"],
+            "headline-md": ["Inter", "sans-serif"],
+            "body-sm": ["Inter", "sans-serif"],
+            "headline-sm": ["Inter", "sans-serif"],
+            "label-lg": ["Public Sans", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"],
+            "body-lg": ["Inter", "sans-serif"],
+            "headline-lg": ["Inter", "sans-serif"],
+            "label-sm": ["Public Sans", "sans-serif"],
+            "mono": ["JetBrains Mono", "monospace"]
+          },
+          "fontSize": {
+            "label-md": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "label-lg": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-lg": ["30px", { "lineHeight": "38px", "fontWeight": "600" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      font-size: 18px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #ccc3d4;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased min-h-screen flex flex-col overflow-x-hidden">
+<!-- Fixed Left Navigation Rail (width 260px) -->
+<aside class="fixed left-0 top-0 bottom-0 w-[260px] bg-surface-container-lowest border-r border-outline-variant z-30 flex flex-col justify-between select-none">
+<div class="flex flex-col h-full overflow-hidden">
+<!-- Brand Header -->
+<div class="p-4 border-b border-outline-variant bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-lg bg-primary-container text-on-primary flex items-center justify-center shadow-sm relative overflow-hidden">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">visibility</span>
+<div class="absolute inset-0 bg-gradient-to-tr from-secondary to-transparent opacity-40"></div>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-headline-sm text-headline-sm font-bold tracking-tight text-primary leading-none">RETINACARE</span>
+<span class="text-[10px] font-mono font-bold px-1 py-0.5 rounded bg-primary-container text-on-primary leading-none">AI</span>
+</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant tracking-wider mt-1">CLINICAL INTELLIGENCE NODE</div>
+</div>
+</div>
+</div>
+<!-- Navigation Content -->
+<div class="flex-1 overflow-y-auto custom-scrollbar px-3 py-3 space-y-4">
+<!-- Section: SCREENING OPERATIONS -->
+<div>
+<div class="px-2 mb-1.5 font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Screening Operations</div>
+<div class="space-y-0.5">
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors duration-150" href="#">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-on-surface-variant">dashboard</span>
+<span class="font-label-md text-label-md">Overview</span>
+</div>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors duration-150" href="#">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-on-surface-variant">add_circle</span>
+<span class="font-label-md text-label-md">New Screening</span>
+</div>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors duration-150" href="#">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-on-surface-variant">group</span>
+<span class="font-label-md text-label-md">Patients</span>
+</div>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors duration-150" href="#">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-on-surface-variant">microbiology</span>
+<span class="font-label-md text-label-md">AI Analysis</span>
+</div>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors duration-150" href="#">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-on-surface-variant">clinical_notes</span>
+<span class="font-label-md text-label-md">Review Queue</span>
+</div>
+<span class="px-1.5 py-0.2 rounded-full bg-error-container text-on-error-container font-mono text-[10px] font-bold">87</span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors duration-150" href="#">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-on-surface-variant">share_location</span>
+<span class="font-label-md text-label-md">Referrals (ABDM)</span>
+</div>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container-high text-on-surface font-mono text-[10px] font-bold">14</span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors duration-150" href="#">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-on-surface-variant">history_toggle_off</span>
+<span class="font-label-md text-label-md">Follow-ups</span>
+</div>
+</a>
+</div>
+</div>
+<!-- Section: CLINICAL INTELLIGENCE & AUDIT -->
+<div>
+<div class="px-2 mb-1.5 font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Clinical Intelligence &amp; Audit</div>
+<div class="space-y-0.5">
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors duration-150" href="#">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-on-surface-variant">analytics</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</div>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors duration-150" href="#">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-on-surface-variant">model_training</span>
+<span class="font-label-md text-label-md">Simulation</span>
+</div>
+</a>
+<!-- Active State Navigation -->
+<a class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-primary-container text-white shadow-sm font-label-md text-label-md" href="#">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">neurology</span>
+<span class="font-bold">AI Models &amp; ROC</span>
+</div>
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed animate-pulse"></span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors duration-150" href="#">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-on-surface-variant">verified</span>
+<span class="font-label-md text-label-md">Validation</span>
+</div>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors duration-150" href="#">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-on-surface-variant">precision_manufacturing</span>
+<span class="font-label-md text-label-md">Devices</span>
+</div>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors duration-150" href="#">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-on-surface-variant">description</span>
+<span class="font-label-md text-label-md">Reports</span>
+</div>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors duration-150" href="#">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-on-surface-variant">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</div>
+</a>
+</div>
+</div>
+</div>
+<!-- Bottom User & Status Rail -->
+<div class="p-3 border-t border-outline-variant bg-surface-container-low space-y-2.5">
+<div class="p-2 rounded-lg bg-surface-container-lowest border border-outline-variant flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary-container">policy</span>
+<span class="font-label-sm text-label-sm font-semibold text-on-surface">Protocols SOP v3.2</span>
+</div>
+<span class="font-mono text-[10px] text-tertiary-container font-semibold bg-tertiary-fixed px-1.5 py-0.5 rounded">99.8% ONLINE</span>
+</div>
+<div class="flex items-center gap-2.5 px-1 pt-1">
+<div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs">
+            AS
+          </div>
+<div class="flex-1 min-w-0">
+<div class="font-label-sm text-label-sm font-bold text-on-surface truncate">Dr. Ananya Sharma</div>
+<div class="text-[10px] text-on-surface-variant truncate">Chief AI Scientist &amp; Ophth.</div>
+</div>
+<button class="p-1 text-on-surface-variant hover:text-primary transition-colors" title="Sign out">
+<span class="material-symbols-outlined">logout</span>
+</button>
+</div>
+</div>
+</div>
+</aside>
+<!-- Global Header (Sticky, 64px, left offset 260px) -->
+<header class="fixed top-0 right-0 left-[260px] h-16 bg-surface-container-lowest border-b border-outline-variant z-20 px-6 flex items-center justify-between shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
+<!-- Left: Breadcrumbs -->
+<div class="flex items-center gap-2.5">
+<span class="font-label-md text-label-md text-on-surface-variant">Clinical AI Model Registry &amp; Empirical Validation Suite</span>
+<span class="text-outline-variant">•</span>
+<span class="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-primary-fixed text-primary border border-outline-variant">
+        15 Models Deployed
+      </span>
+</div>
+<!-- Center: Status Pill -->
+<div class="hidden xl:flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-low border border-outline-variant text-xs text-on-surface-variant font-mono">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+<span class="font-semibold text-on-surface">Online (1.8 Mbps)</span>
+<span class="text-outline-variant">|</span>
+<span>TensorRT Edge Runtime v2.4</span>
+<span class="text-outline-variant">|</span>
+<span class="text-primary-container font-semibold">Active Hardware Acceleration</span>
+</div>
+<!-- Right Actions -->
+<div class="flex items-center gap-3">
+<button class="px-3 py-1.5 border border-outline-variant bg-surface hover:bg-surface-container rounded-lg font-label-md text-label-md text-on-surface flex items-center gap-2 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-outline">tune</span>
+<span>Check Model Checkpoints</span>
+</button>
+<button class="px-4 py-1.5 bg-primary-container hover:bg-primary text-white rounded-lg font-label-md text-label-md font-semibold flex items-center gap-2 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-white">download</span>
+<span>Export Clinical Validation Dossier (PDF)</span>
+</button>
+</div>
+</header>
+<!-- Main Workspace Area -->
+<main class="ml-[260px] mt-16 p-6 space-y-6 flex-1 max-w-[1680px]">
+<!-- Mandatory Clinical Diagnostic Safety Banner -->
+<div class="bg-surface-container-low border-l-4 border-primary-container p-3 rounded-lg flex items-center justify-between gap-4 shadow-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container font-bold text-xl">verified_user</span>
+<div>
+<span class="font-label-md text-label-md font-bold text-primary">STRICT CLINICAL GOVERNANCE PROTOCOL:</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant ml-1">AI-assisted screening assessment • Clinical validation required by Ophthalmologist before tertiary referral handover.</span>
+</div>
+</div>
+<div class="flex items-center gap-2 text-xs text-on-surface-variant font-mono">
+<span>ISO 13485:2016</span>
+<span class="text-outline-variant">•</span>
+<span>CDSCO Class-C Regulated</span>
+</div>
+</div>
+<!-- Page Header & Interactive Navigation Tab Pills -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary tracking-tight">AI Model Registry &amp; Clinical Validation Centre</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">Auditable registry of 15 foundation and task-specific neural models, multi-dataset external validation benchmarks, and field telemetry.</p>
+</div>
+<!-- Segmented Navigation Pills -->
+<div class="flex flex-wrap items-center gap-1.5 p-1 bg-surface-container-high rounded-lg border border-outline-variant">
+<button class="px-3 py-1.5 rounded-md bg-surface-container-lowest text-primary font-label-md text-label-md font-bold shadow-sm flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+          Model Registry (15 Models)
+        </button>
+<button class="px-3 py-1.5 rounded-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container font-label-md text-label-md transition-colors">
+          Validation Metrics (Sens / Spec Targets)
+        </button>
+<button class="px-3 py-1.5 rounded-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container font-label-md text-label-md transition-colors">
+          Benchmark Datasets (5 Datasets)
+        </button>
+<button class="px-3 py-1.5 rounded-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container font-label-md text-label-md transition-colors">
+          Field Device Network (18 Nodes)
+        </button>
+<button class="px-3 py-1.5 rounded-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container font-label-md text-label-md transition-colors">
+          Clinical Governance &amp; Audit
+        </button>
+</div>
+</div>
+<!-- PART 2: CLINICAL VALIDATION DASHBOARD (Target Requirements vs Validated vs Benchmark) -->
+<section class="space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary font-bold">query_stats</span>
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Empirical Clinical Performance Metrics</h2>
+<span class="text-xs text-on-surface-variant font-mono">(Target vs Validated vs External Benchmark)</span>
+</div>
+<span class="text-xs text-on-surface-variant">Cohort: n=2,480 Rural Multi-Center Patients • Last Recalibrated 12h ago</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3.5">
+<!-- Metric Card 1: Referable DR Sensitivity -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-4 shadow-sm hover:border-primary transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between text-xs mb-1">
+<span class="font-label-md text-label-md text-on-surface-variant">Referable DR Sensitivity</span>
+<span class="material-symbols-outlined text-tertiary-container">verified</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-md text-headline-md font-bold text-on-surface font-mono">92.4%</span>
+<span class="text-xs font-mono font-semibold text-tertiary-container">+1.6% vs Base</span>
+</div>
+</div>
+<div class="mt-3 space-y-1.5">
+<div class="w-full bg-surface-container-high rounded-full h-1.5 relative overflow-hidden">
+<div class="bg-tertiary-container h-1.5 rounded-full" style="width: 92.4%"></div>
+<div class="absolute top-0 bottom-0 w-0.5 bg-error" style="left: 90%" title="Mandate Threshold: 90.0%"></div>
+</div>
+<div class="flex justify-between items-center text-[10px] font-mono text-on-surface-variant">
+<span>Target Mandate: &gt;90.0%</span>
+<span>Pub. Base: 90.8%</span>
+</div>
+</div>
+</div>
+<!-- Metric Card 2: Referable DR Specificity -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-4 shadow-sm hover:border-primary transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between text-xs mb-1">
+<span class="font-label-md text-label-md text-on-surface-variant">Referable DR Specificity</span>
+<span class="material-symbols-outlined text-tertiary-container">verified</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-md text-headline-md font-bold text-on-surface font-mono">88.6%</span>
+<span class="text-xs font-mono font-semibold text-tertiary-container">+2.4% vs Base</span>
+</div>
+</div>
+<div class="mt-3 space-y-1.5">
+<div class="w-full bg-surface-container-high rounded-full h-1.5 relative overflow-hidden">
+<div class="bg-primary-container h-1.5 rounded-full" style="width: 88.6%"></div>
+<div class="absolute top-0 bottom-0 w-0.5 bg-error" style="left: 85%" title="Mandate Threshold: 85.0%"></div>
+</div>
+<div class="flex justify-between items-center text-[10px] font-mono text-on-surface-variant">
+<span>Target Mandate: &gt;85.0%</span>
+<span>Pub. Base: 86.2%</span>
+</div>
+</div>
+</div>
+<!-- Metric Card 3: AUROC Curve -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-4 shadow-sm hover:border-primary transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between text-xs mb-1">
+<span class="font-label-md text-label-md text-on-surface-variant">AUROC (ROC-AUC)</span>
+<span class="material-symbols-outlined text-tertiary-container">ssid_chart</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-md text-headline-md font-bold text-on-surface font-mono">0.958</span>
+<span class="text-xs font-mono font-semibold text-tertiary-container">+0.017</span>
+</div>
+</div>
+<div class="mt-3 space-y-1.5">
+<div class="w-full bg-surface-container-high rounded-full h-1.5 relative overflow-hidden">
+<div class="bg-secondary h-1.5 rounded-full" style="width: 95.8%"></div>
+</div>
+<div class="flex justify-between items-center text-[10px] font-mono text-on-surface-variant">
+<span>Target: &gt;0.930</span>
+<span>Benchmark: 0.941</span>
+</div>
+</div>
+</div>
+<!-- Metric Card 4: F1 Score & Precision -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-4 shadow-sm hover:border-primary transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between text-xs mb-1">
+<span class="font-label-md text-label-md text-on-surface-variant">F1 / Recall Balance</span>
+<span class="material-symbols-outlined text-primary">balance</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-md text-headline-md font-bold text-on-surface font-mono">0.892</span>
+<span class="text-[10px] font-mono text-on-surface-variant">F1 Score</span>
+</div>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex justify-between text-[11px] font-mono">
+<div>
+<span class="text-on-surface-variant text-[10px] block">PRECISION</span>
+<span class="font-bold text-on-surface">86.8%</span>
+</div>
+<div class="text-right">
+<span class="text-on-surface-variant text-[10px] block">RECALL</span>
+<span class="font-bold text-tertiary-container">92.4%</span>
+</div>
+</div>
+</div>
+<!-- Metric Card 5: Lesion Segmentation Dice -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-4 shadow-sm hover:border-primary transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between text-xs mb-1">
+<span class="font-label-md text-label-md text-on-surface-variant">Lesion Mask Mean IoU</span>
+<span class="material-symbols-outlined text-secondary">layers</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-md text-headline-md font-bold text-on-surface font-mono">0.742</span>
+<span class="text-[10px] font-mono text-on-surface-variant">mIoU</span>
+</div>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex justify-between text-[11px] font-mono">
+<div>
+<span class="text-on-surface-variant text-[10px] block">MICROANEURYSM</span>
+<span class="font-bold text-on-surface">Dice 0.824</span>
+</div>
+<div class="text-right">
+<span class="text-on-surface-variant text-[10px] block">EXUDATES</span>
+<span class="font-bold text-on-surface">Dice 0.865</span>
+</div>
+</div>
+</div>
+<!-- Metric Card 6: Expected Calibration Error -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-4 shadow-sm hover:border-primary transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between text-xs mb-1">
+<span class="font-label-md text-label-md text-on-surface-variant">Calibration Error (ECE)</span>
+<span class="material-symbols-outlined text-tertiary-container">adjust</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-md text-headline-md font-bold text-on-surface font-mono">0.024</span>
+<span class="text-xs font-mono font-semibold text-tertiary-container">Platt-scaled</span>
+</div>
+</div>
+<div class="mt-3 space-y-1.5">
+<div class="w-full bg-surface-container-high rounded-full h-1.5 relative overflow-hidden">
+<div class="bg-tertiary-container h-1.5 rounded-full" style="width: 48%"></div>
+</div>
+<div class="flex justify-between items-center text-[10px] font-mono text-on-surface-variant">
+<span>Target Mandate: &lt;0.050</span>
+<span class="text-tertiary-container font-semibold">Well-Calibrated</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- PART 1: 15-MODEL COMPREHENSIVE REGISTRY -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary font-bold">account_tree</span>
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Active Production Inference Models (15 Pipeline Nodes)</h2>
+</div>
+<div class="flex items-center gap-3 text-xs text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span> 14 Validated</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-secondary"></span> 1 Active Validation</span>
+<span class="font-mono bg-surface-container-high px-2 py-0.5 rounded text-[11px]">Pipeline End-to-End Latency: 1.18s</span>
+</div>
+</div>
+<!-- Functional Group 1: Quality & Illumination -->
+<div class="space-y-2">
+<div class="flex items-center gap-2 px-1 text-xs font-bold text-primary uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm">filter_vintage</span>
+          Group 1: Pre-Processing, Image Quality &amp; Field Normalization (3 Models)
+        </div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+<!-- Model 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-3.5 shadow-sm hover:border-primary transition-all">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">EFIQA v2.1</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-surface-container-high text-on-surface-variant font-semibold">Edge TensorRT</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Gradability &amp; Quality Filtering</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-mono text-[10px] font-bold">Validated</span>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-outline-variant/60 font-mono text-xs">
+<div>
+<span class="text-[10px] text-on-surface-variant block">LATENCY</span>
+<span class="font-bold text-on-surface">42ms</span>
+</div>
+<div>
+<span class="text-[10px] text-on-surface-variant block">TARGET</span>
+<span class="font-bold text-on-surface">Gradability &gt;90%</span>
+</div>
+<div class="col-span-2">
+<span class="text-[10px] text-on-surface-variant block">BENCHMARK DATASET</span>
+<span class="text-primary font-medium text-[11px]">EyePACS-QA (12,000 scans)</span>
+</div>
+</div>
+</div>
+<!-- Model 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-3.5 shadow-sm hover:border-primary transition-all">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">CUNSB-RFIE v1.4</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-surface-container-high text-on-surface-variant font-semibold">GPU Node</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Illumination Equalization &amp; Contrast</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-mono text-[10px] font-bold">Validated</span>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-outline-variant/60 font-mono text-xs">
+<div>
+<span class="text-[10px] text-on-surface-variant block">LATENCY</span>
+<span class="font-bold text-on-surface">58ms</span>
+</div>
+<div>
+<span class="text-[10px] text-on-surface-variant block">TARGET</span>
+<span class="font-bold text-on-surface">Field Leveling &gt;98%</span>
+</div>
+<div class="col-span-2">
+<span class="text-[10px] text-on-surface-variant block">BENCHMARK DATASET</span>
+<span class="text-primary font-medium text-[11px]">Private Clinical Rural Cohort</span>
+</div>
+</div>
+</div>
+<!-- Model 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-3.5 shadow-sm hover:border-primary transition-all">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">MAXIM v2.0</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-surface-container-high text-on-surface-variant font-semibold">GPU Node</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Image Restoration &amp; Denoising</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-mono text-[10px] font-bold">Validated</span>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-outline-variant/60 font-mono text-xs">
+<div>
+<span class="text-[10px] text-on-surface-variant block">LATENCY</span>
+<span class="font-bold text-on-surface">84ms</span>
+</div>
+<div>
+<span class="text-[10px] text-on-surface-variant block">TARGET</span>
+<span class="font-bold text-on-surface">Micro-vessel PSNR &gt;32dB</span>
+</div>
+<div class="col-span-2">
+<span class="text-[10px] text-on-surface-variant block">BENCHMARK DATASET</span>
+<span class="text-primary font-medium text-[11px]">RealFundus-Noise Synthetics</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Functional Group 2: Foundation & Multimodal Representation -->
+<div class="space-y-2">
+<div class="flex items-center gap-2 px-1 text-xs font-bold text-primary uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm">psychology</span>
+          Group 2: Foundation &amp; Multimodal Representation (3 Models)
+        </div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+<!-- Model 4 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-3.5 shadow-sm hover:border-primary transition-all">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">RETFound-MAE v1.0</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-surface-container-high text-on-surface-variant font-semibold">TensorRT FP16</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Ophthalmic Foundation ViT-Large</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-mono text-[10px] font-bold">Validated</span>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-outline-variant/60 font-mono text-xs">
+<div>
+<span class="text-[10px] text-on-surface-variant block">LATENCY</span>
+<span class="font-bold text-on-surface">120ms</span>
+</div>
+<div>
+<span class="text-[10px] text-on-surface-variant block">PRETRAINING</span>
+<span class="font-bold text-on-surface">1.6M Fundus Scans</span>
+</div>
+<div class="col-span-2">
+<span class="text-[10px] text-on-surface-variant block">BENCHMARK DATASET</span>
+<span class="text-primary font-medium text-[11px]">Nature Pretrained Retina Stack</span>
+</div>
+</div>
+</div>
+<!-- Model 5 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-3.5 shadow-sm hover:border-primary transition-all">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">Luna v1.2</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-surface-container-high text-on-surface-variant font-semibold">TensorRT FP16</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Self-Supervised Latent Encoder</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-mono text-[10px] font-bold">Validated</span>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-outline-variant/60 font-mono text-xs">
+<div>
+<span class="text-[10px] text-on-surface-variant block">LATENCY</span>
+<span class="font-bold text-on-surface">95ms</span>
+</div>
+<div>
+<span class="text-[10px] text-on-surface-variant block">EMBED DIMS</span>
+<span class="font-bold text-on-surface">1024-D Latent</span>
+</div>
+<div class="col-span-2">
+<span class="text-[10px] text-on-surface-variant block">BENCHMARK DATASET</span>
+<span class="text-primary font-medium text-[11px]">DeepDRiD Dual-Field Cohort</span>
+</div>
+</div>
+</div>
+<!-- Model 6 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-3.5 shadow-sm hover:border-primary transition-all">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">RET-CLIP v2.1</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-surface-container-high text-on-surface-variant font-semibold">Edge Server</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Vision-Language Multimodal Grounding</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-mono text-[10px] font-bold">Validated</span>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-outline-variant/60 font-mono text-xs">
+<div>
+<span class="text-[10px] text-on-surface-variant block">LATENCY</span>
+<span class="font-bold text-on-surface">110ms</span>
+</div>
+<div>
+<span class="text-[10px] text-on-surface-variant block">TARGET</span>
+<span class="font-bold text-on-surface">Zero-shot Semantics</span>
+</div>
+<div class="col-span-2">
+<span class="text-[10px] text-on-surface-variant block">BENCHMARK DATASET</span>
+<span class="text-primary font-medium text-[11px]">RetinalVQA &amp; Expert Clinical Notes</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Functional Group 3: Anatomical Landmarks & Vessels -->
+<div class="space-y-2">
+<div class="flex items-center gap-2 px-1 text-xs font-bold text-primary uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm">hub</span>
+          Group 3: Anatomical Landmarks &amp; Vascular Architecture (3 Models)
+        </div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+<!-- Model 7 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-3.5 shadow-sm hover:border-primary transition-all">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">FOVEA / OD Parser v3.0</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-surface-container-high text-on-surface-variant font-semibold">Edge Real-Time</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Landmark Coordinate Localization</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-mono text-[10px] font-bold">Validated</span>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-outline-variant/60 font-mono text-xs">
+<div>
+<span class="text-[10px] text-on-surface-variant block">LATENCY</span>
+<span class="font-bold text-on-surface">34ms</span>
+</div>
+<div>
+<span class="text-[10px] text-on-surface-variant block">ACCURACY</span>
+<span class="font-bold text-on-surface">&lt;50µm Error</span>
+</div>
+<div class="col-span-2">
+<span class="text-[10px] text-on-surface-variant block">BENCHMARK DATASET</span>
+<span class="text-primary font-medium text-[11px]">IDRiD &amp; MESSIDOR Optic Disc GT</span>
+</div>
+</div>
+</div>
+<!-- Model 8 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-3.5 shadow-sm hover:border-primary transition-all">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">OCULARNet v1.8</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-surface-container-high text-on-surface-variant font-semibold">Edge Real-Time</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Geometric Cup-to-Disc Ratio (CDR)</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-mono text-[10px] font-bold">Validated</span>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-outline-variant/60 font-mono text-xs">
+<div>
+<span class="text-[10px] text-on-surface-variant block">LATENCY</span>
+<span class="font-bold text-on-surface">76ms</span>
+</div>
+<div>
+<span class="text-[10px] text-on-surface-variant block">TARGET</span>
+<span class="font-bold text-on-surface">CDR MAE &lt;0.04</span>
+</div>
+<div class="col-span-2">
+<span class="text-[10px] text-on-surface-variant block">BENCHMARK DATASET</span>
+<span class="text-primary font-medium text-[11px]">REFUGE Challenge Benchmark</span>
+</div>
+</div>
+</div>
+<!-- Model 9 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-3.5 shadow-sm hover:border-primary transition-all">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">R2-V2 v2.2</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-surface-container-high text-on-surface-variant font-semibold">Edge Server</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Vascular Topology &amp; Graph Extraction</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-mono text-[10px] font-bold">Validated</span>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-outline-variant/60 font-mono text-xs">
+<div>
+<span class="text-[10px] text-on-surface-variant block">LATENCY</span>
+<span class="font-bold text-on-surface">142ms</span>
+</div>
+<div>
+<span class="text-[10px] text-on-surface-variant block">CONNECTIVITY</span>
+<span class="font-bold text-on-surface">Betti-0 &gt;0.96</span>
+</div>
+<div class="col-span-2">
+<span class="text-[10px] text-on-surface-variant block">BENCHMARK DATASET</span>
+<span class="text-primary font-medium text-[11px]">DRIVE &amp; CHASE_DB1 Combined</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Functional Group 4: Lesion Segmentation & Masks -->
+<div class="space-y-2">
+<div class="flex items-center gap-2 px-1 text-xs font-bold text-primary uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm">gesture</span>
+          Group 4: Lesion Segmentation &amp; Pathological Masking (3 Models)
+        </div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+<!-- Model 10 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-3.5 shadow-sm hover:border-primary transition-all">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">IDRiD Lesion Model v3.1</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-surface-container-high text-on-surface-variant font-semibold">Edge TensorRT</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Microaneurysm &amp; Hemorrhage Pixels</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-mono text-[10px] font-bold">Validated</span>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-outline-variant/60 font-mono text-xs">
+<div>
+<span class="text-[10px] text-on-surface-variant block">LATENCY</span>
+<span class="font-bold text-on-surface">165ms</span>
+</div>
+<div>
+<span class="text-[10px] text-on-surface-variant block">TARGET AUPR</span>
+<span class="font-bold text-on-surface">&gt;0.85 (AUPR 0.88)</span>
+</div>
+<div class="col-span-2">
+<span class="text-[10px] text-on-surface-variant block">BENCHMARK DATASET</span>
+<span class="text-primary font-medium text-[11px]">IDRiD Ground Truth Benchmark</span>
+</div>
+</div>
+</div>
+<!-- Model 11 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-3.5 shadow-sm hover:border-primary transition-all">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">FundusExpert-Seg v2.0</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-surface-container-high text-on-surface-variant font-semibold">GPU Node</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Dense Hard Exudates &amp; Edema Masks</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-mono text-[10px] font-bold">Validated</span>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-outline-variant/60 font-mono text-xs">
+<div>
+<span class="text-[10px] text-on-surface-variant block">LATENCY</span>
+<span class="font-bold text-on-surface">210ms</span>
+</div>
+<div>
+<span class="text-[10px] text-on-surface-variant block">EXUDATES DICE</span>
+<span class="font-bold text-on-surface">0.865</span>
+</div>
+<div class="col-span-2">
+<span class="text-[10px] text-on-surface-variant block">BENCHMARK DATASET</span>
+<span class="text-primary font-medium text-[11px]">DeepDRiD &amp; DDR Multi-Center</span>
+</div>
+</div>
+</div>
+<!-- Model 12 (Active Validation) -->
+<div class="bg-surface-container-lowest border-2 border-secondary/40 rounded-lg p-3.5 shadow-sm hover:border-secondary transition-all">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">SAM2 + Retinal LoRA v1.1</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-secondary-fixed text-on-secondary-fixed font-semibold">Edge Active</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Boundary Contour Refinement</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary text-white font-mono text-[10px] font-bold animate-pulse">Active Validation</span>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-outline-variant/60 font-mono text-xs">
+<div>
+<span class="text-[10px] text-on-surface-variant block">LATENCY</span>
+<span class="font-bold text-on-surface">240ms</span>
+</div>
+<div>
+<span class="text-[10px] text-on-surface-variant block">CONTOUR IOU</span>
+<span class="font-bold text-secondary">0.781 (Beta)</span>
+</div>
+<div class="col-span-2">
+<span class="text-[10px] text-on-surface-variant block">BENCHMARK DATASET</span>
+<span class="text-primary font-medium text-[11px]">Indore District Trial (Active n=650)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Functional Group 5: Disease Staging & Biomarkers -->
+<div class="space-y-2">
+<div class="flex items-center gap-2 px-1 text-xs font-bold text-primary uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm">clinical_notes</span>
+          Group 5: Disease Staging, Triage Classification &amp; Biomarkers (3 Models)
+        </div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+<!-- Model 13 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-3.5 shadow-sm hover:border-primary transition-all">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">DR 5-Stage Grading v4.2</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-surface-container-high text-on-surface-variant font-semibold">TensorRT Edge</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">ICDR Staging ResNet / ConvNeXt</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-mono text-[10px] font-bold">Validated</span>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-outline-variant/60 font-mono text-xs">
+<div>
+<span class="text-[10px] text-on-surface-variant block">LATENCY</span>
+<span class="font-bold text-on-surface">88ms</span>
+</div>
+<div>
+<span class="text-[10px] text-on-surface-variant block">QUADRATIC KAPPA</span>
+<span class="font-bold text-on-surface">κ = 0.912</span>
+</div>
+<div class="col-span-2">
+<span class="text-[10px] text-on-surface-variant block">BENCHMARK DATASET</span>
+<span class="text-primary font-medium text-[11px]">EyePACS &amp; APTOS Multi-Site</span>
+</div>
+</div>
+</div>
+<!-- Model 14 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-3.5 shadow-sm hover:border-primary transition-all">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">Referable-DR Triage v3.5</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-surface-container-high text-on-surface-variant font-semibold">Edge Ultra-Fast</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Binary High-Risk Classifier (RDR)</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-mono text-[10px] font-bold">Validated</span>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-outline-variant/60 font-mono text-xs">
+<div>
+<span class="text-[10px] text-on-surface-variant block">LATENCY</span>
+<span class="font-bold text-on-surface">45ms</span>
+</div>
+<div>
+<span class="text-[10px] text-on-surface-variant block">SENS / SPEC</span>
+<span class="font-bold text-tertiary-container">92.4% / 88.6%</span>
+</div>
+<div class="col-span-2">
+<span class="text-[10px] text-on-surface-variant block">BENCHMARK DATASET</span>
+<span class="text-primary font-medium text-[11px]">District Multi-Center Blinded Cohort</span>
+</div>
+</div>
+</div>
+<!-- Model 15 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-3.5 shadow-sm hover:border-primary transition-all">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">AutoMorph v2.0</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-surface-container-high text-on-surface-variant font-semibold">Edge Server</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Vascular Tortuosity &amp; Caliber Indexes</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-mono text-[10px] font-bold">Validated</span>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-outline-variant/60 font-mono text-xs">
+<div>
+<span class="text-[10px] text-on-surface-variant block">LATENCY</span>
+<span class="font-bold text-on-surface">180ms</span>
+</div>
+<div>
+<span class="text-[10px] text-on-surface-variant block">BIOMARKERS</span>
+<span class="font-bold text-on-surface">AVR, Tortuosity Index</span>
+</div>
+<div class="col-span-2">
+<span class="text-[10px] text-on-surface-variant block">BENCHMARK DATASET</span>
+<span class="text-primary font-medium text-[11px]">UK Biobank &amp; Inspur Cohort</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- PART 3: 5 MAJOR RETINAL BENCHMARK DATASET CARDS -->
+<section class="space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary font-bold">dataset</span>
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Standard Multi-Center Retinal Benchmark Datasets (5 Datasets)</h2>
+</div>
+<span class="text-xs text-on-surface-variant font-mono">Total External Validation Scans: 96,112</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3.5">
+<!-- Dataset 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 shadow-sm hover:border-primary transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-mono text-[10px] font-bold px-1.5 py-0.5 bg-primary-fixed text-primary rounded">INDIA SPECIFIC</span>
+<span class="material-symbols-outlined text-tertiary-container text-sm">check_circle</span>
+</div>
+<h3 class="font-label-lg text-label-lg font-bold text-on-surface">IDRiD</h3>
+<p class="text-[11px] text-on-surface-variant mt-1">Indian Diabetic Retinopathy Image Dataset</p>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant/60 font-mono text-[11px] space-y-1">
+<div class="flex justify-between text-on-surface">
+<span class="text-on-surface-variant">Volume:</span>
+<span class="font-bold">516 Scans</span>
+</div>
+<div class="flex justify-between text-on-surface">
+<span class="text-on-surface-variant">Resolution:</span>
+<span>4288 × 2848</span>
+</div>
+<div class="flex justify-between text-on-surface">
+<span class="text-on-surface-variant">Annotation:</span>
+<span class="text-tertiary-container font-semibold">Pixel Lesions</span>
+</div>
+<div class="mt-2 text-[10px] text-outline pt-1">Rural Indian Clinical Cohort</div>
+</div>
+</div>
+<!-- Dataset 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 shadow-sm hover:border-primary transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-mono text-[10px] font-bold px-1.5 py-0.5 bg-surface-container-high text-on-surface rounded">TELE-SCREENING</span>
+<span class="material-symbols-outlined text-tertiary-container text-sm">check_circle</span>
+</div>
+<h3 class="font-label-lg text-label-lg font-bold text-on-surface">EyePACS</h3>
+<p class="text-[11px] text-on-surface-variant mt-1">Primary Diabetic Retinopathy Baseline</p>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant/60 font-mono text-[11px] space-y-1">
+<div class="flex justify-between text-on-surface">
+<span class="text-on-surface-variant">Volume:</span>
+<span class="font-bold">88,702 Scans</span>
+</div>
+<div class="flex justify-between text-on-surface">
+<span class="text-on-surface-variant">Staging:</span>
+<span>5-Class ICDR</span>
+</div>
+<div class="flex justify-between text-on-surface">
+<span class="text-on-surface-variant">Cameras:</span>
+<span class="text-on-surface font-semibold">Centervue, Topcon</span>
+</div>
+<div class="mt-2 text-[10px] text-outline pt-1">Real-World Community Noise</div>
+</div>
+</div>
+<!-- Dataset 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 shadow-sm hover:border-primary transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-mono text-[10px] font-bold px-1.5 py-0.5 bg-surface-container-high text-on-surface rounded">DUAL FIELD</span>
+<span class="material-symbols-outlined text-tertiary-container text-sm">check_circle</span>
+</div>
+<h3 class="font-label-lg text-label-lg font-bold text-on-surface">DeepDRiD</h3>
+<p class="text-[11px] text-on-surface-variant mt-1">Longitudinal Diabetic Retinopathy</p>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant/60 font-mono text-[11px] space-y-1">
+<div class="flex justify-between text-on-surface">
+<span class="text-on-surface-variant">Volume:</span>
+<span class="font-bold">2,000 Scans</span>
+</div>
+<div class="flex justify-between text-on-surface">
+<span class="text-on-surface-variant">Modality:</span>
+<span>Macular + Disc</span>
+</div>
+<div class="flex justify-between text-on-surface">
+<span class="text-on-surface-variant">Tracking:</span>
+<span class="text-tertiary-container font-semibold">Time-Series (12mo)</span>
+</div>
+<div class="mt-2 text-[10px] text-outline pt-1">Progression Dynamics Benchmark</div>
+</div>
+</div>
+<!-- Dataset 4 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 shadow-sm hover:border-primary transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-mono text-[10px] font-bold px-1.5 py-0.5 bg-surface-container-high text-on-surface rounded">EUROPEAN CLINICAL</span>
+<span class="material-symbols-outlined text-tertiary-container text-sm">check_circle</span>
+</div>
+<h3 class="font-label-lg text-label-lg font-bold text-on-surface">Messidor-1 &amp; 2</h3>
+<p class="text-[11px] text-on-surface-variant mt-1">Multi-Center Academic Reference</p>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant/60 font-mono text-[11px] space-y-1">
+<div class="flex justify-between text-on-surface">
+<span class="text-on-surface-variant">Volume:</span>
+<span class="font-bold">2,948 Scans</span>
+</div>
+<div class="flex justify-between text-on-surface">
+<span class="text-on-surface-variant">Institutions:</span>
+<span>3 French Hospitals</span>
+</div>
+<div class="flex justify-between text-on-surface">
+<span class="text-on-surface-variant">Consensus:</span>
+<span class="text-tertiary-container font-semibold">Triple-Read Ground</span>
+</div>
+<div class="mt-2 text-[10px] text-outline pt-1">Rigorous Clinical Gold Standard</div>
+</div>
+</div>
+<!-- Dataset 5 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 shadow-sm hover:border-primary transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-mono text-[10px] font-bold px-1.5 py-0.5 bg-primary-fixed text-primary rounded">RURAL ASIA</span>
+<span class="material-symbols-outlined text-tertiary-container text-sm">check_circle</span>
+</div>
+<h3 class="font-label-lg text-label-lg font-bold text-on-surface">APTOS 2019</h3>
+<p class="text-[11px] text-on-surface-variant mt-1">Blindness Detection Challenge</p>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant/60 font-mono text-[11px] space-y-1">
+<div class="flex justify-between text-on-surface">
+<span class="text-on-surface-variant">Volume:</span>
+<span class="font-bold">3,662 Scans</span>
+</div>
+<div class="flex justify-between text-on-surface">
+<span class="text-on-surface-variant">Domain:</span>
+<span>Aravind Eye Hospital</span>
+</div>
+<div class="flex justify-between text-on-surface">
+<span class="text-on-surface-variant">Distribution:</span>
+<span class="text-tertiary-container font-semibold">Diverse Severity</span>
+</div>
+<div class="mt-2 text-[10px] text-outline pt-1">Rural Camp Screening Conditions</div>
+</div>
+</div>
+</div>
+</section>
+<!-- PART 4: FIELD DEVICE NETWORK & CLINICAL GOVERNANCE SUMMARY -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+<!-- Left 2 Cols: Field Device Network Telemetry -->
+<div class="lg:col-span-2 bg-surface-container-lowest border border-outline-variant rounded-lg p-4 shadow-sm space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary font-bold">devices</span>
+<h3 class="font-label-lg text-label-lg font-bold text-on-surface">Field Hardware Network Telemetry</h3>
+</div>
+<div class="flex items-center gap-2 font-mono text-xs">
+<span class="text-tertiary-container font-semibold">● 99.2% Device Health</span>
+<span class="text-outline-variant">•</span>
+<span class="text-on-surface-variant">18 Active Hardware Nodes</span>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+<div class="p-3 bg-surface-container-low rounded-lg border border-outline-variant/60">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase">Connected Cameras</div>
+<div class="font-headline-sm text-headline-sm font-bold text-on-surface font-mono mt-0.5">18 Units</div>
+<div class="text-[11px] text-on-surface-variant mt-1">Remidio FOP NM-10 (8), Forus 3Nethra (6), Eyenuk (4)</div>
+</div>
+<div class="p-3 bg-surface-container-low rounded-lg border border-outline-variant/60">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase">Deployed Screening Centers</div>
+<div class="font-headline-sm text-headline-sm font-bold text-on-surface font-mono mt-0.5">5 PHC Nodes</div>
+<div class="text-[11px] text-on-surface-variant mt-1">Rau, Depalpur, Betma, Sanwer, Mhow</div>
+</div>
+<div class="p-3 bg-surface-container-low rounded-lg border border-outline-variant/60">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase">Network Latency</div>
+<div class="font-headline-sm text-headline-sm font-bold text-tertiary-container font-mono mt-0.5">88ms avg</div>
+<div class="text-[11px] text-on-surface-variant mt-1">Local Edge Inference w/ Central Sync</div>
+</div>
+</div>
+<!-- Node Status Mini Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left font-mono text-xs">
+<thead>
+<tr class="text-[10px] text-on-surface-variant uppercase border-b border-outline-variant/60">
+<th class="py-1.5">Center Node</th>
+<th class="py-1.5">Hardware Rig</th>
+<th class="py-1.5">Edge Runtime</th>
+<th class="py-1.5">Gradability Rate</th>
+<th class="py-1.5 text-right">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/40">
+<tr>
+<td class="py-2 font-bold text-on-surface">PHC Rau #01</td>
+<td class="py-2 text-on-surface-variant">Remidio FOP NM-10</td>
+<td class="py-2 text-on-surface-variant">Jetson Orin 64GB</td>
+<td class="py-2 text-on-surface font-semibold">94.8%</td>
+<td class="py-2 text-right"><span class="px-1.5 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold">Online</span></td>
+</tr>
+<tr>
+<td class="py-2 font-bold text-on-surface">PHC Depalpur #04</td>
+<td class="py-2 text-on-surface-variant">Forus 3Nethra Classic</td>
+<td class="py-2 text-on-surface-variant">TensorRT Mini PC</td>
+<td class="py-2 text-on-surface font-semibold">91.2%</td>
+<td class="py-2 text-right"><span class="px-1.5 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold">Online</span></td>
+</tr>
+<tr>
+<td class="py-2 font-bold text-on-surface">CHC Mhow Station #02</td>
+<td class="py-2 text-on-surface-variant">Remidio Smartphone Fundus</td>
+<td class="py-2 text-on-surface-variant">Jetson Nano Edge</td>
+<td class="py-2 text-on-surface font-semibold">89.6%</td>
+<td class="py-2 text-right"><span class="px-1.5 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold">Syncing</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Right 1 Col: Governance & Quick Export Action -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 shadow-sm flex flex-col justify-between space-y-4">
+<div>
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary font-bold">gavel</span>
+<h3 class="font-label-lg text-label-lg font-bold text-on-surface">Clinical Governance Credentials</h3>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            All models are registered under India CDSCO Medical Device Rules (Class-C AI Software as a Medical Device). Regular drift audits performed weekly against blinded re-reads.
+          </p>
+<div class="mt-3 space-y-2 font-mono text-xs">
+<div class="p-2 rounded bg-surface-container-low border border-outline-variant/60 flex items-center justify-between">
+<span class="text-on-surface-variant">CDSCO Filing Ref:</span>
+<span class="font-bold text-primary">MD-AI-2024-8819</span>
+</div>
+<div class="p-2 rounded bg-surface-container-low border border-outline-variant/60 flex items-center justify-between">
+<span class="text-on-surface-variant">ABDM Milestone:</span>
+<span class="font-bold text-tertiary-container">M3 Certified (FHIR R4)</span>
+</div>
+<div class="p-2 rounded bg-surface-container-low border border-outline-variant/60 flex items-center justify-between">
+<span class="text-on-surface-variant">Inter-Observer Kappa:</span>
+<span class="font-bold text-on-surface">κ = 0.89 (3-Specialist)</span>
+</div>
+</div>
+</div>
+<!-- Quick Action Export Bar -->
+<div class="pt-2 border-t border-outline-variant/60 space-y-2">
+<button class="w-full py-2 px-3 bg-surface-container-high hover:bg-surface-container-highest text-on-surface rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 border border-outline-variant transition-colors">
+<span class="material-symbols-outlined text-primary">file_present</span>
+<span>Generate ROC Curve Analysis Package</span>
+</button>
+<button class="w-full py-2 px-3 bg-primary hover:bg-primary-container text-white rounded-lg font-label-md text-label-md font-semibold flex items-center justify-center gap-2 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-white">share</span>
+<span>Export Bilingual ABDM Screening Dossier (FHIR R4)</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Notification Toast for Interactive Feedback -->
+<div class="fixed bottom-6 right-6 bg-inverse-surface text-inverse-on-surface px-4 py-2.5 rounded-lg shadow-lg font-body-sm text-body-sm hidden items-center gap-2 z-50" id="toast">
+<span class="material-symbols-outlined text-tertiary-fixed">check_circle</span>
+<span id="toast-message">Action processed successfully</span>
+</div>
+<script>
+    // Micro-interactions for Buttons & Toast notifications
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toast-message');
+
+    function showToast(msg) {
+      toastMessage.textContent = msg;
+      toast.classList.remove('hidden');
+      toast.classList.add('flex');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+        toast.classList.remove('flex');
+      }, 3000);
+    }
+
+    document.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const text = btn.innerText.trim();
+        if (text.includes('Export Clinical Validation Dossier')) {
+          showToast('Generating Clinical Validation Dossier (PDF)... 15 models included');
+        } else if (text.includes('Check Model Checkpoints')) {
+          showToast('All 15 model SHA-256 checkpoints verified against registry');
+        } else if (text.includes('Export Bilingual ABDM Screening Dossier')) {
+          showToast('FHIR R4 DiagnosticReport exported in English & Hindi');
+        } else if (text.includes('Generate ROC Curve Analysis Package')) {
+          showToast('ROC Curve calibration raw data exported (CSV / SVG)');
+        }
+      });
+    });
+  </script>
+</body></html>

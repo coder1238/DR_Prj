@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RetinaCare AI — Clinical Workspace Access</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Fonts: Inter & Public Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Public+Sans:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary": "#002e1d",
+            "on-primary-fixed-variant": "#572ba0",
+            "primary": "#340075",
+            "surface-variant": "#e3e1e8",
+            "surface": "#faf8ff",
+            "inverse-surface": "#2f3035",
+            "primary-container": "#4c1d95",
+            "on-secondary-fixed": "#25005a",
+            "surface-container-low": "#f4f3fa",
+            "secondary": "#712ae2",
+            "surface-dim": "#dbd9e0",
+            "surface-tint": "#6f46b9",
+            "background": "#faf8ff",
+            "surface-container-high": "#e9e7ee",
+            "on-primary-container": "#b994ff",
+            "surface-container-highest": "#e3e1e8",
+            "tertiary-container": "#00462f",
+            "on-surface-variant": "#4a4452",
+            "on-secondary": "#ffffff",
+            "on-background": "#1a1b20",
+            "error-container": "#ffdad6",
+            "primary-fixed-dim": "#d3bbff",
+            "on-tertiary-fixed-variant": "#005137",
+            "on-primary": "#ffffff",
+            "inverse-on-surface": "#f2f0f7",
+            "surface-container": "#efedf4",
+            "on-error-container": "#93000a",
+            "outline": "#7b7483",
+            "primary-fixed": "#ebdcff",
+            "surface-container-lowest": "#ffffff",
+            "tertiary-fixed": "#85f8c4",
+            "inverse-primary": "#d3bbff",
+            "on-secondary-container": "#fffbff",
+            "secondary-fixed-dim": "#d2bbff",
+            "on-tertiary-fixed": "#002114",
+            "on-surface": "#1a1b20",
+            "on-error": "#ffffff",
+            "error": "#ba1a1a",
+            "secondary-fixed": "#eaddff",
+            "secondary-container": "#8a4cfc",
+            "on-tertiary-container": "#44bb8b",
+            "on-secondary-fixed-variant": "#5a00c6",
+            "on-tertiary": "#ffffff",
+            "outline-variant": "#ccc3d4",
+            "tertiary-fixed-dim": "#68dba9",
+            "on-primary-fixed": "#260059",
+            "surface-bright": "#faf8ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "margin": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2rem",
+            "space-lg": "1.5rem",
+            "gutter": "1rem"
+          },
+          "fontFamily": {
+            "label-lg": ["Public Sans", "sans-serif"],
+            "label-sm": ["Public Sans", "sans-serif"],
+            "headline-md": ["Inter", "sans-serif"],
+            "headline-sm": ["Inter", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"],
+            "headline-lg": ["Inter", "sans-serif"],
+            "body-sm": ["Inter", "sans-serif"],
+            "label-md": ["Public Sans", "sans-serif"],
+            "body-lg": ["Inter", "sans-serif"]
+          },
+          "fontSize": {
+            "label-lg": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "fontWeight": "600" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-lg": ["30px", { "lineHeight": "38px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "label-md": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      vertical-align: middle;
+      display: inline-block;
+    }
+    .optical-vessel-glow {
+      filter: drop-shadow(0 0 6px rgba(185, 148, 255, 0.45));
+    }
+    .fundus-radial-overlay {
+      background: radial-gradient(circle at center, rgba(113, 42, 226, 0.15) 0%, rgba(52, 0, 117, 0.08) 50%, rgba(11, 17, 32, 0.95) 80%);
+    }
+    @keyframes pulse-slow {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.02); }
+    }
+    .animate-pulse-optical {
+      animation: pulse-slow 6s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased overflow-hidden select-none min-h-screen">
+<div class="flex flex-col lg:flex-row w-screen h-screen">
+<!-- LEFT 55%: Retinal Intelligence Canvas & Telemetry Visualization -->
+<div class="relative hidden lg:flex lg:w-[55%] xl:w-[54%] bg-[#0B1120] flex-col justify-between p-8 xl:p-10 border-r border-[#1E293B] overflow-hidden">
+<!-- Background Ambient Glow & Precision Grid -->
+<div class="absolute inset-0 pointer-events-none opacity-40 bg-[radial-gradient(#340075_1px,transparent_1px)] [background-size:24px_24px]"></div>
+<div class="absolute -top-32 -left-32 w-96 h-96 bg-primary-container rounded-full filter blur-[100px] opacity-35"></div>
+<div class="absolute bottom-10 right-0 w-80 h-80 bg-secondary rounded-full filter blur-[120px] opacity-20"></div>
+<!-- Top Branding Section -->
+<div class="relative z-10">
+<div class="flex items-center gap-3 mb-3">
+<div class="w-10 h-10 rounded-xl bg-primary-container border border-primary-fixed/30 flex items-center justify-center shadow-lg shadow-primary/40">
+<span class="material-symbols-outlined text-primary-fixed text-2xl" data-icon="visibility">visibility</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm tracking-tight text-white font-bold">RetinaCare AI</span>
+<span class="px-2 py-0.5 rounded-full bg-primary/60 border border-primary-fixed-dim/30 text-primary-fixed-dim font-label-sm text-label-sm tracking-wide">PHC CLINICAL SUITE</span>
+</div>
+<span class="font-body-sm text-body-sm text-[#94A3B8]">National Tele-Ophthalmology Decision Support Network</span>
+</div>
+</div>
+<p class="font-headline-md text-headline-md font-semibold text-white tracking-tight leading-snug max-w-xl">
+          See Earlier. Explain Clearly. Refer Smarter.
+        </p>
+<p class="font-body-md text-body-md text-[#94A3B8] mt-1 max-w-lg">
+          AI-Powered Smart Diabetic Retinopathy Screening &amp; Clinical Decision Support for Rural &amp; District Healthcare
+        </p>
+</div>
+<!-- Centerpiece: Stylized Retinal Fundus Optical Canvas -->
+<div class="relative z-10 flex-1 flex items-center justify-center my-4">
+<div class="relative w-[340px] h-[340px] xl:w-[380px] xl:h-[380px] rounded-full border border-secondary/30 fundus-radial-overlay flex items-center justify-center animate-pulse-optical">
+<!-- Concentric Optical Scan Rings -->
+<div class="absolute inset-4 rounded-full border border-secondary-container/20"></div>
+<div class="absolute inset-12 rounded-full border border-dashed border-primary-fixed/25"></div>
+<div class="absolute inset-24 rounded-full border border-primary-fixed/15"></div>
+<!-- Precision Technical Reticle & Axes -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="w-full h-[1px] bg-gradient-to-r from-transparent via-primary-fixed-dim/30 to-transparent"></div>
+<div class="h-full w-[1px] bg-gradient-to-b from-transparent via-primary-fixed-dim/30 to-transparent absolute"></div>
+</div>
+<!-- Stylized Vascular Branching Tree (Anatomical Arterioles & Venules) -->
+<svg class="absolute inset-0 w-full h-full optical-vessel-glow" fill="none" viewbox="0 0 400 400">
+<!-- Central Optic Disc Origin -->
+<circle cx="280" cy="205" fill="#340075" fill-opacity="0.4" r="32" stroke="#B994FF" stroke-dasharray="2 2" stroke-width="1.5"></circle>
+<circle cx="280" cy="205" fill="#712AE2" fill-opacity="0.5" r="16"></circle>
+<circle cx="280" cy="205" fill="#FFFFFF" r="4"></circle>
+<!-- Superior Temporal Arcade -->
+<path d="M280 189 C270 140, 220 90, 160 85 C120 82, 85 105, 55 130" opacity="0.85" stroke="#B994FF" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.6"></path>
+<path d="M220 90 C200 65, 170 55, 140 50" opacity="0.7" stroke="#8A4CFC" stroke-linecap="round" stroke-width="1.5"></path>
+<path d="M160 85 C140 105, 120 125, 95 130" opacity="0.6" stroke="#D3BBFF" stroke-linecap="round" stroke-width="1.2"></path>
+<!-- Inferior Temporal Arcade -->
+<path d="M280 221 C265 270, 215 315, 155 318 C110 320, 75 290, 48 260" opacity="0.85" stroke="#B994FF" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.6"></path>
+<path d="M215 315 C190 340, 155 348, 120 350" opacity="0.7" stroke="#8A4CFC" stroke-linecap="round" stroke-width="1.4"></path>
+<path d="M155 318 C135 295, 115 280, 85 275" opacity="0.6" stroke="#D3BBFF" stroke-linecap="round" stroke-width="1.2"></path>
+<!-- Nasal Vessels -->
+<path d="M296 200 C330 185, 355 170, 380 165" opacity="0.75" stroke="#B994FF" stroke-linecap="round" stroke-width="1.8"></path>
+<path d="M296 210 C330 225, 355 240, 385 248" opacity="0.75" stroke="#8A4CFC" stroke-linecap="round" stroke-width="1.8"></path>
+<!-- Macular Foveal Avascular Zone Indicator -->
+<circle cx="190" cy="205" fill="none" opacity="0.8" r="14" stroke="#68DBA9" stroke-dasharray="3 3" stroke-width="1"></circle>
+<circle cx="190" cy="205" fill="#68DBA9" r="2"></circle>
+</svg>
+<!-- Precision Telemetry Callouts -->
+<div class="absolute top-6 left-6 px-2.5 py-1 rounded bg-[#0F172A]/90 border border-primary/40 text-[10px] font-mono text-[#CBD5E1] shadow">
+<span class="text-tertiary-fixed-dim font-bold">LAT:</span> 14°N • <span class="text-tertiary-fixed-dim font-bold">FOV:</span> 45°
+          </div>
+<div class="absolute bottom-6 left-6 px-2.5 py-1 rounded bg-[#0F172A]/90 border border-primary/40 text-[10px] font-mono text-[#CBD5E1] shadow">
+<span class="text-secondary-fixed-dim font-bold">OPTIC DISC:</span> +3.2mm • <span class="text-secondary-fixed-dim font-bold">FOVEA:</span> -0.4mm
+          </div>
+<div class="absolute top-6 right-6 px-2.5 py-1 rounded bg-[#0F172A]/90 border border-primary/40 text-[10px] font-mono text-[#CBD5E1] shadow flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-[#68DBA9] animate-ping"></span>
+<span>ILLUM: 880nm NIR</span>
+</div>
+<div class="absolute bottom-6 right-6 px-2.5 py-1 rounded bg-[#0F172A]/90 border border-primary/40 text-[10px] font-mono text-[#CBD5E1] shadow flex items-center gap-2">
+<span>SCALE:</span>
+<div class="w-8 h-[2px] bg-white relative">
+<span class="absolute -top-1 left-0 w-[1px] h-2 bg-white"></span>
+<span class="absolute -top-1 right-0 w-[1px] h-2 bg-white"></span>
+</div>
+<span>1mm</span>
+</div>
+</div>
+</div>
+<!-- Clinical Workflow Pipeline Indicator -->
+<div class="relative z-10 bg-[#0F172A]/80 border border-[#1E293B] rounded-xl p-3.5 backdrop-blur-sm">
+<div class="flex items-center justify-between mb-2.5 px-1">
+<span class="font-label-sm text-label-sm text-[#94A3B8] tracking-wider uppercase">End-to-End Clinical Decision Pathway</span>
+<span class="font-label-sm text-label-sm text-tertiary-fixed-dim flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="check_circle">check_circle</span>
+            AI Inference v2.8 Ready
+          </span>
+</div>
+<div class="grid grid-cols-5 gap-2 text-center relative">
+<!-- Step 1 -->
+<div class="flex flex-col items-center">
+<div class="w-7 h-7 rounded-lg bg-primary text-white font-label-sm text-label-sm flex items-center justify-center border border-primary-fixed/40">
+              01
+            </div>
+<span class="font-label-sm text-label-sm text-white mt-1.5 font-medium">Capture</span>
+<span class="text-[9px] text-[#94A3B8]">Fundus 45°</span>
+</div>
+<!-- Step 2 -->
+<div class="flex flex-col items-center">
+<div class="w-7 h-7 rounded-lg bg-primary-container text-primary-fixed font-label-sm text-label-sm flex items-center justify-center border border-secondary/40 ring-2 ring-secondary/20">
+              02
+            </div>
+<span class="font-label-sm text-label-sm text-primary-fixed mt-1.5 font-medium">Analyze</span>
+<span class="text-[9px] text-[#94A3B8]">Deep DR Model</span>
+</div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center">
+<div class="w-7 h-7 rounded-lg bg-[#1E293B] text-[#94A3B8] font-label-sm text-label-sm flex items-center justify-center border border-slate-700">
+              03
+            </div>
+<span class="font-label-sm text-label-sm text-[#94A3B8] mt-1.5">Explain</span>
+<span class="text-[9px] text-[#64748B]">Lesion Maps</span>
+</div>
+<!-- Step 4 -->
+<div class="flex flex-col items-center">
+<div class="w-7 h-7 rounded-lg bg-[#1E293B] text-[#94A3B8] font-label-sm text-label-sm flex items-center justify-center border border-slate-700">
+              04
+            </div>
+<span class="font-label-sm text-label-sm text-[#94A3B8] mt-1.5">Review</span>
+<span class="text-[9px] text-[#64748B]">Clinician Sign</span>
+</div>
+<!-- Step 5 -->
+<div class="flex flex-col items-center">
+<div class="w-7 h-7 rounded-lg bg-[#1E293B] text-[#94A3B8] font-label-sm text-label-sm flex items-center justify-center border border-slate-700">
+              05
+            </div>
+<span class="font-label-sm text-label-sm text-[#94A3B8] mt-1.5">Refer</span>
+<span class="text-[9px] text-[#64748B]">ABDM Tele-Link</span>
+</div>
+</div>
+</div>
+<!-- Edge Deployment Telemetry Badge -->
+<div class="relative z-10 mt-3 pt-3 border-t border-[#1E293B] flex items-center justify-between text-[#94A3B8] font-body-sm text-body-sm">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+<span>Deployable to Primary Health Centres (PHCs) • 100% Offline-Capable</span>
+</div>
+<div class="text-[11px] font-mono text-[#CBD5E1]">EDGE NODE #IND-042</div>
+</div>
+</div>
+<!-- RIGHT 45%: Clinical Authentication & Access Portal -->
+<div class="flex-1 w-full lg:w-[45%] xl:w-[46%] bg-surface flex flex-col justify-between overflow-y-auto">
+<!-- Facility Header Banner -->
+<div class="w-full bg-surface-container-low border-b border-outline-variant px-6 py-3 flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-6 h-6 rounded bg-primary-fixed text-primary flex items-center justify-center font-bold text-xs">
+<span class="material-symbols-outlined text-sm" data-icon="apartment">apartment</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-on-surface font-semibold leading-tight">National Health Mission • Madhya Pradesh</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant text-[11px] leading-tight">District Network: Indore Region (Zone-4)</div>
+</div>
+</div>
+<div class="flex items-center gap-1.5 bg-surface-container-highest px-2.5 py-1 rounded-full border border-outline-variant/60">
+<span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Node Sync: Active</span>
+</div>
+</div>
+<!-- Main Login Form Area -->
+<div class="max-w-md w-full mx-auto px-6 py-6 lg:py-8 flex flex-col justify-center flex-1">
+<!-- Header -->
+<div class="mb-5">
+<div class="flex items-center gap-2 text-primary font-label-md text-label-md uppercase tracking-wider mb-1">
+<span class="material-symbols-outlined text-base" data-icon="lock">lock</span>
+            Secure Clinical Gateway
+          </div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface tracking-tight">
+            Clinical Workspace Access
+          </h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+            Sign in to access patient screening and diagnostic CDS
+          </p>
+</div>
+<!-- Role Selector Tabs -->
+<div class="mb-5">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1.5">Authorized Practitioner Role</label>
+<div class="grid grid-cols-2 sm:grid-cols-2 gap-1.5 p-1 bg-surface-container rounded-lg border border-outline-variant/70">
+<!-- Active Tab: Health Worker -->
+<button class="py-2 px-2.5 rounded bg-surface-container-lowest text-primary font-label-md text-label-md shadow-sm border border-outline-variant flex items-center justify-center gap-1.5 transition-all" type="button">
+<span class="material-symbols-outlined text-sm" data-icon="medical_services">medical_services</span>
+<span>Health Worker (PHC)</span>
+</button>
+<!-- Inactive Tab: Ophthalmologist -->
+<button class="py-2 px-2.5 rounded hover:bg-surface-container-high text-on-surface-variant font-label-md text-label-md flex items-center justify-center gap-1.5 transition-all" type="button">
+<span class="material-symbols-outlined text-sm" data-icon="visibility">visibility</span>
+<span>Ophthalmologist</span>
+</button>
+<!-- Inactive Tab: District Admin -->
+<button class="py-2 px-2.5 rounded hover:bg-surface-container-high text-on-surface-variant font-label-md text-label-md flex items-center justify-center gap-1.5 transition-all" type="button">
+<span class="material-symbols-outlined text-sm" data-icon="domain">domain</span>
+<span>District Admin</span>
+</button>
+<!-- Inactive Tab: System Admin -->
+<button class="py-2 px-2.5 rounded hover:bg-surface-container-high text-on-surface-variant font-label-md text-label-md flex items-center justify-center gap-1.5 transition-all" type="button">
+<span class="material-symbols-outlined text-sm" data-icon="tune">tune</span>
+<span>System Admin</span>
+</button>
+</div>
+</div>
+<!-- Credentials Form -->
+<form class="space-y-4" onsubmit="event.preventDefault();">
+<!-- Healthcare Worker ID -->
+<div>
+<div class="flex items-center justify-between mb-1">
+<label class="font-label-md text-label-md text-on-surface font-medium">Healthcare Worker ID / Registration No.</label>
+<span class="text-tertiary font-label-sm text-label-sm flex items-center gap-0.5">
+<span class="material-symbols-outlined text-xs" data-icon="verified">verified</span> Verified Node
+              </span>
+</div>
+<div class="relative rounded-lg shadow-sm">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-lg" data-icon="badge">badge</span>
+</div>
+<input class="w-full pl-10 pr-4 py-2.5 bg-surface-container-lowest border border-outline-variant rounded-lg text-on-surface font-body-md text-body-md focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="e.g. MP-IND-PHC-4091" type="text" value="MP-IND-PHC-4091"/>
+</div>
+</div>
+<!-- Password / Biometric Token -->
+<div>
+<div class="flex items-center justify-between mb-1">
+<label class="font-label-md text-label-md text-on-surface font-medium">Password / Biometric Token</label>
+<a class="font-label-sm text-label-sm text-secondary hover:text-primary transition-colors flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-xs" data-icon="fingerprint">fingerprint</span>
+                Use ABDM Ayushman Token
+              </a>
+</div>
+<div class="relative rounded-lg shadow-sm">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-lg" data-icon="key">key</span>
+</div>
+<input class="w-full pl-10 pr-10 py-2.5 bg-surface-container-lowest border border-outline-variant rounded-lg text-on-surface font-body-md text-body-md focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all font-mono" placeholder="Enter secure password" type="password" value="••••••••••••••••"/>
+<button class="absolute inset-y-0 right-0 pr-3 flex items-center text-outline hover:text-on-surface" type="button">
+<span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+<!-- Designated Facility / PHC Dropdown -->
+<div>
+<div class="flex items-center justify-between mb-1">
+<label class="font-label-md text-label-md text-on-surface font-medium">Designated Facility / PHC</label>
+<span class="font-mono text-outline text-[11px]">NIN: 231409</span>
+</div>
+<div class="relative rounded-lg shadow-sm">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-lg" data-icon="location_on">location_on</span>
+</div>
+<select class="w-full pl-10 pr-10 py-2.5 bg-surface-container-lowest border border-outline-variant rounded-lg text-on-surface font-body-md text-body-md focus:ring-2 focus:ring-primary focus:border-primary outline-none appearance-none cursor-pointer">
+<option selected="">PHC Rau, Indore Rural (Active Node)</option>
+<option>CHC Sanwer, Indore Sub-District</option>
+<option>District Hospital Ophthalmic Unit, Indore</option>
+<option>PHC Mhow Cantt, Indore Rural</option>
+</select>
+<div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-lg" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Operational Network & Local Sync Status Box -->
+<div class="bg-surface-container p-3 rounded-lg border border-outline-variant/60 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">Network: Online (1.2 Mbps)</span>
+<span class="text-[11px] text-on-surface-variant">Local Cache: 12 Screenings ready for sync</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant cursor-pointer" for="force-offline">Force Offline</label>
+<input class="rounded border-outline text-primary focus:ring-primary h-4 w-4" id="force-offline" type="checkbox"/>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="pt-2 space-y-2.5">
+<!-- Primary Action -->
+<button class="w-full py-3 px-4 bg-primary text-on-primary font-label-lg text-label-lg font-semibold rounded-lg shadow hover:bg-primary-container active:scale-[0.99] transition-all flex items-center justify-center gap-2" type="submit">
+<span>Enter Clinical Workspace</span>
+<span class="material-symbols-outlined text-base" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<!-- Secondary Offline Action -->
+<button class="w-full py-2.5 px-4 bg-surface-container-low border border-outline-variant hover:bg-surface-container text-primary font-label-md text-label-md font-semibold rounded-lg transition-all flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-base text-secondary" data-icon="cloud_off">cloud_off</span>
+<span>Continue Offline (12 Pending Local Screenings)</span>
+</button>
+</div>
+</form>
+</div>
+<!-- Security & Regulatory Compliance Footer -->
+<div class="border-t border-outline-variant bg-surface-container-lowest px-6 py-4">
+<!-- Safety Notice Box (Mandatory Clinical Rule) -->
+<div class="bg-surface-container-high/60 border-l-4 border-secondary p-2.5 rounded mb-3 flex items-start gap-2">
+<span class="material-symbols-outlined text-secondary text-base shrink-0 mt-0.5" data-icon="gavel">gavel</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-tight">
+<strong class="text-on-surface font-medium">Safety Notice:</strong> AI-assisted screening assessment • Clinical validation required by Ophthalmologist.
+          </p>
+</div>
+<div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-on-surface-variant font-label-sm text-label-sm">
+<div class="flex items-center gap-3">
+<span class="flex items-center gap-1 text-[11px]">
+<span class="material-symbols-outlined text-xs text-primary" data-icon="verified_user">verified_user</span>
+              ABDM Compliant
+            </span>
+<span class="text-outline-variant">•</span>
+<span class="flex items-center gap-1 text-[11px]">
+<span class="material-symbols-outlined text-xs text-primary" data-icon="policy">policy</span>
+              DISHA &amp; HIPAA Protected
+            </span>
+</div>
+<div class="text-[10px] font-mono text-outline">
+            RetinaCare AI CDS Core v1.4.2 • Build 2026.09
+          </div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

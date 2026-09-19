@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RetinaCare AI - Referral Command Centre</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Public+Sans:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary-fixed-variant": "#5a00c6",
+            "primary-container": "#4c1d95",
+            "on-secondary": "#ffffff",
+            "surface": "#faf8ff",
+            "on-primary-fixed": "#260059",
+            "secondary-fixed-dim": "#d2bbff",
+            "error": "#ba1a1a",
+            "surface-bright": "#faf8ff",
+            "tertiary-container": "#00462f",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-container": "#44bb8b",
+            "secondary-container": "#8a4cfc",
+            "background": "#faf8ff",
+            "surface-container-highest": "#e3e1e8",
+            "on-surface-variant": "#4a4452",
+            "inverse-on-surface": "#f2f0f7",
+            "on-background": "#1a1b20",
+            "surface-container-low": "#f4f3fa",
+            "on-tertiary-fixed": "#002114",
+            "on-secondary-container": "#fffbff",
+            "secondary-fixed": "#eaddff",
+            "tertiary-fixed-dim": "#68dba9",
+            "primary-fixed-dim": "#d3bbff",
+            "on-error-container": "#93000a",
+            "on-secondary-fixed": "#25005a",
+            "inverse-primary": "#d3bbff",
+            "secondary": "#712ae2",
+            "tertiary-fixed": "#85f8c4",
+            "inverse-surface": "#2f3035",
+            "tertiary": "#002e1d",
+            "surface-container-high": "#e9e7ee",
+            "surface-dim": "#dbd9e0",
+            "primary-fixed": "#ebdcff",
+            "on-surface": "#1a1b20",
+            "on-primary-container": "#b994ff",
+            "surface-container": "#efedf4",
+            "on-primary": "#ffffff",
+            "on-primary-fixed-variant": "#572ba0",
+            "primary": "#340075",
+            "outline-variant": "#ccc3d4",
+            "on-tertiary-fixed-variant": "#005137",
+            "on-error": "#ffffff",
+            "error-container": "#ffdad6",
+            "surface-tint": "#6f46b9",
+            "surface-variant": "#e3e1e8",
+            "outline": "#7b7483",
+            "on-tertiary": "#ffffff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "margin": "1.5rem",
+            "space-xl": "2rem",
+            "space-xs": "0.25rem",
+            "gutter": "1rem"
+          },
+          "fontFamily": {
+            "label-lg": ["Public Sans"],
+            "headline-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "body-lg": ["Inter"],
+            "label-md": ["Public Sans"],
+            "body-sm": ["Inter"],
+            "label-sm": ["Public Sans"],
+            "headline-md": ["Inter"],
+            "headline-lg": ["Inter"]
+          },
+          "fontSize": {
+            "label-lg": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-md": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "fontWeight": "600" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "headline-lg": ["30px", { "lineHeight": "38px", "fontWeight": "600" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      font-size: 18px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .material-symbols-fill {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+    @keyframes subtle-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.75; transform: scale(1.05); }
+    }
+    .pulse-indicator {
+      animation: subtle-pulse 2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex selection:bg-primary-fixed selection:text-primary">
+<!-- LEFT NAVIGATION RAIL (Shared Component: SideNavBar) -->
+<aside class="h-screen flex flex-col justify-between p-4 fixed left-0 top-0 z-30 w-64 bg-surface border-r border-outline-variant">
+<!-- Rail Top Section -->
+<div class="flex flex-col gap-4">
+<!-- Brand & Facility Node Header -->
+<div class="flex items-center gap-3 px-1 py-1">
+<div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center text-on-primary shadow-sm ring-2 ring-primary-fixed">
+<span class="material-symbols-outlined material-symbols-fill" style="font-size: 22px;">visibility</span>
+</div>
+<div class="flex flex-col">
+<span class="text-headline-sm font-headline-sm font-semibold tracking-tight text-primary">RetinaCare AI</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant tracking-wider">PHC CLINICAL SUITE • INDORE #14</span>
+</div>
+</div>
+<!-- Quick Action Upload CTA -->
+<button class="w-full flex items-center justify-center gap-2 py-2 px-3 bg-surface-container-high hover:bg-surface-container-highest text-primary rounded-lg border border-outline-variant font-label-md text-label-md transition-colors duration-150">
+<span class="material-symbols-outlined">add_circle</span>
+<span>Upload Fundus Scan</span>
+</button>
+<!-- Primary Navigation Links -->
+<nav class="flex flex-col gap-1 mt-1">
+<div class="px-3 py-1 text-label-sm font-label-sm text-outline">DIAGNOSTIC WORKSPACE</div>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">clinical_notes</span>
+<span class="flex-1">Patient Triage Queue</span>
+<span class="px-1.5 py-0.5 rounded-full bg-surface-container text-on-surface-variant text-label-sm font-label-sm">87</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">visibility</span>
+<span>Fundus Workspace</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">microbiology</span>
+<span>Diagnostic Review</span>
+</a>
+<!-- ACTIVE ITEM: Tele-Referrals (ABDM) with badge 14 -->
+<a class="flex items-center gap-3 px-3 py-2.5 bg-primary-container text-on-primary rounded-lg font-label-md text-label-md shadow-sm" href="#">
+<span class="material-symbols-outlined material-symbols-fill text-primary-fixed">share_location</span>
+<span class="flex-1 font-semibold">Tele-Referrals (ABDM)</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-label-sm font-label-sm font-bold">14</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+<span>Audit Log</span>
+</a>
+</nav>
+<!-- Clinical Governance & Tele-Network Nav Section -->
+<div class="flex flex-col gap-1 pt-2 border-t border-outline-variant">
+<div class="px-3 py-1 text-label-sm font-label-sm text-outline">NETWORK STANDARDS</div>
+<a class="flex items-center gap-3 px-3 py-1.5 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">hub</span>
+<span>Tertiary Hub Links</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-1.5 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span>Referral Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-1.5 text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">badge</span>
+<span>ASHA Mobilization</span>
+</a>
+</div>
+</div>
+<!-- Rail Bottom / Footer Section -->
+<div class="flex flex-col gap-3 pt-3 border-t border-outline-variant">
+<div class="flex items-center justify-between px-2 py-1 bg-surface-container-low rounded-lg border border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-on-tertiary-container pulse-indicator"></span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Protocols v3.2</span>
+</div>
+<span class="text-label-sm font-label-sm text-tertiary-container font-semibold">99.8% Online</span>
+</div>
+<!-- User Clinical Profile Card -->
+<div class="flex items-center gap-3 p-2 bg-surface-container-lowest rounded-xl border border-outline-variant">
+<div class="w-9 h-9 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold text-label-md">
+          AS
+        </div>
+<div class="flex flex-col overflow-hidden">
+<span class="text-label-md font-label-md font-bold text-on-surface truncate">Dr. Ananya Sharma</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant truncate">Consulting Ophthalmologist</span>
+</div>
+<button class="ml-auto text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- MAIN VIEWPORT CONTAINER (offset by 260px for sidebar) -->
+<div class="ml-64 flex-1 flex flex-col min-w-0">
+<!-- GLOBAL TOP BAR (Shared Component: TopNavBar) -->
+<header class="h-16 flex justify-between items-center w-full px-6 sticky top-0 z-20 bg-surface-container-lowest border-b border-outline-variant">
+<!-- Left: Search Bar & Context -->
+<div class="flex items-center gap-4 flex-1 max-w-2xl">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-9 pr-12 py-1.5 bg-surface-container-low border border-outline-variant rounded-lg text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary-container focus:bg-surface-container-lowest transition-all" placeholder="Search referrals by patient, UHID, hospital, phone..." type="text"/>
+<kbd class="absolute right-2.5 top-1/2 -translate-y-1/2 text-label-sm font-label-sm px-1.5 py-0.5 rounded bg-surface-container border border-outline-variant text-outline">⌘K</kbd>
+</div>
+<div class="hidden xl:flex items-center gap-2 pl-3 border-l border-outline-variant">
+<span class="material-symbols-outlined text-primary text-sm">local_hospital</span>
+<span class="text-body-sm font-body-sm font-medium text-on-surface truncate">Indore M.Y. Hospital Tertiary Hub</span>
+</div>
+</div>
+<!-- Right: Network Status & High-Level Actions -->
+<div class="flex items-center gap-3">
+<!-- ABDM Fast-Track Badge -->
+<div class="flex items-center gap-2 px-2.5 py-1 bg-surface-container-low border border-outline-variant rounded-full">
+<span class="w-2 h-2 rounded-full bg-on-tertiary-container"></span>
+<span class="text-label-sm font-label-sm text-on-surface-variant font-medium">ABDM Fast-Track Linked</span>
+<span class="text-label-sm font-label-sm text-outline">| 1.8 Mbps</span>
+</div>
+<!-- Secondary Action: ABDM Batch Export -->
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-lowest hover:bg-surface-container border border-outline-variant text-primary rounded-lg font-label-md text-label-md transition-colors duration-150 shadow-sm">
+<span class="material-symbols-outlined">download</span>
+<span>Export ABDM Batch</span>
+</button>
+<!-- Primary Action: New Manual Referral -->
+<button class="flex items-center gap-1.5 px-3.5 py-1.5 bg-primary hover:bg-primary-container text-on-primary rounded-lg font-label-md text-label-md shadow-sm transition-transform active:scale-[0.99]">
+<span class="material-symbols-outlined">add</span>
+<span>New Screening</span>
+</button>
+<div class="h-6 w-px bg-outline-variant mx-1"></div>
+<!-- Trailing Utility Icons -->
+<div class="flex items-center gap-1 text-on-surface-variant">
+<button class="p-2 hover:bg-surface-container rounded-lg text-outline hover:text-primary relative transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 hover:bg-surface-container rounded-lg text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="p-2 hover:bg-surface-container rounded-lg text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</div>
+</header>
+<!-- CONTENT WORKSPACE AREA -->
+<main class="p-6 flex flex-col gap-6 max-w-[1440px]">
+<!-- CLINICAL SAFETY BANNER (Strict Clinical UX Rule) -->
+<div class="w-full bg-primary-fixed border border-primary-fixed-dim px-4 py-2 rounded-lg flex items-center justify-between shadow-xs">
+<div class="flex items-center gap-2 text-primary font-medium text-body-sm font-body-sm">
+<span class="material-symbols-outlined text-primary text-base">verified</span>
+<span><strong>Clinical Protocol Notice:</strong> AI-assisted screening assessment • Clinical validation required by Ophthalmologist before tertiary referral handover.</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-label-sm px-2 py-0.5 bg-surface-container-lowest text-primary rounded font-semibold border border-primary-fixed-dim">CDSCO Registered</span>
+<span class="text-label-sm font-label-sm px-2 py-0.5 bg-surface-container-lowest text-primary rounded font-semibold border border-primary-fixed-dim">ISO 13485</span>
+</div>
+</div>
+<!-- HEADER TITLE & CLOSED-LOOP REFERRAL LIFECYCLE HORIZONTAL PIPELINE -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-2 pb-4 border-b border-outline-variant">
+<div>
+<h1 class="text-headline-md font-headline-md text-primary tracking-tight">Tele-Ophthalmology Referral Command Centre</h1>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">
+              End-to-end closed-loop referral management connecting rural PHCs to district tertiary eye hospitals • Ayushman Bharat Digital Mission (ABDM) Integrated
+            </p>
+</div>
+<div class="flex items-center gap-2 self-start lg:self-auto">
+<span class="text-label-sm font-label-sm text-on-surface-variant bg-surface-container-low px-2.5 py-1 rounded-md border border-outline-variant">
+              Zone: Malwa-Indore Cluster
+            </span>
+<span class="text-label-sm font-label-sm text-on-surface-variant bg-surface-container-low px-2.5 py-1 rounded-md border border-outline-variant">
+              Updated: Just Now
+            </span>
+</div>
+</div>
+<!-- 6-Stage Referral Closed-Loop Lifecycle Bar -->
+<div class="pt-5 pb-1">
+<div class="relative flex items-center justify-between">
+<!-- Connecting Pipeline Base Line -->
+<div class="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-1 bg-surface-container-highest z-0"></div>
+<!-- Completed Line Fill -->
+<div class="absolute left-8 w-[40%] top-1/2 -translate-y-1/2 h-1 bg-primary-container z-0"></div>
+<!-- Stage 1 -->
+<div class="relative z-10 flex flex-col items-center group">
+<div class="w-9 h-9 rounded-full bg-primary-container text-on-primary flex items-center justify-center ring-4 ring-surface-container-lowest shadow-sm">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<span class="text-label-md font-label-md text-on-surface mt-2 font-bold">01 Screened</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">12,842 Patients</span>
+</div>
+<!-- Stage 2 -->
+<div class="relative z-10 flex flex-col items-center group">
+<div class="w-9 h-9 rounded-full bg-primary-container text-on-primary flex items-center justify-center ring-4 ring-surface-container-lowest shadow-sm">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<span class="text-label-md font-label-md text-on-surface mt-2 font-bold">02 MD Reviewed</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">11,940 Confirmed</span>
+</div>
+<!-- Stage 3 (ACTIVE GLOWING NODE) -->
+<div class="relative z-10 flex flex-col items-center group">
+<div class="w-10 h-10 rounded-full bg-secondary text-on-primary flex items-center justify-center ring-4 ring-secondary-fixed shadow-md pulse-indicator">
+<span class="material-symbols-outlined material-symbols-fill text-base">forward_to_inbox</span>
+</div>
+<span class="text-label-md font-label-md text-primary mt-1.5 font-bold">03 Referral Created</span>
+<span class="text-label-sm font-label-sm font-bold text-secondary">1,042 Active</span>
+</div>
+<!-- Stage 4 -->
+<div class="relative z-10 flex flex-col items-center group">
+<div class="w-9 h-9 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center ring-4 ring-surface-container-lowest">
+<span class="text-label-sm font-label-sm font-bold">04</span>
+</div>
+<span class="text-label-md font-label-md text-on-surface mt-2 font-semibold">04 Scheduled</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">824 Booked</span>
+</div>
+<!-- Stage 5 -->
+<div class="relative z-10 flex flex-col items-center group">
+<div class="w-9 h-9 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center ring-4 ring-surface-container-lowest">
+<span class="text-label-sm font-label-sm font-bold">05</span>
+</div>
+<span class="text-label-md font-label-md text-on-surface mt-2 font-semibold">05 Visit Completed</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">764 Attended</span>
+</div>
+<!-- Stage 6 -->
+<div class="relative z-10 flex flex-col items-center group">
+<div class="w-9 h-9 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center ring-4 ring-surface-container-lowest">
+<span class="text-label-sm font-label-sm font-bold">06</span>
+</div>
+<span class="text-label-md font-label-md text-on-surface mt-2 font-semibold">06 Loop Closed</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">582 Synced</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 5 METRIC SUMMARY CARDS (Top Stats Row) -->
+<section class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-4">
+<!-- Card 1: Active Referrals -->
+<div class="bg-surface-container-lowest border border-outline-variant p-4 rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="text-label-md font-label-md text-on-surface-variant">Active Referrals</span>
+<span class="p-1.5 rounded-lg bg-surface-container text-primary">
+<span class="material-symbols-outlined text-base">folder_shared</span>
+</span>
+</div>
+<div class="my-3">
+<span class="text-headline-lg font-headline-lg text-primary tracking-tight font-bold">1,042</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1">Total referable cases identified across all 5 PHCs</p>
+</div>
+<div class="text-label-sm font-label-sm text-outline pt-2 border-t border-outline-variant flex items-center justify-between">
+<span>Network Capacity</span>
+<span class="font-semibold text-primary">94% Allocated</span>
+</div>
+</div>
+<!-- Card 2: Urgent / High-Risk -->
+<div class="bg-surface-container-lowest border border-error-container p-4 rounded-xl shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-error"></div>
+<div class="flex items-center justify-between">
+<span class="text-label-md font-label-md text-error font-bold flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-error pulse-indicator"></span>
+              Urgent / High-Risk
+            </span>
+<span class="p-1.5 rounded-lg bg-error-container text-on-error-container">
+<span class="material-symbols-outlined text-base">emergency</span>
+</span>
+</div>
+<div class="my-3">
+<span class="text-headline-lg font-headline-lg text-error tracking-tight font-bold">142</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1">PDR / Severe DME requiring intervention &lt;7 days</p>
+</div>
+<div class="text-label-sm font-label-sm text-on-error-container font-semibold pt-2 border-t border-error-container flex items-center justify-between">
+<span>Fast-Track Slots</span>
+<span>12 Remaining Today</span>
+</div>
+</div>
+<!-- Card 3: Pending Appointments -->
+<div class="bg-surface-container-lowest border border-outline-variant p-4 rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="text-label-md font-label-md text-on-surface-variant">Pending Appointments</span>
+<span class="p-1.5 rounded-lg bg-surface-container text-secondary">
+<span class="material-symbols-outlined text-base">schedule</span>
+</span>
+</div>
+<div class="my-3">
+<span class="text-headline-lg font-headline-lg text-secondary tracking-tight font-bold">218</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1">Awaiting tertiary hospital OPD slot confirmation</p>
+</div>
+<div class="text-label-sm font-label-sm text-outline pt-2 border-t border-outline-variant flex items-center justify-between">
+<span>Avg. Triage Response</span>
+<span class="font-semibold text-on-surface">3.4 Hours</span>
+</div>
+</div>
+<!-- Card 4: Completed Visits -->
+<div class="bg-surface-container-lowest border border-outline-variant p-4 rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="text-label-md font-label-md text-on-surface-variant">Completed Visits</span>
+<span class="p-1.5 rounded-lg bg-surface-container text-on-tertiary-container">
+<span class="material-symbols-outlined text-base">check_circle</span>
+</span>
+</div>
+<div class="my-3">
+<span class="text-headline-lg font-headline-lg text-tertiary-container tracking-tight font-bold">764</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1">73.3% compliance rate • ABDM verified records synced</p>
+</div>
+<div class="text-label-sm font-label-sm text-on-tertiary-container font-semibold pt-2 border-t border-outline-variant flex items-center justify-between">
+<span>Closed-Loop Verification</span>
+<span>100% Synced</span>
+</div>
+</div>
+<!-- Card 5: Overdue Referrals -->
+<div class="bg-surface-container-lowest border border-outline-variant p-4 rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="text-label-md font-label-md text-on-surface-variant">Overdue Referrals</span>
+<span class="p-1.5 rounded-lg bg-surface-container text-outline">
+<span class="material-symbols-outlined text-base">warning</span>
+</span>
+</div>
+<div class="my-3">
+<span class="text-headline-lg font-headline-lg text-primary tracking-tight font-bold">46</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1">Exceeded 30-day window • ASHA ground alerts dispatched</p>
+</div>
+<div class="text-label-sm font-label-sm text-outline pt-2 border-t border-outline-variant flex items-center justify-between">
+<span>Escalated to MO</span>
+<span class="font-semibold text-error">18 Cases</span>
+</div>
+</div>
+</section>
+<!-- FILTER, SEARCH & TRIAGE ACTION STRIP -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-3 shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+<!-- Segmented Filter Tabs -->
+<div class="flex items-center gap-1 overflow-x-auto pb-1 lg:pb-0">
+<button class="px-3 py-1.5 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md whitespace-nowrap shadow-xs">
+            All Referrals (1,042)
+          </button>
+<button class="px-3 py-1.5 rounded-lg hover:bg-surface-container text-error font-label-md text-label-md whitespace-nowrap flex items-center gap-1.5 transition-colors">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+            Urgent Cases (142)
+          </button>
+<button class="px-3 py-1.5 rounded-lg hover:bg-surface-container text-on-surface-variant font-label-md text-label-md whitespace-nowrap flex items-center gap-1.5 transition-colors">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+            Pending Booking (218)
+          </button>
+<button class="px-3 py-1.5 rounded-lg hover:bg-surface-container text-on-surface-variant font-label-md text-label-md whitespace-nowrap flex items-center gap-1.5 transition-colors">
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span>
+            Overdue (46)
+          </button>
+<button class="px-3 py-1.5 rounded-lg hover:bg-surface-container text-on-tertiary-container font-label-md text-label-md whitespace-nowrap flex items-center gap-1.5 transition-colors">
+<span class="w-2 h-2 rounded-full bg-on-tertiary-container"></span>
+            Completed (764)
+          </button>
+</div>
+<!-- Filter Selectors & Mass Action Trigger -->
+<div class="flex items-center gap-2 flex-wrap">
+<select class="py-1.5 px-3 bg-surface-container-low border border-outline-variant rounded-lg text-label-md font-label-md text-on-surface focus:ring-1 focus:ring-primary focus:outline-none">
+<option>Filter by PHC: All 5 PHCs</option>
+<option>PHC Rau (312)</option>
+<option>PHC Betma (245)</option>
+<option>PHC Depalpur (188)</option>
+<option>PHC Sanwer (164)</option>
+<option>PHC Hatod (133)</option>
+</select>
+<select class="py-1.5 px-3 bg-surface-container-low border border-outline-variant rounded-lg text-label-md font-label-md text-on-surface focus:ring-1 focus:ring-primary focus:outline-none">
+<option>Indore M.Y. District Eye Hospital</option>
+<option>Chhoteram Eye Hospital (Zonal)</option>
+<option>Govt. Medical College Tertiary Unit</option>
+</select>
+<button class="flex items-center gap-1.5 py-1.5 px-3 bg-secondary-fixed hover:bg-secondary-fixed-dim text-on-secondary-fixed rounded-lg font-label-md text-label-md border border-outline-variant transition-colors shadow-xs whitespace-nowrap">
+<span class="material-symbols-outlined text-sm">notifications_active</span>
+<span>Send Reminders to Overdue (46)</span>
+</button>
+</div>
+</section>
+<!-- PATIENT REFERRAL CARDS GRID / LIST -->
+<section class="grid grid-cols-1 gap-4">
+<!-- CARD 2 (URGENT CRITICAL EMERGENCY CASE - RAMESH PATEL) - Highlighted on top for clinical safety triage -->
+<div class="bg-surface-container-lowest border-2 border-error-container rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow relative">
+<div class="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+<!-- Left Info Block -->
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 rounded-xl bg-error-container text-on-error-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-2xl">priority_high</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2.5 flex-wrap">
+<h2 class="text-headline-sm font-headline-sm text-on-surface font-bold">Ramesh Patel, 58M</h2>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-mono text-label-sm font-label-sm">#RC-2026-9042</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-mono text-label-sm font-label-sm">ABHA: 91-4829-8291-1002</span>
+<span class="px-2.5 py-0.5 rounded-full bg-error text-on-error font-label-sm font-label-sm font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-white pulse-indicator"></span>
+                    CRITICAL (&lt;48 HOURS)
+                  </span>
+</div>
+<div class="flex items-center gap-4 text-body-sm font-body-sm text-on-surface-variant flex-wrap">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">home_pin</span> Betma (Rural)</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">domain</span> Origin: PHC Betma</span>
+<span class="flex items-center gap-1 text-error font-semibold"><span class="material-symbols-outlined text-sm">stethoscope</span> LEVEL 4 - PROLIFERATIVE DR (PDR)</span>
+</div>
+<!-- Clinical Finding Synopsis Box -->
+<div class="mt-2 p-3 bg-surface-container-low rounded-lg border border-outline-variant max-w-4xl">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-label-sm font-label-sm font-bold text-error uppercase tracking-wider">AI Lesion Map &amp; Clinical Finding:</span>
+<span class="text-label-sm font-label-sm text-outline">Verified by Dr. Sharma</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface">
+                    "Preretinal neovascularization at disc margin (+3.2mm NV), high risk vitreous hemorrhage. Immediate PRP candidate."
+                  </p>
+</div>
+</div>
+</div>
+<!-- Right Logistics & Designated Hospital Block -->
+<div class="flex flex-col lg:items-end gap-2 shrink-0">
+<div class="text-right">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Designated Care Center</span>
+<p class="text-body-sm font-body-sm font-bold text-primary">Indore M.Y. Hospital Vitreoretinal Emergency Clinic</p>
+<div class="flex items-center lg:justify-end gap-1.5 mt-1 text-label-sm font-label-sm text-error font-semibold">
+<span class="material-symbols-outlined text-sm">calendar_clock</span>
+<span>Tomorrow, 20 Sep 2026, 09:00 AM IST (Slot #1)</span>
+</div>
+</div>
+<!-- Dispatch Verification Badges -->
+<div class="flex items-center gap-2 mt-1">
+<span class="px-2 py-0.5 rounded bg-surface-container-low text-on-surface-variant text-label-sm font-label-sm border border-outline-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-on-tertiary-container">done_all</span> Red Slip Dispatched
+                </span>
+<span class="px-2 py-0.5 rounded bg-surface-container-low text-on-surface-variant text-label-sm font-label-sm border border-outline-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-on-tertiary-container">phone_in_talk</span> ASHA Alerted
+                </span>
+</div>
+</div>
+</div>
+<!-- Bottom Action Buttons for Card 2 -->
+<div class="mt-4 pt-3 border-t border-outline-variant flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-2 text-label-sm font-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-outline text-base">alarm</span>
+<span>Fast-track response target: Intervention within 36 hours remaining</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 bg-surface-container-lowest hover:bg-surface-container text-on-surface border border-outline-variant rounded-lg text-label-md font-label-md flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-sm">call</span> Call Patient / ASHA Now
+              </button>
+<button class="px-3 py-1.5 bg-surface-container-lowest hover:bg-surface-container text-error border border-error-container rounded-lg text-label-md font-label-md flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-sm">print</span> Print Urgent Red Slip
+              </button>
+<button class="px-3.5 py-1.5 bg-error hover:bg-on-error-container text-on-error rounded-lg text-label-md font-label-md flex items-center gap-1.5 shadow-sm transition-transform active:scale-[0.99]">
+<span class="material-symbols-outlined text-sm">ambulance</span> Direct Transport / Ambulance Request
+              </button>
+</div>
+</div>
+</div>
+<!-- CARD 1 (NEWLY CREATED & CONFIRMED - SURESH CHANDRA VERMA) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 rounded-xl bg-surface-container text-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-2xl">person</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2.5 flex-wrap">
+<h2 class="text-headline-sm font-headline-sm text-on-surface font-bold">Suresh Chandra Verma, 56M</h2>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-mono text-label-sm font-label-sm">#RC-2026-9104</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-mono text-label-sm font-label-sm">ABHA: 91-4829-1034-8291</span>
+<span class="px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm font-label-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">event_available</span>
+                    APPOINTMENT CONFIRMED
+                  </span>
+</div>
+<div class="flex items-center gap-4 text-body-sm font-body-sm text-on-surface-variant flex-wrap">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">call</span> +91 98260 44192</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">location_on</span> Rau Kalan</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">badge</span> ANM: Sunita Yadav (PHC Rau)</span>
+</div>
+<!-- Diagnosis & Note -->
+<div class="mt-2 p-3 bg-surface-container-low rounded-lg border border-outline-variant max-w-4xl">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-label-sm font-label-sm font-bold text-primary">LEVEL 2 - MODERATE NPDR (OD Right Eye)</span>
+<span class="text-label-sm font-label-sm text-outline">• HbA1c: 8.8%</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface">
+                    "8 MAs, 2 superotemporal flame hemorrhages, HbA1c 8.8%, high 3-year progression risk."
+                  </p>
+</div>
+</div>
+</div>
+<!-- Tertiary Slot Details -->
+<div class="flex flex-col lg:items-end gap-2 shrink-0">
+<div class="text-right">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Designated Care Center</span>
+<p class="text-body-sm font-body-sm font-bold text-primary">Indore M.Y. Hospital Eye Center (Retina OPD Unit 3)</p>
+<div class="flex items-center lg:justify-end gap-1.5 mt-1 text-label-sm font-label-sm text-on-surface font-medium">
+<span class="material-symbols-outlined text-sm text-primary">schedule</span>
+<span>28 Sep 2026, 10:30 AM IST (Slot #14)</span>
+</div>
+<span class="text-label-sm font-label-sm text-outline">Scheduled Visit in 9 Days • Created 1 Day Ago</span>
+</div>
+<!-- Multichannel Dispatch Tracker -->
+<div class="flex items-center gap-2 mt-1">
+<span class="px-2 py-0.5 rounded bg-surface-container-low text-on-surface-variant text-label-sm font-label-sm border border-outline-variant flex items-center gap-1" title="SMS Token #REF-9104 Sent">
+<span class="material-symbols-outlined text-sm text-on-tertiary-container">check_circle</span> SMS: Sent (Hindi+Eng)
+                </span>
+<span class="px-2 py-0.5 rounded bg-surface-container-low text-on-surface-variant text-label-sm font-label-sm border border-outline-variant flex items-center gap-1" title="WhatsApp QR Pass Dispatched">
+<span class="material-symbols-outlined text-sm text-on-tertiary-container">qr_code_2</span> WhatsApp: Pass Sent
+                </span>
+<span class="px-2 py-0.5 rounded bg-surface-container-low text-on-surface-variant text-label-sm font-label-sm border border-outline-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-on-tertiary-container">verified</span> ANM Verified
+                </span>
+</div>
+</div>
+</div>
+<!-- Actions Footer -->
+<div class="mt-4 pt-3 border-t border-outline-variant flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-2 text-label-sm font-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-outline text-base">cloud_sync</span>
+<span>ABDM Health ID Verified • Token #REF-9104</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 bg-surface-container-lowest hover:bg-surface-container text-on-surface border border-outline-variant rounded-lg text-label-md font-label-md flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-sm">schedule</span> Reschedule
+              </button>
+<button class="px-3 py-1.5 bg-surface-container-lowest hover:bg-surface-container text-primary border border-outline-variant rounded-lg text-label-md font-label-md flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-sm">qr_code</span> View Digital Pass
+              </button>
+<button class="px-3.5 py-1.5 bg-primary-container hover:bg-primary text-on-primary rounded-lg text-label-md font-label-md flex items-center gap-1.5 shadow-sm transition-transform active:scale-[0.99]">
+<span class="material-symbols-outlined text-sm">print</span> Print Clinical Referral Slip
+              </button>
+</div>
+</div>
+</div>
+<!-- CARD 3 (OVERDUE TRACKING CASE - MANGILAL JOSHI) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 rounded-xl bg-surface-container text-outline flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-2xl">person_alert</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2.5 flex-wrap">
+<h2 class="text-headline-sm font-headline-sm text-on-surface font-bold">Mangilal Joshi, 67M</h2>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-mono text-label-sm font-label-sm">#RC-2026-7821</span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-highest text-on-surface font-label-sm font-label-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-error">warning</span>
+                    OVERDUE BY 14 DAYS
+                  </span>
+</div>
+<div class="flex items-center gap-4 text-body-sm font-body-sm text-on-surface-variant flex-wrap">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">call</span> +91 94250 11982</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">location_on</span> Depalpur</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">badge</span> ASHA: Rekha Bai (Depalpur-North)</span>
+</div>
+<div class="mt-2 p-3 bg-surface-container-low rounded-lg border border-outline-variant max-w-4xl">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-label-sm font-label-sm font-bold text-on-surface">Level 3 Severe NPDR</span>
+<span class="text-label-sm font-label-sm text-outline">• Scheduled Date: 05 Sep 2026 (Missed)</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+                    "Missed scheduled appointment on 05 Sep 2026 due to agricultural harvest and transport difficulty. Multi-touch reminders logged: SMS sent x3, WhatsApp read, ASHA home visit flagged."
+                  </p>
+</div>
+</div>
+</div>
+<!-- Tertiary Details -->
+<div class="flex flex-col lg:items-end gap-2 shrink-0">
+<div class="text-right">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Designated Care Center</span>
+<p class="text-body-sm font-body-sm font-semibold text-on-surface">Indore M.Y. Hospital Eye Center</p>
+<div class="flex items-center lg:justify-end gap-1.5 mt-1 text-label-sm font-label-sm text-error font-semibold">
+<span class="material-symbols-outlined text-sm">event_busy</span>
+<span>Slot Expired (05 Sep 2026)</span>
+</div>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<span class="px-2 py-0.5 rounded bg-surface-container-low text-on-surface-variant text-label-sm font-label-sm border border-outline-variant">
+                  Escalation Level: 2 (Field Intervention)
+                </span>
+</div>
+</div>
+</div>
+<!-- Bottom Action Buttons for Card 3 -->
+<div class="mt-4 pt-3 border-t border-outline-variant flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-2 text-label-sm font-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-outline text-base">contact_phone</span>
+<span>ASHA Rekha Bai assigned for home follow-up visit</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 bg-surface-container-lowest hover:bg-surface-container text-on-surface border border-outline-variant rounded-lg text-label-md font-label-md flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-sm">phone</span> Call ASHA Worker
+              </button>
+<button class="px-3 py-1.5 bg-surface-container-lowest hover:bg-surface-container text-primary border border-outline-variant rounded-lg text-label-md font-label-md flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-sm">calendar_month</span> Re-book Tertiary Slot
+              </button>
+<button class="px-3.5 py-1.5 bg-secondary hover:bg-primary-container text-on-primary rounded-lg text-label-md font-label-md flex items-center gap-1.5 shadow-sm transition-transform active:scale-[0.99]">
+<span class="material-symbols-outlined text-sm">assignment_late</span> Trigger ASHA Home Visit Task
+              </button>
+</div>
+</div>
+</div>
+<!-- CARD 4 (COMPLETED VISIT & CLOSED LOOP - SUNDAR BAI) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 rounded-xl bg-surface-container text-on-tertiary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-2xl">task_alt</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2.5 flex-wrap">
+<h2 class="text-headline-sm font-headline-sm text-on-surface font-bold">Sundar Bai, 60F</h2>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-mono text-label-sm font-label-sm">#RC-2026-8140</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-mono text-label-sm font-label-sm">ABHA: 91-3312-9904-4112</span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-sm font-label-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-on-tertiary-container">verified</span>
+                    VISIT COMPLETED &amp; FEEDBACK SYNCED
+                  </span>
+</div>
+<div class="flex items-center gap-4 text-body-sm font-body-sm text-on-surface-variant flex-wrap">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">location_on</span> Sanwer PHC Area</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">event</span> Visit Date: 14 Sep 2026</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">domain</span> Treated at: M.Y. Hospital Retina Lab</span>
+</div>
+<!-- Feedback Synopsis Box -->
+<div class="mt-2 p-3 bg-surface-container-low rounded-lg border border-outline-variant max-w-4xl">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-label-sm font-label-sm font-bold text-tertiary-container">TERTIARY CLINICAL DISCHARGE SUMMARY:</span>
+<span class="text-label-sm font-label-sm text-outline">Synchronized via ABDM Health Locker</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface">
+                    "Dilated OCT performed at M.Y. Hospital Retina Lab. Focal laser photocoagulation completed on left eye. Recommended next PHC screening in 6 months."
+                  </p>
+</div>
+</div>
+</div>
+<!-- Right Verification Meta -->
+<div class="flex flex-col lg:items-end gap-2 shrink-0">
+<div class="text-right">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Closed-Loop Status</span>
+<p class="text-body-sm font-body-sm font-bold text-tertiary-container">Compliance Verified (ABDM Sync)</p>
+<div class="flex items-center lg:justify-end gap-1.5 mt-1 text-label-sm font-label-sm text-outline">
+<span class="material-symbols-outlined text-sm">sync</span>
+<span>Next PHC Review: March 2027</span>
+</div>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-tertiary-container text-label-sm font-label-sm border border-outline-variant">
+                  Loop Closed Successfully
+                </span>
+</div>
+</div>
+</div>
+<!-- Bottom Actions for Card 4 -->
+<div class="mt-4 pt-3 border-t border-outline-variant flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-2 text-label-sm font-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-outline text-base">folder</span>
+<span>Longitudinal Diabetic Eye Record Updated</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 bg-surface-container-lowest hover:bg-surface-container text-on-surface border border-outline-variant rounded-lg text-label-md font-label-md flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-sm">archive</span> Archive to Longitudinal Record
+              </button>
+<button class="px-3.5 py-1.5 bg-primary-container hover:bg-primary text-on-primary rounded-lg text-label-md font-label-md flex items-center gap-1.5 shadow-sm transition-transform active:scale-[0.99]">
+<span class="material-symbols-outlined text-sm">description</span> View Tertiary Discharge Summary
+              </button>
+</div>
+</div>
+</div>
+</section>
+<!-- BOTTOM MULTI-CHANNEL TELEMETRY & SAFETY GOVERNANCE FOOTER -->
+<footer class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-sm mt-2 flex flex-col lg:flex-row items-center justify-between gap-4">
+<!-- Gateway Stats -->
+<div class="flex items-center gap-6 flex-wrap">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">cell_tower</span>
+<span class="text-label-sm font-label-sm font-semibold text-on-surface">ABDM HFR Node #IND-90214</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-on-tertiary-container"></span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">SMS Deliverability: <strong class="text-on-surface">98.6%</strong></span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-on-tertiary-container"></span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">WhatsApp Bot Read Rate: <strong class="text-on-surface">91.2%</strong></span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-on-tertiary-container"></span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Voice IVR Acknowledgement: <strong class="text-on-surface">84.5%</strong></span>
+</div>
+</div>
+<!-- Protocol Disclaimer -->
+<div class="flex items-center gap-2 text-right">
+<span class="material-symbols-outlined text-outline text-base">policy</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">
+<strong>Zero Lost-to-Follow-up Protocol Active:</strong> Automated ASHA escalations triggered at Day 7, 14, 21.
+          </span>
+</div>
+</footer>
+</main>
+</div>
+</body></html>

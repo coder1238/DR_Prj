@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RetinaCare AI - Retinal Capture Studio</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Public+Sans:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary-fixed": "#002114",
+            "on-surface-variant": "#4a4452",
+            "inverse-on-surface": "#f2f0f7",
+            "secondary-fixed": "#eaddff",
+            "on-secondary": "#ffffff",
+            "error-container": "#ffdad6",
+            "surface-container-low": "#f4f3fa",
+            "surface-container": "#efedf4",
+            "surface-variant": "#e3e1e8",
+            "surface-bright": "#faf8ff",
+            "on-primary-fixed": "#260059",
+            "background": "#faf8ff",
+            "surface-container-high": "#e9e7ee",
+            "on-secondary-fixed": "#25005a",
+            "tertiary-fixed-dim": "#68dba9",
+            "secondary": "#712ae2",
+            "on-tertiary-fixed-variant": "#005137",
+            "primary-fixed": "#ebdcff",
+            "tertiary": "#002e1d",
+            "on-error-container": "#93000a",
+            "tertiary-fixed": "#85f8c4",
+            "on-primary": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "on-surface": "#1a1b20",
+            "inverse-surface": "#2f3035",
+            "on-secondary-container": "#fffbff",
+            "secondary-fixed-dim": "#d2bbff",
+            "on-secondary-fixed-variant": "#5a00c6",
+            "outline-variant": "#ccc3d4",
+            "tertiary-container": "#00462f",
+            "on-tertiary-container": "#44bb8b",
+            "primary-fixed-dim": "#d3bbff",
+            "surface-container-highest": "#e3e1e8",
+            "surface": "#faf8ff",
+            "primary": "#340075",
+            "on-primary-container": "#b994ff",
+            "surface-dim": "#dbd9e0",
+            "error": "#ba1a1a",
+            "primary-container": "#4c1d95",
+            "outline": "#7b7483",
+            "secondary-container": "#8a4cfc",
+            "inverse-primary": "#d3bbff",
+            "on-error": "#ffffff",
+            "surface-tint": "#6f46b9",
+            "on-tertiary": "#ffffff",
+            "on-primary-fixed-variant": "#572ba0",
+            "on-background": "#1a1b20"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xl": "2rem",
+            "space-lg": "1.5rem",
+            "space-md": "1rem",
+            "gutter": "1rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "margin": "1.5rem"
+          },
+          "fontFamily": {
+            "headline-lg": ["Inter"],
+            "headline-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "label-md": ["Public Sans"],
+            "headline-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "label-lg": ["Public Sans"],
+            "label-sm": ["Public Sans"],
+            "body-lg": ["Inter"]
+          },
+          "fontSize": {
+            "headline-lg": ["30px", { "lineHeight": "38px", "fontWeight": "600" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "label-md": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "label-lg": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    
+    @keyframes pulse-ring {
+      0% { transform: scale(0.98); opacity: 0.8; }
+      50% { transform: scale(1.02); opacity: 1; }
+      100% { transform: scale(0.98); opacity: 0.8; }
+    }
+    .animate-pulse-subtle {
+      animation: pulse-ring 3s infinite ease-in-out;
+    }
+    @keyframes reticle-spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .spin-slow {
+      animation: reticle-spin 40s linear infinite;
+    }
+  </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased overflow-hidden min-h-screen flex flex-col">
+<!-- TOP SAFETY DISCLAIMER (Mandatory Clinical UX) -->
+<div class="bg-surface-container-high border-b border-outline-variant px-4 py-1 flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm z-50">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="policy">policy</span>
+<span>AI-assisted screening assessment • Clinical validation required by Ophthalmologist</span>
+</div>
+<div class="flex items-center gap-4">
+<span>Hardware Node: REC-BLR-094</span>
+<span class="flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+<span>DICOM Store Sync: OK</span>
+</span>
+</div>
+</div>
+<div class="flex flex-1 overflow-hidden relative">
+<!-- PERSISTENT LEFT NAVIGATION RAIL (260px) -->
+<aside class="w-[260px] flex-shrink-0 bg-[#FAF8FF] border-r border-[#DDD6FE] flex flex-col justify-between z-30 select-none">
+<!-- Top Brand & Suite Identifier -->
+<div class="p-4 border-b border-outline-variant/40">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-xl bg-primary-container flex items-center justify-center text-on-primary shadow-sm shadow-primary/20">
+<span class="material-symbols-outlined text-xl" data-icon="visibility" style="font-variation-settings: 'FILL' 1;">visibility</span>
+</div>
+<div>
+<div class="font-headline-sm text-headline-sm font-semibold tracking-tight text-primary leading-tight">
+              RetinaCare AI
+            </div>
+<div class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-primary/10 text-primary font-label-sm text-[9px] tracking-wider uppercase mt-0.5 font-bold">
+              PHC CLINICAL SUITE
+            </div>
+</div>
+</div>
+</div>
+<!-- Navigation Item List -->
+<nav class="flex-1 overflow-y-auto px-3 py-3 space-y-0.5 text-on-surface-variant font-label-md text-label-md">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-container hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-base" data-icon="dashboard">dashboard</span>
+<span>Overview</span>
+</a>
+<!-- Active Screening Step -->
+<a class="flex items-center justify-between px-3 py-2.5 bg-primary-container text-on-primary rounded-lg shadow-sm font-semibold" href="#">
+<div class="flex items-center gap-2.5">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim animate-ping"></span>
+<span class="material-symbols-outlined text-base" data-icon="add_circle">add_circle</span>
+<span>New Screening</span>
+</div>
+<span class="px-1.5 py-0.5 rounded-full bg-white/20 text-[10px] font-label-sm">Step 2</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-container hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-base" data-icon="groups">groups</span>
+<span>Patients</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-container hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-base" data-icon="psychology">psychology</span>
+<span>AI Analysis</span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-surface-container hover:text-on-surface transition-colors" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-base" data-icon="clinical_notes">clinical_notes</span>
+<span>Review Queue</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-bold text-[10px]">87</span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-surface-container hover:text-on-surface transition-colors" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-base" data-icon="share_location">share_location</span>
+<span>Referrals (ABDM)</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-bold text-[10px]">14</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-container hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-base" data-icon="event_repeat">event_repeat</span>
+<span>Follow-ups</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-container hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-base" data-icon="analytics">analytics</span>
+<span>Analytics</span>
+</a>
+<div class="my-2 border-t border-outline-variant/30 px-3 pt-2 pb-1">
+<span class="font-label-sm text-[10px] uppercase tracking-wider text-outline">Technical &amp; Tools</span>
+</div>
+<a class="flex items-center gap-3 px-3 py-1.5 rounded-lg hover:bg-surface-container text-[12px] transition-colors" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="biotech">biotech</span>
+<span>Simulation Mode</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-1.5 rounded-lg hover:bg-surface-container text-[12px] transition-colors" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="model_training">model_training</span>
+<span>AI Models &amp; ROC</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-1.5 rounded-lg hover:bg-surface-container text-[12px] transition-colors" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="verified_user">verified_user</span>
+<span>Device Calibration</span>
+</a>
+</nav>
+<!-- Bottom Rail / Operator Info & Status -->
+<div class="p-3 bg-surface-container-low border-t border-[#DDD6FE] space-y-2">
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant px-1">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span>
+<span>System Status: 99.8%</span>
+</div>
+<a class="hover:text-primary transition-colors flex items-center gap-0.5" href="#">
+<span class="material-symbols-outlined text-xs" data-icon="help">help</span>
+<span>Protocols</span>
+</a>
+</div>
+<div class="flex items-center gap-2.5 p-2 rounded-lg bg-surface-container-lowest border border-outline-variant/50">
+<div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary flex items-center justify-center font-bold text-xs">
+            SY
+          </div>
+<div class="overflow-hidden">
+<div class="font-label-md text-label-md text-on-surface truncate">Sunita Yadav</div>
+<div class="font-label-sm text-[10px] text-on-surface-variant truncate">Screening Operator • ANM-04</div>
+</div>
+<span class="material-symbols-outlined text-outline ml-auto text-sm cursor-pointer hover:text-primary" data-icon="tune">tune</span>
+</div>
+</div>
+</aside>
+<!-- WORKSPACE CANVAS AREA -->
+<div class="flex-1 flex flex-col min-w-0 bg-surface overflow-y-auto">
+<!-- GLOBAL TOP BAR (64px) -->
+<header class="h-16 flex-shrink-0 bg-surface-container-lowest border-b border-[#DDD6FE] px-6 flex items-center justify-between z-20">
+<!-- Patient Context Banner -->
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container border border-outline-variant/60">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="person">person</span>
+<div class="flex items-center gap-2 text-on-surface font-body-md text-sm">
+<span class="font-semibold">Suresh Chandra Verma</span>
+<span class="font-mono text-xs text-on-surface-variant">(#RC-2026-9104)</span>
+<span class="text-outline-variant">•</span>
+<span class="font-label-sm text-xs text-on-surface-variant">Age 56M</span>
+<span class="text-outline-variant">•</span>
+<span class="px-2 py-0.5 rounded bg-error-container text-on-error-container font-label-sm font-semibold text-xs">
+                HbA1c 8.8%
+              </span>
+<span class="material-symbols-outlined text-tertiary-container text-sm" data-icon="verified" title="Verified ABDM ID">verified</span>
+</div>
+</div>
+</div>
+<!-- Telemetry & Network Status Badges -->
+<div class="flex items-center gap-3">
+<!-- Device Connection Badge -->
+<div class="flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-low border border-outline-variant/60 text-xs">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="photo_camera">photo_camera</span>
+<span class="font-semibold text-on-surface">Remidio FOP NM-10</span>
+<span class="text-outline-variant">|</span>
+<span class="text-on-surface-variant">USB 3.0</span>
+<span class="text-outline-variant">|</span>
+<span class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-xs text-tertiary-container" data-icon="battery_horiz_075">battery_horiz_075</span>
+<span>84%</span>
+</span>
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span>
+<span class="font-label-sm text-[10px] text-tertiary-container font-bold">READY</span>
+</div>
+<!-- Network sync indicator -->
+<div class="flex items-center gap-1.5 text-xs text-on-surface-variant font-label-sm px-2">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span>
+<span>Online (1.8 Mbps)</span>
+<span class="text-outline-variant">•</span>
+<span class="text-outline">Synced 2m ago</span>
+</div>
+<!-- Quick Action Buttons -->
+<div class="flex items-center gap-2 pl-2 border-l border-outline-variant/40">
+<button class="px-3 py-1.5 rounded-lg border border-outline-variant text-xs font-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="settings">settings</span>
+<span>Device Config</span>
+</button>
+<button class="px-3 py-1.5 rounded-lg bg-error/10 text-error hover:bg-error/20 text-xs font-label-md transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="logout">logout</span>
+<span>Exit Screening</span>
+</button>
+</div>
+</div>
+</header>
+<!-- MAIN RETINAL CAPTURE STUDIO VIEWPORT -->
+<main class="flex-1 p-4 lg:p-5 flex flex-col gap-3.5 max-w-[1720px] mx-auto w-full">
+<!-- 1. TOP CONTROLS & STEPPER BAR -->
+<div class="bg-surface-container-lowest border border-[#EDE9FE] rounded-xl p-3 px-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
+<!-- Stepper: 5-Stage Clinical Pipeline -->
+<div class="flex items-center gap-1 text-xs">
+<!-- Step 1 -->
+<div class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="w-5 h-5 rounded-full bg-tertiary-fixed-dim/30 text-tertiary-container font-bold flex items-center justify-center text-[10px]">✓</span>
+<span class="font-label-md">01 Registration</span>
+</div>
+<span class="text-outline-variant px-1 font-mono">→</span>
+<!-- Step 2 (ACTIVE) -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-container text-on-primary shadow-sm ring-2 ring-primary/20">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim animate-ping"></span>
+<span class="font-label-md font-bold tracking-tight">02 Capture Studio</span>
+</div>
+<span class="text-outline-variant px-1 font-mono">→</span>
+<!-- Step 3 -->
+<div class="flex items-center gap-1.5 text-outline">
+<span class="w-5 h-5 rounded-full bg-surface-container text-outline flex items-center justify-center text-[10px] font-bold">03</span>
+<span class="font-label-md">Quality Lab</span>
+</div>
+<span class="text-outline-variant px-1 font-mono">→</span>
+<!-- Step 4 -->
+<div class="flex items-center gap-1.5 text-outline">
+<span class="w-5 h-5 rounded-full bg-surface-container text-outline flex items-center justify-center text-[10px] font-bold">04</span>
+<span class="font-label-md">AI Analysis</span>
+</div>
+<span class="text-outline-variant px-1 font-mono">→</span>
+<!-- Step 5 -->
+<div class="flex items-center gap-1.5 text-outline">
+<span class="w-5 h-5 rounded-full bg-surface-container text-outline flex items-center justify-center text-[10px] font-bold">05</span>
+<span class="font-label-md">Review</span>
+</div>
+</div>
+<!-- Eye Laterality Switcher (OD / OS) -->
+<div class="flex items-center bg-surface-container-high p-1 rounded-xl border border-outline-variant/60">
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-on-primary font-label-md text-xs font-bold shadow-sm transition-all">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span>
+<span>OD • RIGHT EYE</span>
+<span class="text-[10px] bg-white/20 px-1 rounded uppercase">Live Feed</span>
+</button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md text-xs transition-colors">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<span>OS • LEFT EYE</span>
+<span class="text-[10px] text-outline px-1 rounded uppercase">Pending</span>
+</button>
+</div>
+<!-- Field of View (FOV) Protocol Switcher -->
+<div class="flex items-center gap-1 bg-surface-container-low p-1 rounded-lg border border-outline-variant/40">
+<button class="px-2.5 py-1 rounded bg-surface-container-lowest text-primary font-label-md text-xs font-semibold shadow-xs border border-primary/20">
+              45° Posterior Pole (Macula)
+            </button>
+<button class="px-2.5 py-1 rounded text-on-surface-variant hover:text-on-surface font-label-md text-xs">
+              45° Optic Disc
+            </button>
+<button class="px-2.5 py-1 rounded text-on-surface-variant hover:text-on-surface font-label-md text-xs">
+              Peripheral
+            </button>
+</div>
+<!-- Telemetry Mini Chips -->
+<div class="hidden xl:flex items-center gap-2 font-mono text-[11px] text-on-surface-variant">
+<div class="px-2 py-1 bg-surface-container rounded border border-outline-variant/40">
+              2048×1536 <span class="text-outline">RAW</span>
+</div>
+<div class="px-2 py-1 bg-surface-container rounded border border-outline-variant/40">
+              NIR 850nm <span class="text-tertiary-container font-bold">ON</span>
+</div>
+<div class="px-2 py-1 bg-surface-container rounded border border-outline-variant/40">
+              AF Lock <span class="text-tertiary-container font-bold">98.4%</span>
+</div>
+<div class="px-2 py-1 bg-surface-container rounded border border-outline-variant/40">
+              Pupil: <span class="text-primary font-bold">4.2mm</span> (✓ Pass)
+            </div>
+</div>
+</div>
+<!-- 2. CENTRAL WORKSTATION: CIRCULAR FUNDUS CAMERA CANVAS & TELEMETRY GAUGES -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 items-stretch">
+<!-- LEFT METRIC TILES: Precision Instrumentation Status -->
+<div class="lg:col-span-3 flex flex-col justify-between gap-3">
+<!-- Real-Time Readiness Arc & Status -->
+<div class="bg-surface-container-lowest border border-[#EDE9FE] rounded-xl p-4 shadow-sm flex flex-col justify-between flex-1">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm uppercase tracking-wider text-outline text-[10px]">Capture Qualification</span>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed-dim/30 text-tertiary-container font-bold text-[11px]">READY</span>
+</div>
+<div class="flex items-baseline gap-2 mb-3">
+<span class="text-3xl font-extrabold text-primary font-headline-lg leading-none">92%</span>
+<span class="font-label-md text-xs text-on-surface-variant">Overall Optical Score</span>
+</div>
+<!-- Progress Bar Meter -->
+<div class="w-full bg-surface-container rounded-full h-2 overflow-hidden mb-4">
+<div class="bg-gradient-to-r from-primary to-secondary h-full rounded-full" style="width: 92%"></div>
+</div>
+<!-- Live Sub-Metrics Checklist -->
+<div class="space-y-2 font-label-md text-xs">
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low">
+<span class="flex items-center gap-1.5 text-on-surface">
+<span class="material-symbols-outlined text-sm text-tertiary-container" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Autofocus Precision</span>
+</span>
+<span class="font-mono font-bold text-tertiary-container">96%</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low">
+<span class="flex items-center gap-1.5 text-on-surface">
+<span class="material-symbols-outlined text-sm text-tertiary-container" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Illumination Uniformity</span>
+</span>
+<span class="font-mono font-bold text-tertiary-container">88%</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low">
+<span class="flex items-center gap-1.5 text-on-surface">
+<span class="material-symbols-outlined text-sm text-tertiary-container" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Retinal Area Coverage</span>
+</span>
+<span class="font-mono font-bold text-tertiary-container">98%</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low">
+<span class="flex items-center gap-1.5 text-on-surface">
+<span class="material-symbols-outlined text-sm text-tertiary-container" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Optic Disc Target</span>
+</span>
+<span class="font-mono text-tertiary-container font-semibold">Tracked</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low">
+<span class="flex items-center gap-1.5 text-on-surface">
+<span class="material-symbols-outlined text-sm text-tertiary-container" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Fovea Center Alignment</span>
+</span>
+<span class="font-mono text-tertiary-container font-semibold">Zone 1 Centered</span>
+</div>
+</div>
+</div>
+<!-- Optical Sensor Diagnostics Note -->
+<div class="mt-4 pt-3 border-t border-outline-variant/40 flex items-center gap-2 text-on-surface-variant font-label-sm text-[11px]">
+<span class="material-symbols-outlined text-base text-primary" data-icon="lens">lens</span>
+<span>45-deg Non-Mydriatic aperture calibration verified.</span>
+</div>
+</div>
+<!-- Real-Time Iris & Fixation Target Widget -->
+<div class="bg-surface-container-lowest border border-[#EDE9FE] rounded-xl p-3.5 shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm uppercase tracking-wider text-outline text-[10px]">Internal Fixation LED Target</span>
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span>
+</div>
+<div class="flex items-center justify-around py-1">
+<div class="text-center">
+<div class="w-10 h-10 mx-auto rounded-full border-2 border-dashed border-primary/40 flex items-center justify-center relative mb-1">
+<div class="w-2 h-2 rounded-full bg-secondary animate-ping"></div>
+<span class="material-symbols-outlined text-xs text-primary" data-icon="crosshair">adjust</span>
+</div>
+<span class="font-label-sm text-[10px] text-on-surface-variant">LED #03 (Green)</span>
+</div>
+<div class="h-8 border-r border-outline-variant/40"></div>
+<div class="text-center">
+<div class="font-headline-sm font-bold text-on-surface text-base">0.4°</div>
+<span class="font-label-sm text-[10px] text-on-surface-variant">Gaze Drift Error</span>
+</div>
+<div class="h-8 border-r border-outline-variant/40"></div>
+<div class="text-center">
+<div class="font-headline-sm font-bold text-tertiary-container text-base">Pass</div>
+<span class="font-label-sm text-[10px] text-on-surface-variant">Blink Status</span>
+</div>
+</div>
+</div>
+</div>
+<!-- CENTER VIEWPORT: THE CIRCULAR OPTICAL FUNDUS CAMERA DISPLAY -->
+<div class="lg:col-span-6 bg-[#090D16] rounded-2xl p-4 flex flex-col items-center justify-between relative shadow-inner overflow-hidden min-h-[500px]">
+<!-- Live Canvas Top HUD Overlay -->
+<div class="w-full flex items-center justify-between z-20 text-xs px-2 select-none">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-black/60 border border-white/20 text-emerald-400 font-mono text-[11px] flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                  LIVE FEED (60 FPS)
+                </span>
+<span class="px-2 py-0.5 rounded bg-black/40 text-slate-300 font-mono text-[11px] border border-white/10">
+                  LAT: OD (RIGHT)
+                </span>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-black/40 text-purple-300 font-mono text-[11px] border border-white/10">
+                  EXP: 1/80s • ISO 200
+                </span>
+<button class="p-1 rounded bg-white/10 text-white hover:bg-white/20 transition-colors" title="Toggle Crosshairs Overlay">
+<span class="material-symbols-outlined text-sm" data-icon="grid_4x4">grid_4x4</span>
+</button>
+</div>
+</div>
+<!-- CENTRAL CIRCULAR FUNDUS APERTURE (High-Fidelity Retinal Simulation) -->
+<div class="relative my-auto flex items-center justify-center">
+<!-- Outer Glowing Readiness Halo Ring (92%) -->
+<div class="w-[430px] h-[430px] sm:w-[470px] sm:h-[470px] rounded-full absolute p-1 flex items-center justify-center pointer-events-none z-10">
+<svg class="w-full h-full -rotate-90" viewbox="0 0 100 100">
+<!-- Background circle track -->
+<circle cx="50" cy="50" fill="none" r="48" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"></circle>
+<!-- Progress Readiness Stroke -->
+<circle cx="50" cy="50" fill="none" r="48" stroke="url(#readyGrad)" stroke-dasharray="301.59" stroke-dashoffset="24.12" stroke-linecap="round" stroke-width="2.5"></circle>
+<defs>
+<lineargradient id="readyGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#44bb8b"></stop>
+<stop offset="70%" stop-color="#8a4cfc"></stop>
+<stop offset="100%" stop-color="#68dba9"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+<!-- Primary Circular Optical Retinal Canvas -->
+<div class="w-[400px] h-[400px] sm:w-[440px] sm:h-[440px] rounded-full overflow-hidden relative shadow-2xl ring-4 ring-black/80 flex items-center justify-center bg-[#150402]">
+<!-- SVG Retinal Fundus Anatomical Simulation -->
+<svg class="w-full h-full absolute inset-0" viewbox="0 0 500 500">
+<defs>
+<!-- Deep rich retinal choroidal warm gradient -->
+<radialgradient cx="52%" cy="48%" id="retinaBase" r="55%">
+<stop offset="0%" stop-color="#c84419"></stop>
+<stop offset="35%" stop-color="#a42b10"></stop>
+<stop offset="70%" stop-color="#6a1306"></stop>
+<stop offset="95%" stop-color="#340702"></stop>
+<stop offset="100%" stop-color="#140200"></stop>
+</radialgradient>
+<!-- Optic Disc Radial Glow -->
+<radialgradient cx="50%" cy="50%" id="opticDiscGlow" r="50%">
+<stop offset="0%" stop-color="#fff4cc"></stop>
+<stop offset="45%" stop-color="#fcd34d"></stop>
+<stop offset="75%" stop-color="#f59e0b"></stop>
+<stop offset="100%" stop-color="#b45309"></stop>
+</radialgradient>
+<!-- Macula Foveal Dark Spot -->
+<radialgradient cx="50%" cy="50%" id="foveaSpot" r="50%">
+<stop offset="0%" stop-color="#4a0802"></stop>
+<stop offset="60%" stop-color="#701206"></stop>
+<stop offset="100%" stop-color="#9a230d"></stop>
+</radialgradient>
+<!-- Subtle vessel glow filter -->
+<filter height="120%" id="vesselSoft" width="120%" x="-10%" y="-10%">
+<fegaussianblur stddeviation="0.4"></fegaussianblur>
+</filter>
+</defs>
+<!-- 1. Deep Choroidal Background Layer -->
+<circle cx="250" cy="250" fill="url(#retinaBase)" r="250"></circle>
+<!-- Fine Choroidal mottling simulation -->
+<circle cx="240" cy="260" fill="none" opacity="0.15" r="230" stroke="#e15b24" stroke-width="1"></circle>
+<circle cx="255" cy="245" fill="none" opacity="0.25" r="210" stroke="#871b07" stroke-width="1.5"></circle>
+<!-- 2. The Bright Yellowish-Orange Optic Disc (Nasal side: x=140, y=245) -->
+<ellipse cx="140" cy="245" fill="url(#opticDiscGlow)" filter="drop-shadow(0 0 6px rgba(251, 191, 36, 0.4))" rx="36" ry="42"></ellipse>
+<!-- Physiological Cup (Central Depression) -->
+<ellipse cx="138" cy="246" fill="#fef3c7" opacity="0.9" rx="16" ry="19"></ellipse>
+<!-- 3. Macula & Fovea Centralis (Temporal quadrant: x=310, y=252) -->
+<ellipse cx="310" cy="252" fill="url(#foveaSpot)" opacity="0.85" rx="44" ry="40"></ellipse>
+<!-- Foveola / Umbo tiny light reflex -->
+<circle cx="310" cy="252" fill="#f59e0b" opacity="0.6" r="3.5"></circle>
+<circle cx="311" cy="251" fill="#ffffff" opacity="0.9" r="1.2"></circle>
+<!-- 4. Detailed Branching Retinal Arterioles & Venules -->
+<!-- Superior Temporal Arcade (Arches upward over macula) -->
+<path d="M140 220 C145 160, 200 110, 280 115 C330 118, 380 150, 425 200" fill="none" opacity="0.85" stroke="#7f1d1d" stroke-linecap="round" stroke-width="5.5"></path>
+<path d="M140 220 C145 160, 200 110, 280 115 C330 118, 380 150, 425 200" fill="none" opacity="0.9" stroke="#b91c1c" stroke-linecap="round" stroke-width="3"></path>
+<!-- Superior Temporal Branches -->
+<path d="M220 128 C240 100, 270 85, 310 75" fill="none" opacity="0.8" stroke="#991b1b" stroke-linecap="round" stroke-width="2.2"></path>
+<path d="M290 118 C320 135, 350 170, 360 210" fill="none" opacity="0.75" stroke="#7f1d1d" stroke-linecap="round" stroke-width="1.8"></path>
+<path d="M360 142 C390 125, 430 130, 455 145" fill="none" opacity="0.7" stroke="#b91c1c" stroke-linecap="round" stroke-width="1.5"></path>
+<!-- Inferior Temporal Arcade (Arches downward below macula) -->
+<path d="M140 268 C155 330, 210 385, 290 380 C350 375, 395 340, 435 280" fill="none" opacity="0.85" stroke="#7f1d1d" stroke-linecap="round" stroke-width="5"></path>
+<path d="M140 268 C155 330, 210 385, 290 380 C350 375, 395 340, 435 280" fill="none" opacity="0.9" stroke="#b91c1c" stroke-linecap="round" stroke-width="2.8"></path>
+<!-- Inferior Temporal Branches -->
+<path d="M230 365 C250 395, 290 425, 330 435" fill="none" opacity="0.8" stroke="#991b1b" stroke-linecap="round" stroke-width="2"></path>
+<path d="M305 378 C335 360, 360 320, 370 280" fill="none" opacity="0.7" stroke="#7f1d1d" stroke-linecap="round" stroke-width="1.8"></path>
+<path d="M380 350 C410 370, 440 375, 470 365" fill="none" opacity="0.7" stroke="#b91c1c" stroke-linecap="round" stroke-width="1.4"></path>
+<!-- Nasal Vessels (Shorter branches towards medial side) -->
+<path d="M125 235 C95 210, 65 190, 30 180" fill="none" opacity="0.85" stroke="#991b1b" stroke-linecap="round" stroke-width="3"></path>
+<path d="M125 255 C95 280, 60 305, 25 320" fill="none" opacity="0.85" stroke="#7f1d1d" stroke-linecap="round" stroke-width="3.2"></path>
+<path d="M90 215 C75 235, 50 245, 20 250" fill="none" opacity="0.8" stroke="#b91c1c" stroke-linecap="round" stroke-width="1.8"></path>
+<!-- Central Retinal Vein trunk emergence inside optic cup -->
+<circle cx="137" cy="245" fill="#450a0a" r="4.5"></circle>
+<circle cx="140" cy="244" fill="#dc2626" r="3"></circle>
+</svg>
+<!-- SCIENTIFIC CROSSHAIR & OPTICAL OVERLAYS (Z-index top of canvas) -->
+<div class="absolute inset-0 pointer-events-none flex items-center justify-center">
+<!-- Circular Concentric Field Rings (20°, 30°, 45°) -->
+<div class="w-48 h-48 rounded-full border border-cyan-400/25 absolute"></div>
+<div class="w-72 h-72 rounded-full border border-cyan-400/20 absolute"></div>
+<div class="w-96 h-96 rounded-full border border-dashed border-cyan-400/30 absolute spin-slow"></div>
+<!-- Center Foveal Target Crosshair Reticle -->
+<div class="absolute" style="left: 62%; top: 50.4%;">
+<div class="w-8 h-8 -ml-4 -mt-4 rounded-full border-2 border-emerald-400/80 relative flex items-center justify-center animate-pulse">
+<div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
+<!-- Sub-millimeter graduation ticks -->
+<div class="w-0.5 h-2 bg-emerald-400 absolute -top-2"></div>
+<div class="w-0.5 h-2 bg-emerald-400 absolute -bottom-2"></div>
+<div class="h-0.5 w-2 bg-emerald-400 absolute -left-2"></div>
+<div class="h-0.5 w-2 bg-emerald-400 absolute -right-2"></div>
+</div>
+<!-- Label Tag -->
+<span class="absolute left-6 -top-2.5 px-1.5 py-0.5 rounded bg-black/75 border border-emerald-500/40 text-[9px] font-mono text-emerald-300 whitespace-nowrap">
+                      FOVEA: (0.0, 0.0)
+                    </span>
+</div>
+<!-- Optic Disc Tracking Bounding Box -->
+<div class="absolute" style="left: 28%; top: 49%;">
+<div class="w-20 h-24 -ml-10 -mt-12 rounded border border-dashed border-amber-400/70 relative">
+<span class="absolute -top-4 left-0 px-1 rounded bg-black/80 text-[8px] font-mono text-amber-300">
+                        DISC: +3.2mm
+                      </span>
+</div>
+</div>
+<!-- Horizontal & Vertical Scientific Grid Hairlines -->
+<div class="w-full h-px bg-cyan-400/15 absolute"></div>
+<div class="h-full w-px bg-cyan-400/15 absolute"></div>
+</div>
+</div>
+</div>
+<!-- Live Canvas Bottom HUD: Optical Working Parameters -->
+<div class="w-full flex items-center justify-between z-20 text-[11px] font-mono text-slate-400 px-3 pb-1 select-none">
+<div class="flex items-center gap-3">
+<span class="flex items-center gap-1 text-emerald-400">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  AF LOCK: 98.4%
+                </span>
+<span>POLARIZATION: AUTO-ON</span>
+</div>
+<div class="flex items-center gap-3">
+<span>SENSOR TEMP: 34.2°C</span>
+<span class="text-purple-300">FOV: 45° POSTERIOR POLE</span>
+</div>
+</div>
+</div>
+<!-- RIGHT TELEMETRY COLUMN: Real-Time Capture Guidance & Lens Control -->
+<div class="lg:col-span-3 flex flex-col justify-between gap-3">
+<!-- Working Distance & Proximity Radar -->
+<div class="bg-surface-container-lowest border border-[#EDE9FE] rounded-xl p-4 shadow-sm flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-3">
+<span class="font-label-sm uppercase tracking-wider text-outline text-[10px]">Working Distance Radar</span>
+<span class="material-symbols-outlined text-sm text-primary" data-icon="straighten">straighten</span>
+</div>
+<div class="text-center py-2">
+<div class="text-4xl font-headline-lg font-extrabold text-on-surface">4.8 <span class="text-lg font-normal text-on-surface-variant">cm</span></div>
+<div class="font-label-sm text-xs text-tertiary-container font-semibold mt-1">Optimal Range: 4.5 – 5.0 cm</div>
+</div>
+<!-- Distance Bar Visual Indicator -->
+<div class="relative w-full bg-surface-container rounded-full h-3 my-3 p-0.5">
+<!-- Optimal Target Bracket Indicator -->
+<div class="absolute left-1/3 right-1/4 top-0 bottom-0 bg-tertiary-fixed/40 rounded-sm border-x border-tertiary-container/50"></div>
+<!-- Current needle/fill -->
+<div class="bg-primary h-full rounded-full transition-all duration-300" style="width: 58%"></div>
+</div>
+<div class="flex justify-between text-[10px] font-mono text-outline">
+<span>3.0 cm (Too Close)</span>
+<span class="font-bold text-tertiary-container">Target (4.8 cm)</span>
+<span>7.0 cm (Too Far)</span>
+</div>
+</div>
+<!-- Optical Diagnostics & Glare Check -->
+<div class="mt-4 pt-3 border-t border-outline-variant/40 space-y-2">
+<div class="font-label-sm uppercase tracking-wider text-outline text-[10px]">Optical Diagnostic Guard</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex items-start gap-2">
+<span class="material-symbols-outlined text-sm text-tertiary-container mt-0.5" data-icon="verified">verified</span>
+<div>
+<div class="font-label-md text-xs font-semibold text-on-surface">Minimal Corneal Reflex</div>
+<div class="font-body-sm text-[11px] text-on-surface-variant">Dual cross-polarized flash eliminates pupil edge glare.</div>
+</div>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex items-start gap-2">
+<span class="material-symbols-outlined text-sm text-tertiary-container mt-0.5" data-icon="fit_screen">fit_screen</span>
+<div>
+<div class="font-label-md text-xs font-semibold text-on-surface">Iris Aperture: 4.2mm</div>
+<div class="font-body-sm text-[11px] text-on-surface-variant">Adequate for non-mydriatic protocol. Dilation not required.</div>
+</div>
+</div>
+</div>
+<!-- Alignment Assist Control Buttons -->
+<div class="mt-3 pt-2 grid grid-cols-2 gap-2">
+<button class="px-2 py-1.5 rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container text-xs font-label-md flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="center_focus_strong">center_focus_strong</span>
+<span>Re-Focus</span>
+</button>
+<button class="px-2 py-1.5 rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container text-xs font-label-md flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="light_mode">light_mode</span>
+<span>NIR Flash</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- 3. REAL-TIME SMART CAPTURE GUIDANCE BANNER -->
+<div class="bg-surface-container-lowest border-l-4 border-tertiary-container border-y border-r border-[#EDE9FE] rounded-xl p-3.5 shadow-sm flex flex-col md:flex-row items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-tertiary-fixed-dim/40 text-tertiary-container flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-lg" data-icon="tips_and_updates">tips_and_updates</span>
+</div>
+<div>
+<div class="font-label-md text-xs font-bold text-on-surface flex items-center gap-2">
+<span>Real-Time Operator Guidance</span>
+<span class="px-2 py-0.2 rounded-full bg-tertiary-fixed-dim/30 text-tertiary-container font-mono text-[10px]">CONFIDENCE: 94%</span>
+</div>
+<p class="font-body-md text-xs text-on-surface-variant mt-0.5">
+                Target alignment optimal. Maintain 4.8 cm working distance. Instruct patient to gaze steadily at the green internal LED #03. Ready for acquisition.
+              </p>
+</div>
+</div>
+<div class="flex items-center gap-2 flex-shrink-0">
+<span class="px-2.5 py-1 rounded bg-surface-container text-on-surface font-mono text-xs">
+              Shortcut: <kbd class="font-bold text-primary font-mono bg-white px-1.5 py-0.5 rounded border border-outline-variant/60">SPACEBAR</kbd>
+</span>
+</div>
+</div>
+<!-- 4. CAPTURE ACTION CONTROLS & THUMBNAILS DRAWER (Bottom Bar) -->
+<div class="bg-surface-container-lowest border border-[#EDE9FE] rounded-xl p-3 shadow-sm flex flex-wrap items-center justify-between gap-4">
+<!-- Left Actions -->
+<div class="flex items-center gap-2">
+<button class="px-3 py-2 rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container hover:text-on-surface text-xs font-label-md flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="upload_file">upload_file</span>
+<span>Upload File (DICOM)</span>
+</button>
+<button class="px-3 py-2 rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container hover:text-on-surface text-xs font-label-md flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="sync">sync</span>
+<span>Auto-Align Pupil</span>
+</button>
+</div>
+<!-- Center Primary Trigger Action -->
+<div class="flex items-center gap-3">
+<button class="px-3.5 py-2.5 rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container text-xs font-label-md flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="refresh">refresh</span>
+<span>Clear Preview</span>
+</button>
+<!-- Prominent Pulsing Clinical Trigger Button -->
+<button class="relative group px-6 py-3 rounded-xl bg-primary-container text-on-primary font-label-lg font-bold text-sm tracking-wide shadow-lg shadow-primary/30 hover:bg-primary transition-all duration-150 active:scale-[0.98] flex items-center gap-2.5">
+<!-- Animated outer glow border -->
+<span class="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-secondary-container to-tertiary-fixed-dim opacity-50 blur-sm group-hover:opacity-80 transition duration-200"></span>
+<span class="relative flex items-center gap-2">
+<span class="material-symbols-outlined text-xl" data-icon="photo_camera" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
+<span>CAPTURE RETINAL SCAN</span>
+<span class="font-mono text-xs bg-white/20 px-2 py-0.5 rounded text-white/90 font-normal">[SPACEBAR]</span>
+</span>
+</button>
+</div>
+<!-- Right Side: Captured Series Thumbnails Drawer -->
+<div class="flex items-center gap-3">
+<!-- OD Thumbnail (Current Active Live Session) -->
+<div class="flex items-center gap-2 p-1.5 rounded-lg bg-surface-container border-2 border-primary/50 shadow-xs">
+<div class="w-10 h-10 rounded-md bg-[#1c0603] relative overflow-hidden flex items-center justify-center">
+<span class="w-3 h-3 rounded-full bg-amber-400/80"></span>
+<span class="absolute bottom-0 right-0 px-1 bg-black/70 text-[8px] font-mono text-emerald-300">92%</span>
+</div>
+<div class="pr-1 text-left">
+<div class="font-label-sm text-xs font-bold text-primary">OD: Right Eye</div>
+<div class="font-mono text-[10px] text-tertiary-container">Live Ready • F1</div>
+</div>
+</div>
+<!-- OS Thumbnail (Pending Queue) -->
+<div class="flex items-center gap-2 p-1.5 rounded-lg bg-surface-container-low border border-dashed border-outline-variant opacity-75">
+<div class="w-10 h-10 rounded-md bg-surface-container-high flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-base" data-icon="visibility">visibility</span>
+</div>
+<div class="pr-1 text-left">
+<div class="font-label-sm text-xs font-bold text-on-surface-variant">OS: Left Eye</div>
+<div class="font-label-sm text-[10px] text-outline">Queue Next • F2</div>
+</div>
+</div>
+<!-- Protocol Badge -->
+<div class="hidden 2xl:flex flex-col text-right pl-2 border-l border-outline-variant/40">
+<span class="font-label-sm text-[10px] uppercase text-outline">Standard Protocol</span>
+<span class="font-label-md text-xs font-semibold text-on-surface">2-Field DR Screening</span>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+<!-- Micro-Interactions Script for Clinical Workstation Simulation -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Allow trigger button keyboard shortcut (Spacebar)
+      window.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && e.target === document.body) {
+          e.preventDefault();
+          const captureBtn = document.querySelector('button.bg-primary-container');
+          if (captureBtn) {
+            captureBtn.classList.add('scale-95');
+            setTimeout(() => captureBtn.classList.remove('scale-95'), 150);
+          }
+        }
+      });
+    });
+  </script>
+</body></html>
