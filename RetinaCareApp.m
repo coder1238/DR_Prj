@@ -101,10 +101,10 @@ classdef RetinaCareApp < matlab.apps.AppBase
     
     methods (Access = public)
         function app = RetinaCareApp()
-            % Constructor: Initialize database, UI, and default state
+            % Constructor: Initialize database, patient state, UI, and default state
             app.initEngines();
-            app.createUI();
             app.loadInitialPatient();
+            app.createUI();
             app.selectTab(1); % Start at Clinical Command Centre
         end
         
@@ -328,7 +328,14 @@ classdef RetinaCareApp < matlab.apps.AppBase
         end
         
         function selectTab(app, index)
-            app.TabGroup.SelectedTab = app.TabGroup.Children(index);
+            tabs = [app.TabCommandCentre, app.TabPatientIntake, app.TabCaptureStudio, ...
+                    app.TabQualityLab, app.TabAIConstellation, app.TabAnatomyLesion, ...
+                    app.TabSeverityStudio, app.TabExplainability, app.TabReviewQueue, ...
+                    app.TabWorkstation, app.TabLongitudinal, app.TabReferral, ...
+                    app.TabSimulinkLab, app.TabModelRegistry, app.TabLoginAccess];
+            if index >= 1 && index <= length(tabs)
+                app.TabGroup.SelectedTab = tabs(index);
+            end
             for i = 1:length(app.NavButtons)
                 if i == index
                     app.NavButtons(i).BackgroundColor = app.COLOR_PRIMARY_CONTAIN;
