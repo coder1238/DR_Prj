@@ -36,7 +36,7 @@ classdef ConstellationAI < handle
             
             % Stage 2: Foundation & Representation (RETFound 768-d embedding)
             s2_time = round(42 + rand()*8, 1);
-            simEmbedding = ConstellationAI.simulateEmbedding(lesions);
+            simEmbedding = retinacare.engine.ConstellationAI.simulateEmbedding(lesions);
             
             % Stage 3: Anatomy Localization
             s3_time = round(28 + rand()*6, 1);
@@ -85,15 +85,15 @@ classdef ConstellationAI < handle
             if exCount > 0 && distToFAZ < 500
                 dmeProb = [0.03, 0.12, 0.85];
                 dmeClass = 2; % Center-involving DME
-                dmeVerdict = ConstellationAI.DME_LABELS{3};
+                dmeVerdict = retinacare.engine.ConstellationAI.DME_LABELS{3};
             elseif exCount > 0 && distToFAZ <= 1500
                 dmeProb = [0.08, 0.82, 0.10];
                 dmeClass = 1; % Non-Center-Involving DME
-                dmeVerdict = ConstellationAI.DME_LABELS{2};
+                dmeVerdict = retinacare.engine.ConstellationAI.DME_LABELS{2};
             else
                 dmeProb = [0.92, 0.06, 0.02];
                 dmeClass = 0; % No DME
-                dmeVerdict = ConstellationAI.DME_LABELS{1};
+                dmeVerdict = retinacare.engine.ConstellationAI.DME_LABELS{1};
             end
             
             % Referable DR Flag (Referable if Stage >= 2 OR DME >= 1)
@@ -136,8 +136,8 @@ classdef ConstellationAI < handle
             
             result = struct();
             result.PredictedStage = predictedStage;
-            result.StageLabel = ConstellationAI.ICDR_LABELS{predictedStage + 1};
-            result.ShortLabel = ConstellationAI.ICDR_SHORT{predictedStage + 1};
+            result.StageLabel = retinacare.engine.ConstellationAI.ICDR_LABELS{predictedStage + 1};
+            result.ShortLabel = retinacare.engine.ConstellationAI.ICDR_SHORT{predictedStage + 1};
             result.Confidence = round(confidence * 100, 1);
             result.SoftmaxProbabilities = round(probabilities * 100, 1);
             result.DMEClass = dmeClass;

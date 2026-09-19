@@ -223,7 +223,7 @@ classdef AnatomyLesionEngine < handle
             
             % ETDRS 4-2-1 Rule check
             % Quadrant distribution
-            [qST, qIT, qSN, qIN] = AnatomyLesionEngine.quadrantBreakdown(hemCandidates, w/2, h/2);
+            [qST, qIT, qSN, qIN] = retinacare.engine.AnatomyLesionEngine.quadrantBreakdown(hemCandidates, w/2, h/2);
             lesions.QuadrantHemCounts = [qST, qIT, qSN, qIN];
             lesions.Meets421Rule = (qST >= 5 && qIT >= 5 && qSN >= 5 && qIN >= 5);
         end
@@ -259,25 +259,25 @@ classdef AnatomyLesionEngine < handle
             % NV: Bright Magenta
             
             if isfield(layers, 'DiscMask') && any(layers.DiscMask(:))
-                comp = AnatomyLesionEngine.blendColor(comp, layers.DiscMask, [0.1, 0.8, 0.9], opacity * 0.5);
+                comp = retinacare.engine.AnatomyLesionEngine.blendColor(comp, layers.DiscMask, [0.1, 0.8, 0.9], opacity * 0.5);
             end
             if isfield(layers, 'VesselMask') && any(layers.VesselMask(:))
-                comp = AnatomyLesionEngine.blendColor(comp, layers.VesselMask, [0.7, 0.1, 0.2], opacity * 0.7);
+                comp = retinacare.engine.AnatomyLesionEngine.blendColor(comp, layers.VesselMask, [0.7, 0.1, 0.2], opacity * 0.7);
             end
             if isfield(layers, 'ExudateMask') && any(layers.ExudateMask(:))
-                comp = AnatomyLesionEngine.blendColor(comp, imdilate(layers.ExudateMask, strel('disk', 2)), [1.0, 0.95, 0.1], opacity);
+                comp = retinacare.engine.AnatomyLesionEngine.blendColor(comp, imdilate(layers.ExudateMask, strel('disk', 2)), [1.0, 0.95, 0.1], opacity);
             end
             if isfield(layers, 'HemorrhageMask') && any(layers.HemorrhageMask(:))
-                comp = AnatomyLesionEngine.blendColor(comp, layers.HemorrhageMask, [0.85, 0.05, 0.05], opacity);
+                comp = retinacare.engine.AnatomyLesionEngine.blendColor(comp, layers.HemorrhageMask, [0.85, 0.05, 0.05], opacity);
             end
             if isfield(layers, 'MAMask') && any(layers.MAMask(:))
-                comp = AnatomyLesionEngine.blendColor(comp, imdilate(layers.MAMask, strel('disk', 3)), [1.0, 0.1, 0.1], opacity);
+                comp = retinacare.engine.AnatomyLesionEngine.blendColor(comp, imdilate(layers.MAMask, strel('disk', 3)), [1.0, 0.1, 0.1], opacity);
             end
             if isfield(layers, 'CWSMask') && any(layers.CWSMask(:))
-                comp = AnatomyLesionEngine.blendColor(comp, layers.CWSMask, [0.95, 0.95, 0.95], opacity * 0.85);
+                comp = retinacare.engine.AnatomyLesionEngine.blendColor(comp, layers.CWSMask, [0.95, 0.95, 0.95], opacity * 0.85);
             end
             if isfield(layers, 'NVMask') && any(layers.NVMask(:))
-                comp = AnatomyLesionEngine.blendColor(comp, imdilate(layers.NVMask, strel('disk', 2)), [0.9, 0.1, 0.8], opacity);
+                comp = retinacare.engine.AnatomyLesionEngine.blendColor(comp, imdilate(layers.NVMask, strel('disk', 2)), [0.9, 0.1, 0.8], opacity);
             end
             
             composite = min(1.0, max(0.0, comp));

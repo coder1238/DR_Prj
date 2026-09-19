@@ -15,6 +15,7 @@ fprintf('=======================================================================
 projectRoot = fileparts(mfilename('fullpath'));
 addpath(projectRoot);
 addpath(fullfile(projectRoot, 'sample_data'));
+rehash;
 
 fprintf('[1/3] Added project root to MATLAB path: %s\n', projectRoot);
 

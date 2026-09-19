@@ -182,16 +182,16 @@ classdef ImageProcessingLab < handle
             
             result = img;
             if enableCUNSB
-                result = ImageProcessingLab.applyCUNSB(result);
+                result = retinacare.engine.ImageProcessingLab.applyCUNSB(result);
             end
             if enableDenoise
-                result = ImageProcessingLab.applyDenoising(result, 0.8);
+                result = retinacare.engine.ImageProcessingLab.applyDenoising(result, 0.8);
             end
             if enableCLAHE
-                result = ImageProcessingLab.applyCLAHE(result, 0.025);
+                result = retinacare.engine.ImageProcessingLab.applyCLAHE(result, 0.025);
             end
             if enableHomo
-                result = ImageProcessingLab.applyHomomorphic(result);
+                result = retinacare.engine.ImageProcessingLab.applyHomomorphic(result);
             end
         end
     end
