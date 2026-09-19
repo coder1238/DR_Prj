@@ -21,7 +21,9 @@ try
     assert(length(db.Patients) >= 5, 'Must contain at least 5 patient cohorts');
     assert(~isempty(db.ReviewQueue), 'Review queue must not be empty');
     assert(~isempty(db.Referrals), 'Referrals table must not be empty');
-    fprintf('PASSED (5 Patients, %d Queue items, %d Referrals)\n', size(db.ReviewQueue, 1), size(db.Referrals, 1));
+    assert(~isempty(db.PHCCenters), 'PHC Centers must not be empty');
+    assert(isfield(db.DistrictMetrics, 'TotalScreened'), 'DistrictMetrics must exist');
+    fprintf('PASSED (5 Patients, %d Queue items, %d Referrals, %d PHCs)\n', size(db.ReviewQueue, 1), size(db.Referrals, 1), size(db.PHCCenters, 1));
     passCount = passCount + 1;
 catch ME
     fprintf('FAILED: %s\n', ME.message);

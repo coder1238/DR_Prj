@@ -6,6 +6,8 @@ classdef ClinicalDatabase < handle
         Patients
         ReviewQueue
         Referrals
+        PHCCenters
+        DistrictMetrics
     end
     
     methods
@@ -192,6 +194,31 @@ classdef ClinicalDatabase < handle
                 'REF-2026-0919-03', 'Suresh C. Verma', '91-4829-1092-4411', 'MGM Medical College Eye Centre', 'Macular OCT & Anti-VEGF', 'Priority (<14d)', 'Pending Doctor Sign', 'Queue #14';
                 'REF-2026-0919-04', 'Mangilal Joshi', '91-8812-4011-3329', 'AIIMS Bhopal Retina Clinic', 'Intravitreal Anti-VEGF Workup', 'Urgent (<7d)', 'Acknowledged', 'Transport Scheduled'
             };
+            
+            % Populate Peripheral Health Centres (PHC Network)
+            obj.PHCCenters = {
+                'Depalpur CHC', 'CHC / Block Hub', 'Remidio NM-FOP II', 'Online (94%)', 34, 40, 5, '42 ms', '4G LTE (Airtel)', 'Fully Synced';
+                'Mhow Civil Hospital', 'Sub-District Hospital', 'Remidio + Bosch', 'Online (88%)', 48, 50, 7, '38 ms', 'Fiber + 5G Backup', 'Fully Synced';
+                'Sanwer PHC', 'Primary Health Centre', 'Forus 3nethra', 'Online (78%)', 26, 30, 4, '78 ms', '4G LTE (Jio)', 'Syncing (2 Enqueued)';
+                'Rau PHC', 'Primary Health Centre', 'Bosch Vision Plus', 'Online (100%)', 38, 35, 3, '24 ms', 'BSNL BharatNet', 'Fully Synced';
+                'Betma PHC', 'Primary Health Centre', 'Remidio Handheld', 'Online (64%)', 19, 25, 2, '95 ms', '3G/4G Fallback', 'Syncing (4 Enqueued)'
+            };
+            
+            % District Telemetry Metrics
+            dm = struct();
+            dm.TotalScreened = 12842;
+            dm.ScreenedToday = 165;
+            dm.ReferableCount = 1042;
+            dm.ReferableRate = 8.1;
+            dm.GradabilityRate = 96.8;
+            dm.ActiveCameras = 18;
+            dm.UrgentQueue = 14;
+            dm.TotalQueue = 87;
+            dm.AvgPipelineSLA = 12.4; % seconds
+            dm.DistrictName = 'Indore District, Madhya Pradesh';
+            dm.LeadOphthalmologist = 'Dr. Ananya Sharma (Tele-Review Lead)';
+            dm.FacilityHub = 'M.Y. Hospital Central Hub (Indore)';
+            obj.DistrictMetrics = dm;
         end
         
         function p = getPatientByUHID(obj, uhid)
