@@ -92,14 +92,29 @@ def build_mlapp(source_m="RetinaCareApp.m", target_mlapp="RetinaCareApp.mlapp", 
         with open(screenshot_path, "rb") as f:
             screenshot_bytes = f.read()
 
-    # Re-use level-5 MAT-file or existing appModel.mat
-    sample_mlapp = "/tmp/sample.mlapp"
-    if os.path.isfile(sample_mlapp):
-        with zipfile.ZipFile(sample_mlapp) as szf:
-            app_model_mat = szf.read("appdesigner/appModel.mat")
-    elif os.path.isfile(target_path):
-        with zipfile.ZipFile(target_path) as ezf:
-            app_model_mat = ezf.read("appdesigner/appModel.mat")
+    # Prepare clean App Designer appModel.mat with ClassName = 'RetinaCareApp'
+    clean_template_url = "https://raw.githubusercontent.com/roslovets/AppDesignerPro/master/examples/uiinputExample.mlapp"
+    template_path = "/tmp/clean_template.mlapp"
+    if not os.path.isfile(template_path):
+        try:
+            import urllib.request
+            req = urllib.request.Request(clean_template_url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req) as resp:
+                with open(template_path, "wb") as out:
+                    out.write(resp.read())
+        except Exception as e:
+            pass
+
+    import scipy.io
+    import io
+    if os.path.isfile(template_path):
+        with zipfile.ZipFile(template_path) as tzf:
+            raw_mat = tzf.read("appdesigner/appModel.mat")
+        mat = scipy.io.loadmat(io.BytesIO(raw_mat))
+        mat["code"]["ClassName"][0, 0] = "RetinaCareApp"
+        buf = io.BytesIO()
+        scipy.io.savemat(buf, mat)
+        app_model_mat = buf.getvalue()
     else:
         # Fallback empty Level 5 MAT header
         header = b'MATLAB 5.0 MAT-file, Platform: GLNXA64, Created on: ' + datetime.datetime.now().ctime().encode()

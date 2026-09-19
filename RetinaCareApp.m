@@ -27,33 +27,54 @@ classdef RetinaCareApp < matlab.apps.AppBase
     %   14. District Simulink & Discrete-Event Healthcare Capacity Simulator
     %   15. AI Model Registry & Multi-Center Benchmark Validation Centre
 
+    % Properties that correspond to app components
     properties (Access = public)
-        UIFigure
-        MainGrid
-        HeaderPanel
-        SidebarPanel
-        ContentPanel
-        SafetyBanner
-        TabGroup
-        
-        % 15 Clinical Modules Tabs (strictly 1 to 15 matching web router)
-        Tab01Login
-        Tab02CommandCentre
-        Tab03Registration
-        Tab04CaptureStudio
-        Tab05QualityLab
-        Tab06AIAnalysis
-        Tab07AnatomyMap
-        Tab08SeverityStudio
-        Tab09Explainability
-        Tab10ReviewQueue
-        Tab11Workstation
-        Tab12ReferralCentre
-        Tab13Longitudinal
-        Tab14DistrictSimulink
-        Tab15ModelRegistry
-        
-        % Data Stores & Clinical Engines
+        UIFigure                 matlab.ui.Figure
+        MainGrid                 matlab.ui.container.GridLayout
+        HeaderPanel              matlab.ui.container.Panel
+        SidebarPanel             matlab.ui.container.Panel
+        ContentPanel             matlab.ui.container.Panel
+        SafetyBanner             matlab.ui.container.Panel
+        TabGroup                 matlab.ui.container.TabGroup
+        Tab01Login               matlab.ui.container.Tab
+        Tab02CommandCentre       matlab.ui.container.Tab
+        Tab03Registration        matlab.ui.container.Tab
+        Tab04CaptureStudio       matlab.ui.container.Tab
+        Tab05QualityLab          matlab.ui.container.Tab
+        Tab06AIAnalysis          matlab.ui.container.Tab
+        Tab07AnatomyMap          matlab.ui.container.Tab
+        Tab08SeverityStudio      matlab.ui.container.Tab
+        Tab09Explainability      matlab.ui.container.Tab
+        Tab10ReviewQueue         matlab.ui.container.Tab
+        Tab11Workstation         matlab.ui.container.Tab
+        Tab12ReferralCentre      matlab.ui.container.Tab
+        Tab13Longitudinal        matlab.ui.container.Tab
+        Tab14DistrictSimulink    matlab.ui.container.Tab
+        Tab15ModelRegistry       matlab.ui.container.Tab
+        AxesCapture              matlab.ui.control.UIAxes
+        AxesQualityRaw           matlab.ui.control.UIAxes
+        AxesQualityEnh           matlab.ui.control.UIAxes
+        AxesQualityHist          matlab.ui.control.UIAxes
+        AxesAnatomyMap           matlab.ui.control.UIAxes
+        AxesSeverityWheel        matlab.ui.control.UIAxes
+        AxesSeverityProb         matlab.ui.control.UIAxes
+        AxesGradCAM              matlab.ui.control.UIAxes
+        AxesCalibration          matlab.ui.control.UIAxes
+        AxesWorkstationRaw       matlab.ui.control.UIAxes
+        AxesWorkstationAI        matlab.ui.control.UIAxes
+        AxesLongSeverity         matlab.ui.control.UIAxes
+        AxesLongLesions          matlab.ui.control.UIAxes
+        AxesSimThroughput        matlab.ui.control.UIAxes
+        AxesSimQueues            matlab.ui.control.UIAxes
+        AxesROCCurve             matlab.ui.control.UIAxes
+        AxesPRCurve              matlab.ui.control.UIAxes
+        TopBarFacilityDropdown   matlab.ui.control.DropDown
+        TopBarPatientDropdown    matlab.ui.control.DropDown
+        TopBarStatusLabel        matlab.ui.control.Label
+    end
+
+    % Properties that correspond to apps with a single instance
+    properties (Access = public)
         ClinicalDB
         CurrentPatient
         CurrentRawImg
@@ -65,31 +86,7 @@ classdef RetinaCareApp < matlab.apps.AppBase
         SimEngine
         ModelReg
         CurrentFacility
-        
-        % Navigation & TopBar Controls
         NavButtons
-        TopBarFacilityDropdown
-        TopBarPatientDropdown
-        TopBarStatusLabel
-        
-        % Interactive UIAxes
-        AxesCapture
-        AxesQualityRaw
-        AxesQualityEnh
-        AxesQualityHist
-        AxesAnatomyMap
-        AxesSeverityWheel
-        AxesSeverityProb
-        AxesGradCAM
-        AxesCalibration
-        AxesWorkstationRaw
-        AxesWorkstationAI
-        AxesLongSeverity
-        AxesLongLesions
-        AxesSimThroughput
-        AxesSimQueues
-        AxesROCCurve
-        AxesPRCurve
     end
 
     properties (Constant)
@@ -119,21 +116,6 @@ classdef RetinaCareApp < matlab.apps.AppBase
     end
 
     methods (Access = public)
-        function app = RetinaCareApp()
-            % Constructor: Initialize database, patient state, UI, and default state
-            app.CurrentFacility = 'M.Y. Hospital Central Hub (Indore)';
-            app.initEngines();
-            app.loadInitialPatient();
-            app.createUI();
-            app.selectTab(2); % Default landing at 02. Command Centre (matching web redirect)
-        end
-
-        function delete(app)
-            % Destructor: Clean up figure
-            if isvalid(app.UIFigure)
-                delete(app.UIFigure);
-            end
-        end
 
         function selectTab(app, index)
             % Explicit, deterministic tab switching across all 15 clinical modules
@@ -191,7 +173,17 @@ classdef RetinaCareApp < matlab.apps.AppBase
         end
     end
 
+    % Callbacks that handle component events
     methods (Access = private)
+
+        % Code that executes after component creation
+        function startupFcn(app)
+            app.CurrentFacility = 'M.Y. Hospital Central Hub (Indore)';
+            app.initEngines();
+            app.loadInitialPatient();
+            app.selectTab(2); % Default landing at 02. Command Centre (matching web redirect)
+        end
+
         function initEngines(app)
             % Instantiate database, Simulink queuing engine, and Model Registry
             app.ClinicalDB = retinacare.data.ClinicalDatabase();
@@ -220,29 +212,7 @@ classdef RetinaCareApp < matlab.apps.AppBase
             app.CurrentAIResult = retinacare.engine.ConstellationAI.runInference(app.CurrentRawImg, app.CurrentAnatomy, app.CurrentLesions, app.CurrentVessels);
         end
 
-        function createUI(app)
-            % Create master responsive App Designer UIFigure
-            app.UIFigure = uifigure('Name', 'RetinaCare AI — Smart DR Screening & Clinical Decision Support', ...
-                'Position', [40, 40, 1420, 900], ...
-                'Color', app.COLOR_CANVAS_BG);
 
-            app.MainGrid = uigridlayout(app.UIFigure, [3, 1]);
-            app.MainGrid.RowHeight = {68, 28, '1x'};
-            app.MainGrid.Padding = [0 0 0 0];
-            app.MainGrid.RowSpacing = 0;
-
-            app.createGlobalTopBar();
-            app.createSafetyBanner();
-
-            % Body Layout: Left Navigation Rail (260px) + Right Content Panel
-            bodyGrid = uigridlayout(app.MainGrid, [1, 2]);
-            bodyGrid.ColumnWidth = {260, '1x'};
-            bodyGrid.Padding = [0 0 0 0];
-            bodyGrid.ColumnSpacing = 0;
-
-            app.createNavigationRail(bodyGrid);
-            app.createContentWorkspace(bodyGrid);
-        end
 
         % =================================================================
         % SHELL COMPONENT: GLOBAL TOP BAR
@@ -1622,6 +1592,66 @@ classdef RetinaCareApp < matlab.apps.AppBase
             ylabel(app.AxesQualityHist, 'Frequency', 'FontSize', 9);
             app.AxesQualityHist.XGrid = 'on';
             app.AxesQualityHist.YGrid = 'on';
+        end
+    end
+    % Component initialization
+    methods (Access = private)
+
+        % Create UIFigure and components
+        function createComponents(app)
+            % Create master responsive App Designer UIFigure
+            app.UIFigure = uifigure('Visible', 'off');
+            app.UIFigure.Name = 'RetinaCare AI — Smart DR Screening & Clinical Decision Support';
+            app.UIFigure.Position = [40, 40, 1420, 900];
+            app.UIFigure.Color = app.COLOR_CANVAS_BG;
+
+            app.MainGrid = uigridlayout(app.UIFigure, [3, 1]);
+            app.MainGrid.RowHeight = {68, 28, '1x'};
+            app.MainGrid.Padding = [0 0 0 0];
+            app.MainGrid.RowSpacing = 0;
+
+            app.createGlobalTopBar();
+            app.createSafetyBanner();
+
+            % Body Layout: Left Navigation Rail (260px) + Right Content Panel
+            bodyGrid = uigridlayout(app.MainGrid, [1, 2]);
+            bodyGrid.ColumnWidth = {260, '1x'};
+            bodyGrid.Padding = [0 0 0 0];
+            bodyGrid.ColumnSpacing = 0;
+
+            app.createNavigationRail(bodyGrid);
+            app.createContentWorkspace(bodyGrid);
+
+            % Show the figure after all components are created
+            app.UIFigure.Visible = 'on';
+        end
+    end
+
+    % App creation and deletion
+    methods (Access = public)
+
+        % Construct app
+        function app = RetinaCareApp
+
+            % Create UIFigure and components
+            createComponents(app)
+
+            % Register the app with App Designer
+            registerApp(app, app.UIFigure)
+
+            % Execute the startup function
+            runStartupFcn(app, @startupFcn)
+
+            if nargout == 0
+                clear app
+            end
+        end
+
+        % Code that executes before app deletion
+        function delete(app)
+
+            % Delete UIFigure when app is deleted
+            delete(app.UIFigure)
         end
     end
 end
