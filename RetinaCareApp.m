@@ -689,8 +689,11 @@ classdef RetinaCareApp < matlab.apps.AppBase
                 'BackgroundColor', app.COLOR_SURFACE, 'FontWeight', 'bold');
             hLay = uigridlayout(histPanel, [1, 1]);
             app.AxesQualityHist = uiaxes(hLay);
-            imhist(app.CurrentRawImg(:,:,2), app.AxesQualityHist);
-            title(app.AxesQualityHist, 'Hemoglobin Contrast Spectrum');
+            [counts, binLocs] = imhist(app.CurrentRawImg(:,:,2), 64);
+            bar(app.AxesQualityHist, binLocs, counts, 'BarWidth', 1, 'FaceColor', [0.02, 0.59, 0.41], 'EdgeColor', 'none');
+            title(app.AxesQualityHist, 'Hemoglobin Contrast Spectrum', 'Color', app.COLOR_TEXT);
+            xlabel(app.AxesQualityHist, 'Pixel Intensity (0–255)', 'FontSize', 9);
+            ylabel(app.AxesQualityHist, 'Frequency', 'FontSize', 9);
         end
         
         % =================================================================
@@ -1343,7 +1346,11 @@ classdef RetinaCareApp < matlab.apps.AppBase
             imshow(app.CurrentRawImg, 'Parent', app.AxesQualityRaw);
             imshow(app.CurrentEnhancedImg, 'Parent', app.AxesQualityEnh);
             cla(app.AxesQualityHist);
-            imhist(app.CurrentRawImg(:,:,2), app.AxesQualityHist);
+            [counts, binLocs] = imhist(app.CurrentRawImg(:,:,2), 64);
+            bar(app.AxesQualityHist, binLocs, counts, 'BarWidth', 1, 'FaceColor', [0.02, 0.59, 0.41], 'EdgeColor', 'none');
+            title(app.AxesQualityHist, 'Hemoglobin Contrast Spectrum', 'Color', app.COLOR_TEXT);
+            xlabel(app.AxesQualityHist, 'Pixel Intensity (0–255)', 'FontSize', 9);
+            ylabel(app.AxesQualityHist, 'Frequency', 'FontSize', 9);
         end
     end
 end
