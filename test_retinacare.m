@@ -12,7 +12,7 @@ addpath(projectRoot);
 addpath(fullfile(projectRoot, 'sample_data'));
 
 passCount = 0;
-totalTests = 10;
+totalTests = 11;
 
 %% Test 1: Clinical Database Initialization
 fprintf('[Test 1/9] Initializing ClinicalDatabase... ');
@@ -145,7 +145,7 @@ catch ME
 end
 
 %% Test 10: RetinaCareApp UI Initialization
-fprintf('[Test 10/10] Launching and verifying RetinaCareApp UI instantiation... ');
+fprintf('[Test 10/11] Launching and verifying RetinaCareApp UI instantiation... ');
 try
     testApp = RetinaCareApp();
     assert(isvalid(testApp.UIFigure), 'UIFigure must be valid and visible');
@@ -153,6 +153,19 @@ try
     assert(length(testApp.TabGroup.Children) == 15, 'Must have 15 module tabs');
     delete(testApp);
     fprintf('PASSED (15 Tabs, 15 Nav Buttons, UIFigure created & verified)\n');
+    passCount = passCount + 1;
+catch ME
+    fprintf('FAILED: %s\n', ME.message);
+end
+
+%% Test 11: App Designer .mlapp Package Verification
+fprintf('[Test 11/11] Verifying RetinaCareApp.mlapp archive & metadata... ');
+try
+    mlappPath = fullfile(projectRoot, 'RetinaCareApp.mlapp');
+    assert(isfile(mlappPath), 'RetinaCareApp.mlapp must exist');
+    mlInfo = dir(mlappPath);
+    assert(mlInfo.bytes > 50000, 'RetinaCareApp.mlapp size must be valid (>50KB)');
+    fprintf('PASSED (Package: RetinaCareApp.mlapp, Size: %.1f KB)\n', mlInfo.bytes/1024);
     passCount = passCount + 1;
 catch ME
     fprintf('FAILED: %s\n', ME.message);

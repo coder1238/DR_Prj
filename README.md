@@ -35,12 +35,27 @@ Open MATLAB, navigate to `/workspaces/DR_Prj/`, and in the MATLAB Command Window
 ```matlab
 run_retinacare
 ```
-Or directly:
+Or open the application directly in **MATLAB App Designer**:
+```matlab
+appdesigner('RetinaCareApp.mlapp')
+```
+Or instantiate programmatically:
 ```matlab
 app = RetinaCareApp();
 ```
 
-### 2. Deploy to MATLAB Web App Server
+### 2. Build / Refresh the .mlapp Package
+To rebuild or update `RetinaCareApp.mlapp` after any code modifications:
+- In MATLAB:
+  ```matlab
+  build_mlapp
+  ```
+- From terminal (Linux/macOS/Windows):
+  ```bash
+  python3 build_mlapp.py
+  ```
+
+### 3. Deploy to MATLAB Web App Server
 To package and deploy the application for **MATLAB Web App Server**:
 1. Run the deployment script in MATLAB:
    ```matlab
@@ -54,8 +69,8 @@ To package and deploy the application for **MATLAB Web App Server**:
 3. Access the application in any web browser at:
    `http://<server-host>:9988/webapps/home/` and launch **RetinaCareApp**.
 
-### 3. Run Automated Verification Tests
-To run the automated test suite testing all 9 application and algorithm modules:
+### 4. Run Automated Verification Tests
+To run the automated test suite testing all 11 application, algorithm, and `.mlapp` package modules:
 ```matlab
 test_retinacare
 ```
@@ -66,9 +81,13 @@ test_retinacare
 
 ```
 /workspaces/DR_Prj/
+├── RetinaCareApp.mlapp            % Standard MATLAB App Designer Package Archive
 ├── RetinaCareApp.m                % Master App Designer Class (All 15 Modules)
+├── build_mlapp.m                  % MATLAB one-click .mlapp builder
+├── build_mlapp.py                 % Standalone OPC-compliant .mlapp packager
 ├── run_retinacare.m               % One-click launcher script
-├── test_retinacare.m              % Comprehensive 9-part test suite
+├── test_retinacare.m              % Comprehensive 11-part test suite
+├── deploy_web_app.m               % MATLAB Web App Server compiler script
 ├── RetinaCare_AI_Detailed_Analysis.md % Full architectural & clinical analysis
 ├── +retinacare/
 │   ├── +engine/
