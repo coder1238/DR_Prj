@@ -40,7 +40,21 @@ Or directly:
 app = RetinaCareApp();
 ```
 
-### 2. Run Automated Verification Tests
+### 2. Deploy to MATLAB Web App Server
+To package and deploy the application for **MATLAB Web App Server**:
+1. Run the deployment script in MATLAB:
+   ```matlab
+   deploy_web_app
+   ```
+   Or specify your custom server apps folder:
+   ```matlab
+   deploy_web_app('ServerAppsDir', '/usr/local/MATLAB/MATLAB_Web_App_Server/R2024b/apps')
+   ```
+2. The script compiles `RetinaCareApp.m` into `dist/RetinaCareApp.ctf` using MATLAB Compiler and places it in the Web App Server directory.
+3. Access the application in any web browser at:
+   `http://<server-host>:9988/webapps/home/` and launch **RetinaCareApp**.
+
+### 3. Run Automated Verification Tests
 To run the automated test suite testing all 9 application and algorithm modules:
 ```matlab
 test_retinacare

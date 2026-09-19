@@ -12,7 +12,7 @@ addpath(projectRoot);
 addpath(fullfile(projectRoot, 'sample_data'));
 
 passCount = 0;
-totalTests = 9;
+totalTests = 10;
 
 %% Test 1: Clinical Database Initialization
 fprintf('[Test 1/9] Initializing ClinicalDatabase... ');
@@ -130,13 +130,27 @@ catch ME
 end
 
 %% Test 9: Model Registry & Benchmark Curves
-fprintf('[Test 9/9] Verifying 15 Active Production Models & ROC Benchmarks... ');
+fprintf('[Test 9/10] Verifying 15 Active Production Models & ROC Benchmarks... ');
 try
     mReg = retinacare.models.ModelRegistry();
     assert(size(mReg.ModelsTable, 1) == 15, 'Must have 15 production models');
     [fpr, tpr, auc] = mReg.getROCCurve('IDRiD');
     assert(auc > 0.95, 'IDRiD AUC must exceed 0.95');
     fprintf('PASSED (15 Models verified, IDRiD AUC: %.3f)\n', auc);
+    passCount = passCount + 1;
+catch ME
+    fprintf('FAILED: %s\n', ME.message);
+end
+
+%% Test 10: RetinaCareApp UI Initialization
+fprintf('[Test 10/10] Launching and verifying RetinaCareApp UI instantiation... ');
+try
+    testApp = RetinaCareApp();
+    assert(isvalid(testApp.UIFigure), 'UIFigure must be valid and visible');
+    assert(length(testApp.NavButtons) == 15, 'Must have 15 navigation buttons');
+    assert(length(testApp.TabGroup.Children) == 15, 'Must have 15 module tabs');
+    delete(testApp);
+    fprintf('PASSED (15 Tabs, 15 Nav Buttons, UIFigure created & verified)\n');
     passCount = passCount + 1;
 catch ME
     fprintf('FAILED: %s\n', ME.message);

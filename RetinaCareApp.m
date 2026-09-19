@@ -48,18 +48,18 @@ classdef RetinaCareApp < matlab.apps.AppBase
         
         % Data & Engines
         ClinicalDB           % retinacare.data.ClinicalDatabase
-        CurrentPatient       struct
+        CurrentPatient       % struct
         CurrentRawImg        % uint8 / double fundus image
         CurrentEnhancedImg   % enhanced fundus image
-        CurrentAnatomy       struct
-        CurrentLesions       struct
-        CurrentVessels       struct
-        CurrentAIResult      struct
+        CurrentAnatomy       % struct
+        CurrentLesions       % struct
+        CurrentVessels       % struct
+        CurrentAIResult      % struct
         SimEngine            % retinacare.engine.SimulinkQueueEngine
         ModelReg             % retinacare.models.ModelRegistry
         
         % Navigation Buttons
-        NavButtons           matlab.ui.control.Button
+        NavButtons           % array of matlab.ui.control.Button
         
         % Axes for image displays and charts
         AxesCapture          matlab.ui.control.UIAxes
@@ -257,7 +257,6 @@ classdef RetinaCareApp < matlab.apps.AppBase
                 '🔐 15. Workspace Access'
             };
             
-            app.NavButtons = gobjects(1, length(moduleNames));
             for i = 1:length(moduleNames)
                 btn = uibutton(navGrid, 'push', ...
                     'Text', moduleNames{i}, ...
@@ -266,7 +265,11 @@ classdef RetinaCareApp < matlab.apps.AppBase
                     'BackgroundColor', app.COLOR_SURFACE, ...
                     'FontColor', app.COLOR_TEXT, ...
                     'ButtonPushedFcn', @(btn, event) app.onNavButtonClick(i));
-                app.NavButtons(i) = btn;
+                if i == 1
+                    app.NavButtons = btn;
+                else
+                    app.NavButtons(i) = btn;
+                end
             end
             
             % Highlight first button
