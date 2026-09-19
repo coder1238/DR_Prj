@@ -881,7 +881,8 @@ classdef RetinaCareApp < matlab.apps.AppBase
             app.AxesSeverityProb.YLim = [0 100];
             ylabel(app.AxesSeverityProb, 'Probability (%)');
             title(app.AxesSeverityProb, 'Categorical Model Probability');
-            grid(app.AxesSeverityProb, 'on');
+            app.AxesSeverityProb.XGrid = 'on';
+            app.AxesSeverityProb.YGrid = 'on';
         end
         
         function renderSeverityGauge(app)
@@ -956,7 +957,8 @@ classdef RetinaCareApp < matlab.apps.AppBase
             xlabel(app.AxesCalibration, 'Confidence');
             ylabel(app.AxesCalibration, 'Empirical Accuracy');
             title(app.AxesCalibration, 'Platt Scaled Reliability Curve');
-            grid(app.AxesCalibration, 'on');
+            app.AxesCalibration.XGrid = 'on';
+            app.AxesCalibration.YGrid = 'on';
             hold(app.AxesCalibration, 'off');
         end
         
@@ -1105,7 +1107,8 @@ classdef RetinaCareApp < matlab.apps.AppBase
             app.AxesLongSeverity.XTick = vDates;
             app.AxesLongSeverity.XTickLabel = {visits.Date};
             title(app.AxesLongSeverity, 'Longitudinal DR Progression');
-            grid(app.AxesLongSeverity, 'on');
+            app.AxesLongSeverity.XGrid = 'on';
+            app.AxesLongSeverity.YGrid = 'on';
             
             % Lesion Burden Plot
             p2 = uipanel(plotsGrid, 'Title', 'Microaneurysm & Hard Exudate Burden Trajectory', ...
@@ -1126,7 +1129,8 @@ classdef RetinaCareApp < matlab.apps.AppBase
             app.AxesLongLesions.XTick = vDates;
             app.AxesLongLesions.XTickLabel = {visits.Date};
             title(app.AxesLongLesions, 'Quantitative Biomarker Burden');
-            grid(app.AxesLongLesions, 'on');
+            app.AxesLongLesions.XGrid = 'on';
+            app.AxesLongLesions.YGrid = 'on';
         end
         
         % =================================================================
@@ -1224,7 +1228,8 @@ classdef RetinaCareApp < matlab.apps.AppBase
             ylabel(app.AxesSimThroughput, 'Patients Screened');
             title(app.AxesSimThroughput, sprintf('Total Screened: %d • Referrals: %d • Annual: %d', ...
                 res.TotalScreened, res.ReferralsGenerated, res.AnnualProjected));
-            grid(app.AxesSimThroughput, 'on');
+            app.AxesSimThroughput.XGrid = 'on';
+            app.AxesSimThroughput.YGrid = 'on';
             
             % Plot 2: Queue Depths over time
             tMin = res.TimeMinutes;
@@ -1237,7 +1242,8 @@ classdef RetinaCareApp < matlab.apps.AppBase
             ylabel(app.AxesSimQueues, 'Queue Length (Patients)');
             legend(app.AxesSimQueues, {'Intake', 'Camera', 'Doctor Review', 'Tertiary OPD'}, 'Location', 'northwest');
             title(app.AxesSimQueues, sprintf('Queue Bottlenecks • %s', res.BottleneckStatus));
-            grid(app.AxesSimQueues, 'on');
+            app.AxesSimQueues.XGrid = 'on';
+            app.AxesSimQueues.YGrid = 'on';
             hold(app.AxesSimQueues, 'off');
         end
         
@@ -1275,7 +1281,8 @@ classdef RetinaCareApp < matlab.apps.AppBase
             xlabel(app.AxesROCCurve, 'False Positive Rate (1 - Specificity)');
             ylabel(app.AxesROCCurve, 'True Positive Rate (Sensitivity)');
             title(app.AxesROCCurve, sprintf('IDRiD Benchmark: AUC = %.3f', auc));
-            grid(app.AxesROCCurve, 'on');
+            app.AxesROCCurve.XGrid = 'on';
+            app.AxesROCCurve.YGrid = 'on';
             hold(app.AxesROCCurve, 'off');
             
             prPanel = uipanel(curvesGrid, 'Title', 'Precision-Recall Validation Curve', ...
@@ -1288,7 +1295,8 @@ classdef RetinaCareApp < matlab.apps.AppBase
             xlabel(app.AxesPRCurve, 'Recall (Sensitivity)');
             ylabel(app.AxesPRCurve, 'Precision (PPV)');
             title(app.AxesPRCurve, 'Precision-Recall Curve (AP = 0.965)');
-            grid(app.AxesPRCurve, 'on');
+            app.AxesPRCurve.XGrid = 'on';
+            app.AxesPRCurve.YGrid = 'on';
         end
         
         % =================================================================
