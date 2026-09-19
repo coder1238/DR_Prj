@@ -962,13 +962,41 @@ classdef RetinaCareApp < matlab.apps.AppBase
         function updateAnatomyOverlay(app)
             % Composite multi-layer anatomical and lesion overlay
             layers = struct();
-            layers.DiscMask = app.CurrentAnatomy.DiscMask;
-            layers.VesselMask = app.CurrentVessels.VesselMask;
-            layers.MAMask = app.CurrentLesions.MicroaneurysmsMask;
-            layers.HemorrhageMask = app.CurrentLesions.HemorrhagesMask;
-            layers.ExudateMask = app.CurrentLesions.ExudatesMask;
-            layers.CWSMask = app.CurrentLesions.CottonWoolSpotsMask;
-            layers.NVMask = app.CurrentLesions.NeovascularizationMask;
+            if isfield(app.CurrentAnatomy, 'DiscMask')
+                layers.DiscMask = app.CurrentAnatomy.DiscMask;
+            end
+            if isfield(app.CurrentVessels, 'VesselMask')
+                layers.VesselMask = app.CurrentVessels.VesselMask;
+            elseif isfield(app.CurrentVessels, 'Mask')
+                layers.VesselMask = app.CurrentVessels.Mask;
+            end
+            if isfield(app.CurrentLesions, 'MicroaneurysmsMask')
+                layers.MAMask = app.CurrentLesions.MicroaneurysmsMask;
+            elseif isfield(app.CurrentLesions, 'MAMask')
+                layers.MAMask = app.CurrentLesions.MAMask;
+            end
+            if isfield(app.CurrentLesions, 'HemorrhagesMask')
+                layers.HemorrhageMask = app.CurrentLesions.HemorrhagesMask;
+            elseif isfield(app.CurrentLesions, 'HemMask')
+                layers.HemorrhageMask = app.CurrentLesions.HemMask;
+            end
+            if isfield(app.CurrentLesions, 'ExudatesMask')
+                layers.ExudateMask = app.CurrentLesions.ExudatesMask;
+            elseif isfield(app.CurrentLesions, 'ExudateMask')
+                layers.ExudateMask = app.CurrentLesions.ExudateMask;
+            end
+            if isfield(app.CurrentLesions, 'CottonWoolSpotsMask')
+                layers.CWSMask = app.CurrentLesions.CottonWoolSpotsMask;
+            elseif isfield(app.CurrentLesions, 'CottonWoolMask')
+                layers.CWSMask = app.CurrentLesions.CottonWoolMask;
+            elseif isfield(app.CurrentLesions, 'CWSMask')
+                layers.CWSMask = app.CurrentLesions.CWSMask;
+            end
+            if isfield(app.CurrentLesions, 'NeovascularizationMask')
+                layers.NVMask = app.CurrentLesions.NeovascularizationMask;
+            elseif isfield(app.CurrentLesions, 'NVMask')
+                layers.NVMask = app.CurrentLesions.NVMask;
+            end
 
             composite = retinacare.engine.AnatomyLesionEngine.createOverlay(app.CurrentRawImg, layers, 0.7);
             imshow(composite, 'Parent', app.AxesAnatomyMap);
@@ -1184,12 +1212,41 @@ classdef RetinaCareApp < matlab.apps.AppBase
             app.AxesWorkstationAI.BackgroundColor = app.COLOR_OPTICAL_BG;
             app.AxesWorkstationAI.Toolbar.Visible = 'off';
             layers = struct();
-            layers.DiscMask = app.CurrentAnatomy.DiscMask;
-            layers.VesselMask = app.CurrentVessels.VesselMask;
-            layers.MAMask = app.CurrentLesions.MicroaneurysmsMask;
-            layers.HemorrhageMask = app.CurrentLesions.HemorrhagesMask;
-            layers.ExudateMask = app.CurrentLesions.ExudatesMask;
-            layers.CWSMask = app.CurrentLesions.CottonWoolSpotsMask;
+            if isfield(app.CurrentAnatomy, 'DiscMask')
+                layers.DiscMask = app.CurrentAnatomy.DiscMask;
+            end
+            if isfield(app.CurrentVessels, 'VesselMask')
+                layers.VesselMask = app.CurrentVessels.VesselMask;
+            elseif isfield(app.CurrentVessels, 'Mask')
+                layers.VesselMask = app.CurrentVessels.Mask;
+            end
+            if isfield(app.CurrentLesions, 'MicroaneurysmsMask')
+                layers.MAMask = app.CurrentLesions.MicroaneurysmsMask;
+            elseif isfield(app.CurrentLesions, 'MAMask')
+                layers.MAMask = app.CurrentLesions.MAMask;
+            end
+            if isfield(app.CurrentLesions, 'HemorrhagesMask')
+                layers.HemorrhageMask = app.CurrentLesions.HemorrhagesMask;
+            elseif isfield(app.CurrentLesions, 'HemMask')
+                layers.HemorrhageMask = app.CurrentLesions.HemMask;
+            end
+            if isfield(app.CurrentLesions, 'ExudatesMask')
+                layers.ExudateMask = app.CurrentLesions.ExudatesMask;
+            elseif isfield(app.CurrentLesions, 'ExudateMask')
+                layers.ExudateMask = app.CurrentLesions.ExudateMask;
+            end
+            if isfield(app.CurrentLesions, 'CottonWoolSpotsMask')
+                layers.CWSMask = app.CurrentLesions.CottonWoolSpotsMask;
+            elseif isfield(app.CurrentLesions, 'CottonWoolMask')
+                layers.CWSMask = app.CurrentLesions.CottonWoolMask;
+            elseif isfield(app.CurrentLesions, 'CWSMask')
+                layers.CWSMask = app.CurrentLesions.CWSMask;
+            end
+            if isfield(app.CurrentLesions, 'NeovascularizationMask')
+                layers.NVMask = app.CurrentLesions.NeovascularizationMask;
+            elseif isfield(app.CurrentLesions, 'NVMask')
+                layers.NVMask = app.CurrentLesions.NVMask;
+            end
             imshow(retinacare.engine.AnatomyLesionEngine.createOverlay(app.CurrentRawImg, layers, 0.7), 'Parent', app.AxesWorkstationAI);
             title(app.AxesWorkstationAI, 'AI Segmented Lesions', 'Color', app.COLOR_OPTICAL_GLOW);
 

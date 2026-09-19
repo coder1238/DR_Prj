@@ -125,6 +125,7 @@ classdef AnatomyLesionEngine < handle
             
             vessels = struct();
             vessels.Mask = vesselMask;
+            vessels.VesselMask = vesselMask;
             vessels.DensityPercent = vesselDensity;
             vessels.AVR = avr;
             vessels.TortuosityIndex = tortuosityIndex;
@@ -215,10 +216,13 @@ classdef AnatomyLesionEngine < handle
             lesions.DistToFAZMicrons = distToFAZ;
             
             lesions.CottonWoolMask = cwsMask;
+            lesions.CottonWoolSpotsMask = cwsMask;
+            lesions.CWSMask = cwsMask;
             lesions.CWSCount = cwsCount;
             lesions.CWSAreaMM2 = cwsAreaMM2;
             
             lesions.NVMask = nvMask;
+            lesions.NeovascularizationMask = nvMask;
             lesions.NVCount = nvCount;
             
             % ETDRS 4-2-1 Rule check
