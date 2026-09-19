@@ -1,0 +1,14 @@
+{
+    "name": "RetinaCare AI (MATLAB App Designer)",
+    "image": "mcr.microsoft.com/devcontainers/universal:2",
+    "features": {
+        "ghcr.io/mathworks/devcontainer-features/matlab:0": {}
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "MathWorks.language-matlab"
+            ]
+        }
+    }
+}
