@@ -132,8 +132,16 @@ classdef ExplainabilityEngine < handle
             % Normalize weights to sum to 100
             totalWeight = sum(cellfun(@(e) e.Weight, evidence));
             for k = 1:length(evidence)
-                evidence{k}.Weight = round((evidence{k}.Weight / totalWeight) * 100, 1);
+                w = round((evidence{k}.Weight / totalWeight) * 100, 1);
+                evidence{k}.Weight = w;
+                evidence{k}.AttributionScore = w;
                 evidence{k}.Rank = k;
+                if ~isfield(evidence{k}, 'Count')
+                    evidence{k}.Count = 1;
+                end
+                if ~isfield(evidence{k}, 'ClinicalRule')
+                    evidence{k}.ClinicalRule = evidence{k}.SeverityImpact;
+                end
             end
             
             evidenceList = evidence;

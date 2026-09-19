@@ -1123,13 +1123,54 @@ classdef RetinaCareApp < matlab.apps.AppBase
                 'BackgroundColor', app.COLOR_CARD_SURFACE, 'FontWeight', 'bold', 'ForegroundColor', app.COLOR_PURPLE_DEEP);
             eLay = uigridlayout(evPanel, [1, 1]);
             eItems = retinacare.engine.ExplainabilityEngine.rankClinicalEvidence(app.CurrentLesions, app.CurrentAIResult.PredictedStage);
-            eTable = cell(length(eItems), 5);
-            for k = 1:length(eItems)
-                eTable{k, 1} = sprintf('#%d', eItems(k).Rank);
-                eTable{k, 2} = eItems(k).Feature;
-                eTable{k, 3} = sprintf('%.1f%%', eItems(k).AttributionScore);
-                eTable{k, 4} = sprintf('%d objects', eItems(k).Count);
-                eTable{k, 5} = eItems(k).ClinicalRule;
+            nItems = length(eItems);
+            eTable = cell(nItems, 5);
+            for k = 1:nItems
+                if iscell(eItems)
+                    item = eItems{k};
+                else
+                    item = eItems(k);
+                end
+                
+                % Rank
+                if isfield(item, 'Rank'), rk = item.Rank; else, rk = k; end
+                eTable{k, 1} = sprintf('#%d', rk);
+                
+                % Feature / Biomarker
+                if isfield(item, 'Feature'), feat = item.Feature; else, feat = 'Lesion Pattern'; end
+                eTable{k, 2} = feat;
+                
+                % Attribution / Weight
+                if isfield(item, 'AttributionScore')
+                    wt = item.AttributionScore;
+                elseif isfield(item, 'Weight')
+                    wt = item.Weight;
+                else
+                    wt = 20.0;
+                end
+                eTable{k, 3} = sprintf('%.1f%%', wt);
+                
+                % Count or Location
+                if isfield(item, 'Count')
+                    cnt = sprintf('%d objects', item.Count);
+                elseif isfield(item, 'Location')
+                    cnt = item.Location;
+                else
+                    cnt = 'Detected';
+                end
+                eTable{k, 4} = cnt;
+                
+                % Rule / Clinical Impact
+                if isfield(item, 'ClinicalRule')
+                    rl = item.ClinicalRule;
+                elseif isfield(item, 'SeverityImpact')
+                    rl = item.SeverityImpact;
+                elseif isfield(item, 'Significance')
+                    rl = item.Significance;
+                else
+                    rl = 'ETDRS Standard';
+                end
+                eTable{k, 5} = rl;
             end
             uitable(eLay, 'Data', eTable, ...
                 'ColumnName', {'Rank', 'Biomarker', 'Attribution', 'Count', 'Rule Standard'}, ...
